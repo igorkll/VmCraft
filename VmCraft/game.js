@@ -1,5 +1,4 @@
 import * as Three from 'three'
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 import { Player } from './scripts/Player.js'
 
 // ---------------------- main
@@ -13,7 +12,7 @@ const renderer = new Three.WebGLRenderer({ antialias: true })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const player = new Player(renderer, 0, 0, 0)
+const player = new Player(renderer, 0, 10, 0)
 
 // ---------------------- test
 
