@@ -48,7 +48,7 @@ window.addEventListener('resize', () => {
 })
 
 export function getOverlayText() {
-    return `FPS: ${Math.floor(1 / delta)}`
+    return `FPS: ${Math.floor(1 / delta)}\nasdasd`
 }
 
 // ----------------------

@@ -3,6 +3,7 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 
 const height = 1.8;
 const eyeHeight = height - 0.2;
+const deadZone = Math.PI / 180;
 
 export class Player {
     constructor(renderer, x, y, z) {
@@ -27,6 +28,9 @@ export class Player {
 
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
         this.controls.pointerSpeed = this.pointerSpeed
+        this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
+        this.controls.minPolarAngle = deadZone; 
+        this.controls.maxPolarAngle = Math.PI - deadZone;
 
         this.renderer.domElement.addEventListener('click', () => {
             this.controls.lock();
@@ -69,7 +73,8 @@ export class Player {
     updateControls(delta) {
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
-        if (!this.fly) forward.y = 0;
+        //if (!this.fly) forward.y = 0;
+        forward.y = 0;
         forward.normalize();
 
         const alwaysUp = new Three.Vector3(0, 1, 0)
