@@ -16,7 +16,9 @@ document.body.appendChild(renderer.domElement)
 let player = null
 let interactive_blocks = []
 
-function loadWorld() {
+// ----------------------
+
+function newWorld() {
     if (player != null) {
         player.destroy()
     }
@@ -29,9 +31,12 @@ function loadWorld() {
     interactive_blocks = []
 }
 
-loadWorld()
+function genWorld() {
+    interactive_blocks.push(new Robot(scene, 10, 0, 0))
+}
 
-interactive_blocks.push(new Robot(scene, 10, 0, 0))
+newWorld()
+genWorld()
 
 // ----------------------
 
