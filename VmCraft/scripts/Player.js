@@ -11,17 +11,21 @@ export class Player {
         this.y = y;
         this.z = z;
 
+        this.fly = true;
+
         this.abortController = new AbortController();
 
         // ------------------ camera
         
         this.camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.update();
+        this.updateCamera(0);
         this.camera.lookAt(this.x + 1, this.y + eyeHeight, this.z);
 
         // ------------------ controls
 
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
+        this.controls.pointerSpeed = 1.5; 
+
         this.renderer.domElement.addEventListener('click', () => {
             this.controls.lock();
         }, { signal: this.abortController.signal })
@@ -31,7 +35,8 @@ export class Player {
             a: false,
             s: false,
             d: false,
-            space: false
+            space: false,
+            shift: false
         }
 
         document.addEventListener('keydown', (e) => {
@@ -40,14 +45,8 @@ export class Player {
                 case 'KeyA': this.keys.a = true; break;
                 case 'KeyS': this.keys.s = true; break;
                 case 'KeyD': this.keys.d = true; break;
-                case 'Space': 
-                    this.keys.space = true;
-                    e.preventDefault();
-                    if (onGround) {
-                        velocity.y = jumpSpeed;
-                        onGround = false;
-                    }
-                    break;
+                case 'Space': this.keys.space = true; break;
+                case 'Shift': this.keys.shift = true; break;
             }
         }, { signal: this.abortController.signal })
         
@@ -58,12 +57,42 @@ export class Player {
                 case 'KeyS': this.keys.s = false; break;
                 case 'KeyD': this.keys.d = false; break;
                 case 'Space': this.keys.space = false; break;
+                case 'Shift': this.keys.shift = false; break;
             }
         }, { signal: this.abortController.signal })
     }
 
-    update() {
-        this.camera.position.set(this.x, this.y + eyeHeight, this.z);
+    updateControls(delta) {
+        const forward = new Three.Vector3();
+        this.camera.getWorldDirection(forward);
+        forward.y = 0;
+        forward.normalize();
+
+        const right = new Three.Vector3();
+        right.crossVectors(forward, new Three.Vector3(0, 1, 0)).normalize();
+
+        const move = new Three.Vector3(0, 0, 0);
+        if (this.keys.w) move.add(forward);
+        if (this.keys.s) move.sub(forward);
+        if (this.keys.a) move.sub(right);
+        if (this.keys.d) move.add(right);
+
+        if (move.lengthSq() > 0) {
+            move.normalize()
+            const speed = 5.0
+            console.log(move)
+            this.x += move.x * speed * delta
+            this.z += move.z * speed * delta
+        }
+    }
+
+    updateCamera(delta) {
+        this.camera.position.set(this.x, this.y + eyeHeight, this.z)
+    }
+
+    update(delta) {
+        this.updateControls(delta)
+        this.updateCamera(delta)
     }
     
     destroy() {

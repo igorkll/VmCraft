@@ -6,6 +6,8 @@ const game_title = document.getElementById("game-title")
 
 // ---------------------- main
 
+const timer = new Three.Timer();
+
 const scene = new Three.Scene();
 scene.background = new Three.Color(0x88ccff);
 
@@ -31,7 +33,9 @@ scene.add(new Three.AmbientLight(0x404060));
 
 function frameHandle() {
     requestAnimationFrame(frameHandle);
-    player.update();
+
+    const delta = timer.getDelta();
+    player.update(delta);
     renderer.render(scene, player.camera);
 }
 frameHandle();
