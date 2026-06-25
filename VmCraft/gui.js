@@ -33,6 +33,13 @@ document.addEventListener('keydown', (e) => {
             overlayState = !overlayState
             changeOverlayState(overlayState)
             break
+
+        case 'F11':
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
     }
 });
 
