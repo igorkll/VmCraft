@@ -1,8 +1,7 @@
 import * as Three from 'three'
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 import { Player } from './scripts/Player.js'
-
-const game_title = document.getElementById("game-title")
+import { exp } from 'three/src/nodes/math/MathNode.js'
 
 // ---------------------- main
 
@@ -31,11 +30,13 @@ scene.add(new Three.AmbientLight(0x404060))
 
 // ---------------------- frame handle
 
+let delta = 0
+
 function frameHandle() {
     requestAnimationFrame(frameHandle)
 
     timer.update()
-    const delta = timer.getDelta()
+    delta = timer.getDelta()
     player.update(delta)
     renderer.render(scene, player.camera)
 }
@@ -46,6 +47,10 @@ window.addEventListener('resize', () => {
     player.camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
+
+export function getOverlayText() {
+    return ```FPS: ${1 / delta}```
+}
 
 // ----------------------
 
