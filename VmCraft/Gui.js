@@ -1,4 +1,4 @@
-import * as Game from './game.js';
+import * as Game from './Game.js';
 
 const menu = document.getElementById("menu")
 const hud = document.getElementById("hud")

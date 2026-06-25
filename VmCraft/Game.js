@@ -1,5 +1,5 @@
 import * as Three from 'three'
-import { Player } from './scripts/Player.js'
+import { Player } from './Player.js'
 
 // ---------------------- main
 
@@ -12,7 +12,26 @@ const renderer = new Three.WebGLRenderer({ antialias: true })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const player = new Player(renderer, 0, 10, 0)
+let player = null
+let interactive_blocks = []
+
+function loadWorld() {
+    if (player != null) {
+        player.destroy()
+    }
+
+    for (let i = 0; i < interactive_blocks.length; i++) {
+        interactive_blocks[i].destroy()
+    }
+
+    player = new Player(renderer, 0, 10, 0)
+    interactive_blocks = []
+}
+
+loadWorld()
+loadWorld()
+
+setInterval(loadWorld, 1000)
 
 // ---------------------- test
 
@@ -21,14 +40,12 @@ const material = new Three.MeshLambertMaterial({ color: 0x44aa88 })
 const cube = new Three.Mesh(geometry, material)
 scene.add(cube)
 
-const light = new Three.DirectionalLight(0xffffff, 1)
-light.position.set(5, 10, 7)
-scene.add(light)
-scene.add(new Three.AmbientLight(0x404060))
-
 const sunLight = new Three.DirectionalLight(0xfff5d1, 1.0); 
 sunLight.position.set(50, 100, 50);
-scene.add(sunLight);
+scene.add(sunLight)
+
+const ambientLight = new Three.AmbientLight(0x404060)
+scene.add(ambientLight)
 
 // ---------------------- frame handle
 
@@ -39,7 +56,13 @@ function frameHandle() {
 
     timer.update()
     delta = timer.getDelta()
+
     player.update(delta)
+
+    for (let i = 0; i < interactive_blocks.length; i++) {
+        interactive_blocks[i].update(delta)
+    }
+
     renderer.render(scene, player.camera)
 }
 frameHandle()
