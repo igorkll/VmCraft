@@ -33,3 +33,16 @@ body > * {
     padding: 10px;
     white-space: pre-wrap;
 }
+
+.vm-display {
+    width: 320px;
+    height: 320px;
+    background-color: black;
+    display: block;
+    left: -99999px;
+}
+
+.vm-canvas {
+    width: 320px;
+    height: 320px;
+}

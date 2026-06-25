@@ -1,5 +1,6 @@
 import * as Three from "three";
 import * as Utils from "../Utils.js";
+import html2canvas from '../html2canvas.esm.js';
 
 const geometry = new Three.BoxGeometry(0.8, 0.8, 0.8)
 const material = new Three.MeshLambertMaterial({ color: 0x666666 })
@@ -24,13 +25,16 @@ export class Robot {
         // ---------------------- vm
 
         this.v86Container = document.createElement('div');
-        this.v86Container.style.display = 'none';
+        this.v86Container.classList.add("vm-display");
         document.body.appendChild(this.v86Container);
 
         this.emulator = new window.V86({
             wasm_path: "v86/v86.wasm",
         
             screen_container: this.v86Container,
+            screen_options: {
+                use_graphical_text: true
+            },
         
             bios: {
                 url: "v86/bios/seabios.bin",
@@ -48,9 +52,10 @@ export class Robot {
 
         // ---------------------- display
 
-        const v86Canvas = this.v86Container.querySelector('canvas');
+        const canvas = document.createElement('canvas')
+        canvas.classList.add("vm-canvas")
 
-        const vmTexture = new Three.CanvasTexture(v86Canvas);
+        const vmTexture = new Three.CanvasTexture(canvas);
         vmTexture.minFilter = Three.LinearFilter;
         vmTexture.magFilter = Three.LinearFilter;
         vmTexture.format = Three.RGBAFormat;
@@ -60,13 +65,28 @@ export class Robot {
             side: Three.DoubleSide
         });
 
-        // Создаем геометрию для экрана (плоскость)
-        const screenGeometry = new Three.PlaneGeometry(1.2, 0.9);
+        const screenGeometry = new Three.PlaneGeometry(1, 1);
         this.screen = new Three.Mesh(screenGeometry, screenMaterial);
         
-        // Позиционируем экран на корпусе робота
-        this.screen.position.set(0, 0.6, 0.4); // Например, спереди и чуть выше
+        this.screen.position.set(0, 0.6, 0.5);
         this.object.add(this.screen);
+
+        console.log("TEST223232")
+
+        setInterval(100, () => {
+            console.log("TEST22")
+            html2canvas(this.v86Container, {
+                canvas: canvas,
+                useCORS: true,
+                scale: 1,
+                backgroundColor: '#000000',
+            }).then(() => {
+                vmTexture.needsUpdate = true;
+                console.log("TEST")
+            }).catch((error) => {
+                console.error('Ошибка рендеринга:', error);
+            })
+        })
     }
 
     update(delta) {
