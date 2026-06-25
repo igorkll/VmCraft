@@ -1,6 +1,6 @@
 import * as Three from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { Player } from './scripts/Player.js';
 
 const game_title = document.getElementById("game-title")
 
