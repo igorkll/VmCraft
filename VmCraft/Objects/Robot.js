@@ -61,17 +61,16 @@ export class Robot {
         vmTexture.format = Three.RGBAFormat;
 
         const screenMaterial = new Three.MeshLambertMaterial({
-            map: vmTexture,
-            side: Three.DoubleSide
+            map: vmTexture
         });
 
-        const screenGeometry = new Three.PlaneGeometry(1, 1);
-        this.screen = new Three.Mesh(screenGeometry, screenMaterial);
-        
-        this.screen.position.set(0, 0.6, 0.5);
-        this.object.add(this.screen);
+        const screenGeometry = new Three.PlaneGeometry(0.6, 0.6)
+        this.screen = new Three.Mesh(screenGeometry, screenMaterial)
+        this.screen.position.set(-0.41, 0, 0)
+        this.screen.rotation.y = -Math.PI / 2;
+        this.object.add(this.screen)
 
-        setInterval(() => {
+        this.updateTimer = setInterval(() => {
             this.v86Container.style.display = 'block'
             html2canvas(this.v86Container, {
                 canvas: canvas,
@@ -98,5 +97,7 @@ export class Robot {
         if (this.v86Container && this.v86Container.parentNode) {
             this.v86Container.parentNode.removeChild(this.v86Container);
         }
+
+        clearInterval(this.updateTimer);
     }
 }
