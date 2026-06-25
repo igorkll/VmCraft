@@ -1,5 +1,6 @@
-import * as Three from 'three';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import * as Three from "three";
+import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
+import * as Utils from "../utils.js";
 
 const height = 1.8;
 const eyeHeight = height - 0.2;
@@ -32,7 +33,7 @@ export class Player {
         this.controls.minPolarAngle = deadZone; 
         this.controls.maxPolarAngle = Math.PI - deadZone;
 
-        this.renderer.domElement.addEventListener('click', () => {
+        this.renderer.domElement.addEventListener("click", () => {
             this.controls.lock();
         }, { signal: this.abortController.signal })
 
@@ -45,27 +46,33 @@ export class Player {
             shift: false
         }
 
-        document.addEventListener('keydown', (e) => {
+        const onDoubleSpace = Utils.detectDoubleKey("Space", () => {
+
+        });
+
+        document.addEventListener("keydown", (e) => {
             e.preventDefault()
             
             switch (e.code) {
-                case 'KeyW': this.keys.w = true; break;
-                case 'KeyA': this.keys.a = true; break;
-                case 'KeyS': this.keys.s = true; break;
-                case 'KeyD': this.keys.d = true; break;
-                case 'Space': this.keys.space = true; break;
-                case 'ShiftLeft': this.keys.shift = true; break;
+                case "KeyW": this.keys.w = true; break;
+                case "KeyA": this.keys.a = true; break;
+                case "KeyS": this.keys.s = true; break;
+                case "KeyD": this.keys.d = true; break;
+                case "Space": this.keys.space = true; break;
+                case "ShiftLeft": this.keys.shift = true; break;
             }
+
+            onDoubleSpace(e)
         }, { signal: this.abortController.signal })
         
-        document.addEventListener('keyup', (e) => {
+        document.addEventListener("keyup", (e) => {
             switch (e.code) {
-                case 'KeyW': this.keys.w = false; break;
-                case 'KeyA': this.keys.a = false; break;
-                case 'KeyS': this.keys.s = false; break;
-                case 'KeyD': this.keys.d = false; break;
-                case 'Space': this.keys.space = false; break;
-                case 'ShiftLeft': this.keys.shift = false; break;
+                case "KeyW": this.keys.w = false; break;
+                case "KeyA": this.keys.a = false; break;
+                case "KeyS": this.keys.s = false; break;
+                case "KeyD": this.keys.d = false; break;
+                case "Space": this.keys.space = false; break;
+                case "ShiftLeft": this.keys.shift = false; break;
             }
         }, { signal: this.abortController.signal })
     }
