@@ -48,7 +48,8 @@ window.addEventListener('resize', () => {
 })
 
 export function getOverlayText() {
-    return `FPS: ${Math.floor(1 / delta)}\nasdasd`
+    return `FPS: ${Math.floor(1 / delta)}
+Position: ${player.x.toFixed(3)} ${player.y.toFixed(3)} ${player.z.toFixed(3)}`
 }
 
 // ----------------------
