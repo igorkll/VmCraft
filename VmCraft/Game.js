@@ -1,5 +1,6 @@
 import * as Three from 'three'
 import { Player } from './Player.js'
+import { Robot } from './Objects/Robot.js'
 
 // ---------------------- main
 
@@ -29,22 +30,16 @@ function loadWorld() {
 }
 
 loadWorld()
-loadWorld()
 
-setInterval(loadWorld, 1000)
+interactive_blocks.push(new Robot(scene, 10, 0, 0))
 
-// ---------------------- test
+// ----------------------
 
-const geometry = new Three.BoxGeometry(1, 1, 1)
-const material = new Three.MeshLambertMaterial({ color: 0x44aa88 })
-const cube = new Three.Mesh(geometry, material)
-scene.add(cube)
-
-const sunLight = new Three.DirectionalLight(0xfff5d1, 1.0); 
+const sunLight = new Three.DirectionalLight(0xffffff, 1.0); 
 sunLight.position.set(50, 100, 50);
 scene.add(sunLight)
 
-const ambientLight = new Three.AmbientLight(0x404060)
+const ambientLight = new Three.AmbientLight(0xffffff)
 scene.add(ambientLight)
 
 // ---------------------- frame handle
