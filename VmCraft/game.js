@@ -26,6 +26,10 @@ light.position.set(5, 10, 7)
 scene.add(light)
 scene.add(new Three.AmbientLight(0x404060))
 
+const sunLight = new Three.DirectionalLight(0xfff5d1, 1.0); 
+sunLight.position.set(50, 100, 50);
+scene.add(sunLight);
+
 // ---------------------- frame handle
 
 let delta = 0

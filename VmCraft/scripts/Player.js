@@ -16,6 +16,8 @@ export class Player {
         this.fly = true;
         this.speed = 5
         this.pointerSpeed = 1.5
+        this.runningSpeedMultiplier = 2
+        this.flightSpeedMultiplier = 2
 
         this.abortController = new AbortController();
 
@@ -43,7 +45,8 @@ export class Player {
             s: false,
             d: false,
             space: false,
-            shift: false
+            shift: false,
+            control: false
         }
 
         const onDoubleSpace = Utils.detectDoubleKey("Space", () => {
@@ -60,6 +63,7 @@ export class Player {
                 case "KeyD": this.keys.d = true; break;
                 case "Space": this.keys.space = true; break;
                 case "ShiftLeft": this.keys.shift = true; break;
+                case "ControlLeft": this.keys.control = true; break;
             }
 
             onDoubleSpace(e)
@@ -73,6 +77,7 @@ export class Player {
                 case "KeyD": this.keys.d = false; break;
                 case "Space": this.keys.space = false; break;
                 case "ShiftLeft": this.keys.shift = false; break;
+                case "ControlLeft": this.keys.control = false; break;
             }
         }, { signal: this.abortController.signal })
     }
@@ -101,11 +106,15 @@ export class Player {
         }
 
         if (move.lengthSq() > 0) {
+            let speed = this.speed
+            if (this.keys.control) speed *= this.runningSpeedMultiplier
+            if (this.fly) speed *= this.flightSpeedMultiplier
+
             move.normalize()
-            this.x += move.x * this.speed * delta
-            this.z += move.z * this.speed * delta
+            this.x += move.x * speed * delta
+            this.z += move.z * speed * delta
             if (this.fly) {
-                this.y += move.y * this.speed * delta
+                this.y += move.y * speed * delta
             }
         }
     }
