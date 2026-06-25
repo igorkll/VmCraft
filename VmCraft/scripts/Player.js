@@ -80,7 +80,7 @@ export class Player {
         if (move.lengthSq() > 0) {
             move.normalize()
             const speed = 5.0
-            console.log(move)
+            console.log(delta)
             this.x += move.x * speed * delta
             this.z += move.z * speed * delta
         }
