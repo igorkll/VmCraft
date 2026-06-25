@@ -64,7 +64,9 @@ function frameHandle() {
     player.update(delta)
 
     for (let i = 0; i < interactive_blocks.length; i++) {
-        interactive_blocks[i].update(delta)
+        let block = interactive_blocks[i]
+        block.object.position.set(block.x, block.y, block.z)
+        block.update(delta)
     }
 
     renderer.render(scene, player.camera)

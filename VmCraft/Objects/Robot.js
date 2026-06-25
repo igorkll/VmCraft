@@ -1,6 +1,6 @@
-import * as Three from "three";
-import * as Utils from "../Utils.js";
-import html2canvas from '../html2canvas.esm.js';
+import * as Three from "three"
+import * as Utils from "../Utils.js"
+import html2canvas from '../html2canvas.esm.js'
 
 const geometry = new Three.BoxGeometry(0.8, 0.8, 0.8)
 const material = new Three.MeshLambertMaterial({ color: 0x666666 })
@@ -19,14 +19,14 @@ export class Robot {
         scene.add(this.object)
 
         const cube2 = new Three.Mesh(geometry2, material2)
-        cube2.position.set(0.3, 0.1, 0);
+        cube2.position.set(0.3, 0.1, 0)
         this.object.add(cube2)
 
         // ---------------------- vm
 
-        this.v86Container = document.createElement('div');
-        this.v86Container.classList.add("vm-display");
-        document.body.appendChild(this.v86Container);
+        this.v86Container = document.createElement('div')
+        this.v86Container.classList.add("vm-display")
+        document.body.appendChild(this.v86Container)
 
         this.emulator = new window.V86({
             wasm_path: "v86/v86.wasm",
@@ -43,11 +43,16 @@ export class Robot {
             vga_bios: {
                 url: "v86/bios/vgabios.bin",
             },
-        
-            autostart: true,
+
+            hda: {
+                url: "images/kolibri.img"
+            },
         
             memory_size: 64 * 1024 * 1024,
             vga_memory_size: 8 * 1024 * 1024,
+
+            autostart: true,
+            disable_keyboard: true
         })
 
         // ---------------------- display
@@ -55,19 +60,19 @@ export class Robot {
         const canvas = document.createElement('canvas')
         canvas.classList.add("vm-canvas")
 
-        const vmTexture = new Three.CanvasTexture(canvas);
-        vmTexture.minFilter = Three.LinearFilter;
-        vmTexture.magFilter = Three.LinearFilter;
-        vmTexture.format = Three.RGBAFormat;
+        const vmTexture = new Three.CanvasTexture(canvas)
+        vmTexture.minFilter = Three.LinearFilter
+        vmTexture.magFilter = Three.LinearFilter
+        vmTexture.format = Three.RGBAFormat
 
         const screenMaterial = new Three.MeshLambertMaterial({
             map: vmTexture
-        });
+        })
 
         const screenGeometry = new Three.PlaneGeometry(0.6, 0.6)
         this.screen = new Three.Mesh(screenGeometry, screenMaterial)
         this.screen.position.set(-0.41, 0, 0)
-        this.screen.rotation.y = -Math.PI / 2;
+        this.screen.rotation.y = -Math.PI / 2
         this.object.add(this.screen)
 
         this.updateTimer = setInterval(() => {
@@ -78,7 +83,7 @@ export class Robot {
                 scale: 1,
                 backgroundColor: '#000000',
             }).then(() => {
-                vmTexture.needsUpdate = true;
+                vmTexture.needsUpdate = true
             })
             this.v86Container.style.display = 'none'
         }, 100)
@@ -92,12 +97,12 @@ export class Robot {
         this.scene.remove(this.object)
 
         if (this.emulator && typeof emulator.stop === 'function') {
-            this.emulator.stop();
+            this.emulator.stop()
         }
         if (this.v86Container && this.v86Container.parentNode) {
-            this.v86Container.parentNode.removeChild(this.v86Container);
+            this.v86Container.parentNode.removeChild(this.v86Container)
         }
 
-        clearInterval(this.updateTimer);
+        clearInterval(this.updateTimer)
     }
 }
