@@ -31,6 +31,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
 // ---------------------- render
+
 function renderFrame() {
     requestAnimationFrame(renderFrame);
     controls.update();
