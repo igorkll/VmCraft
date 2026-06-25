@@ -48,7 +48,7 @@ export class Player {
                 case 'KeyS': this.keys.s = true; break;
                 case 'KeyD': this.keys.d = true; break;
                 case 'Space': this.keys.space = true; break;
-                case 'Shift': this.keys.shift = true; break;
+                case 'ShiftLeft': this.keys.shift = true; break;
             }
         }, { signal: this.abortController.signal })
         
@@ -59,7 +59,7 @@ export class Player {
                 case 'KeyS': this.keys.s = false; break;
                 case 'KeyD': this.keys.d = false; break;
                 case 'Space': this.keys.space = false; break;
-                case 'Shift': this.keys.shift = false; break;
+                case 'ShiftLeft': this.keys.shift = false; break;
             }
         }, { signal: this.abortController.signal })
     }
