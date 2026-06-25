@@ -47,7 +47,7 @@ export class Player {
         }
 
         const onDoubleSpace = Utils.detectDoubleKey("Space", () => {
-
+            this.fly = !this.fly
         });
 
         document.addEventListener("keydown", (e) => {
