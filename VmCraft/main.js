@@ -44,3 +44,33 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// ----------------------
+
+(function() {
+    const emulator = new V86Starter({
+        wasm_path: "v86/v86.wasm",
+
+        screen_container: renderer.domElement,
+
+        bios: {
+            url: "bios/seabios.bin",
+        },
+
+        vga_bios: {
+            url: "bios/vgabios.bin",
+        },
+
+        cdrom: {
+            url: "images/linux.iso",
+        },
+
+        autostart: true,
+
+        memory_size: 64 * 1024 * 1024,
+        vga_memory_size: 8 * 1024 * 1024,
+    });
+
+    console.log('v86: Эмулятор создан. Ожидание загрузки...');
+    console.log(emulator);
+})();
