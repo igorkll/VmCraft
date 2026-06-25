@@ -12,6 +12,8 @@ export class Player {
         this.z = z;
 
         this.fly = true;
+        this.speed = 5
+        this.pointerSpeed = 1.5
 
         this.abortController = new AbortController();
 
@@ -24,7 +26,7 @@ export class Player {
         // ------------------ controls
 
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
-        this.controls.pointerSpeed = 1.5; 
+        this.controls.pointerSpeed = this.pointerSpeed
 
         this.renderer.domElement.addEventListener('click', () => {
             this.controls.lock();
@@ -65,8 +67,10 @@ export class Player {
     updateControls(delta) {
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
-        forward.y = 0;
+        if (!this.fly) forward.y = 0;
         forward.normalize();
+
+        const alwaysUp = new Three.Vector3(0, 1, 0)
 
         const right = new Three.Vector3();
         right.crossVectors(forward, new Three.Vector3(0, 1, 0)).normalize();
@@ -77,12 +81,18 @@ export class Player {
         if (this.keys.a) move.sub(right);
         if (this.keys.d) move.add(right);
 
+        if (this.fly) {
+            if (this.keys.space) move.add(alwaysUp);
+            if (this.keys.shift) move.sub(alwaysUp);
+        }
+
         if (move.lengthSq() > 0) {
             move.normalize()
-            const speed = 5.0
-            console.log(delta)
-            this.x += move.x * speed * delta
-            this.z += move.z * speed * delta
+            this.x += move.x * this.speed * delta
+            this.z += move.z * this.speed * delta
+            if (this.fly) {
+                this.y += move.y * this.speed * delta
+            }
         }
     }
 
@@ -91,6 +101,8 @@ export class Player {
     }
 
     update(delta) {
+        this.controls.pointerSpeed = this.pointerSpeed
+
         this.updateControls(delta)
         this.updateCamera(delta)
     }
