@@ -1,7 +1,6 @@
 import * as Three from 'three'
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 import { Player } from './scripts/Player.js'
-import { exp } from 'three/src/nodes/math/MathNode.js'
 
 // ---------------------- main
 
@@ -48,8 +47,8 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
-export function getOverlayText() {
-    return ```FPS: ${1 / delta}```
+export function getOverlayText(delta) {
+    return `FPS: ${1 / delta}`
 }
 
 // ----------------------
