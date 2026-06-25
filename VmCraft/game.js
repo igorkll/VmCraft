@@ -47,8 +47,8 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
-export function getOverlayText(delta) {
-    return `FPS: ${1 / delta}`
+export function getOverlayText() {
+    return `FPS: ${Math.floor(1 / delta)}`
 }
 
 // ----------------------
