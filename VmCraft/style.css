@@ -38,8 +38,7 @@ body > * {
     width: 320px;
     height: 320px;
     background-color: black;
-    display: block;
-    left: -99999px;
+    display: none;
 }
 
 .vm-canvas {

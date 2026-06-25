@@ -72,6 +72,7 @@ export class Robot {
         this.object.add(this.screen);
 
         setInterval(() => {
+            this.v86Container.style.display = 'block'
             html2canvas(this.v86Container, {
                 canvas: canvas,
                 useCORS: true,
@@ -80,6 +81,7 @@ export class Robot {
             }).then(() => {
                 vmTexture.needsUpdate = true;
             })
+            this.v86Container.style.display = 'none'
         }, 100)
     }
 
