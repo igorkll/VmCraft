@@ -71,10 +71,7 @@ export class Robot {
         this.screen.position.set(0, 0.6, 0.5);
         this.object.add(this.screen);
 
-        console.log("TEST223232")
-
-        setInterval(100, () => {
-            console.log("TEST22")
+        setInterval(() => {
             html2canvas(this.v86Container, {
                 canvas: canvas,
                 useCORS: true,
@@ -82,11 +79,8 @@ export class Robot {
                 backgroundColor: '#000000',
             }).then(() => {
                 vmTexture.needsUpdate = true;
-                console.log("TEST")
-            }).catch((error) => {
-                console.error('Ошибка рендеринга:', error);
             })
-        })
+        }, 100)
     }
 
     update(delta) {
