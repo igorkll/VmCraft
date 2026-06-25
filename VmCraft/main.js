@@ -4,18 +4,16 @@ import { Player } from './scripts/Player.js';
 
 const game_title = document.getElementById("game-title")
 
-// ---------------------- render
+// ---------------------- main
 
 const scene = new Three.Scene();
 scene.background = new Three.Color(0x88ccff);
 
-const camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(3, 3, 3);
-camera.lookAt(0, 0, 0);
-
 const renderer = new Three.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+const player = new Player(renderer, 0, 0, 0);
 
 // ---------------------- test
 
@@ -29,61 +27,18 @@ light.position.set(5, 10, 7);
 scene.add(light);
 scene.add(new Three.AmbientLight(0x404060));
 
-// ---------------------- handle controls
-
-const controls = new PointerLockControls(camera, renderer.domElement);
-
-renderer.domElement.addEventListener('click', () => {
-    controls.lock();
-});
-
-const keys = {
-    w: false,
-    a: false,
-    s: false,
-    d: false,
-    space: false
-};
-
-document.addEventListener('keydown', (e) => {
-    switch (e.code) {
-        case 'KeyW': keys.w = true; break;
-        case 'KeyA': keys.a = true; break;
-        case 'KeyS': keys.s = true; break;
-        case 'KeyD': keys.d = true; break;
-        case 'Space': 
-            keys.space = true;
-            e.preventDefault();
-            if (onGround) {
-                velocity.y = jumpSpeed;
-                onGround = false;
-            }
-            break;
-    }
-});
-
-document.addEventListener('keyup', (e) => {
-    switch (e.code) {
-        case 'KeyW': keys.w = false; break;
-        case 'KeyA': keys.a = false; break;
-        case 'KeyS': keys.s = false; break;
-        case 'KeyD': keys.d = false; break;
-        case 'Space': keys.space = false; break;
-    }
-});
-
 // ---------------------- frame handle
 
 function frameHandle() {
     requestAnimationFrame(frameHandle);
-    controls.update();
-    renderer.render(scene, camera);
+    player.update();
+    renderer.render(scene, player.camera);
 }
 frameHandle();
 
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    player.camera.aspect = window.innerWidth / window.innerHeight;
+    player.camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
