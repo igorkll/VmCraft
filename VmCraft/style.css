@@ -35,11 +35,12 @@ body > * {
 }
 
 .vm-display {
+    width: 0px;
+    height: 0px;
     background-color: black;
-    display: block;
+    display: none;
     
     white-space: pre;
-    font-family: 'Press Start 2P', monospace;
-    font: 8px monospace;
-    line-height: 8px
+    font: 14px monospace;
+    line-height: 14px
 }
