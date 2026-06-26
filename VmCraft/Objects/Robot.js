@@ -14,6 +14,11 @@ export class Robot {
         this.x = x
         this.y = y
         this.z = z
+        this.targetX = x
+        this.targetY = y
+        this.targetZ = z
+
+        this.speed = 3
 
         this.object = new Three.Mesh(geometry, material)
         scene.add(this.object)
@@ -32,9 +37,6 @@ export class Robot {
             wasm_path: "v86/v86.wasm",
         
             screen_container: this.v86Container,
-            screen_options: {
-                use_graphical_text: true
-            },
         
             bios: {
                 url: "v86/bios/seabios.bin",
@@ -44,8 +46,8 @@ export class Robot {
                 url: "v86/bios/vgabios.bin",
             },
 
-            hda: {
-                url: "images/kolibri.img"
+            cdrom: {
+                url: "images/linux.iso"
             },
         
             memory_size: 64 * 1024 * 1024,
@@ -58,11 +60,13 @@ export class Robot {
         // ---------------------- display
 
         const canvas = document.createElement('canvas')
-        canvas.classList.add("vm-canvas")
+        const rect = this.v86Container.getBoundingClientRect()
+        canvas.style.width = `${rect.width}px`
+        canvas.style.height = `${rect.height}px`
 
         const vmTexture = new Three.CanvasTexture(canvas)
-        vmTexture.minFilter = Three.LinearFilter
-        vmTexture.magFilter = Three.LinearFilter
+        vmTexture.minFilter = Three.NearestFilter
+        vmTexture.magFilter = Three.NearestFilter
         vmTexture.format = Three.RGBAFormat
 
         const screenMaterial = new Three.MeshLambertMaterial({
@@ -85,12 +89,31 @@ export class Robot {
             }).then(() => {
                 vmTexture.needsUpdate = true
             })
-            this.v86Container.style.display = 'none'
+            this.v86Container.style.display = ''
         }, 100)
+
+        setInterval(() => {
+            //this.move(1, 0, 0)
+        }, 4000)
+    }
+
+    move(x, y, z) {
+        this.targetX += x
+        this.targetY += y
+        this.targetZ += z
     }
 
     update(delta) {
-        
+        this.x += (this.targetX - this.x) * delta * this.speed
+        this.y += (this.targetY - this.y) * delta * this.speed
+        this.z += (this.targetZ - this.z) * delta * this.speed
+        this.stopped = Math.abs(this.targetX - this.x) < 0.01 && Math.abs(this.targetY - this.y) < 0.01 && Math.abs(this.targetY - this.z) < 0.01
+
+        if (this.stopped) {
+            this.targetX = this.x
+            this.targetY = this.y
+            this.targetZ = this.z
+        }
     }
     
     destroy() {

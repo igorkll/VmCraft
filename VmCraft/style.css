@@ -35,13 +35,11 @@ body > * {
 }
 
 .vm-display {
-    width: 320px;
-    height: 320px;
     background-color: black;
-    display: none;
-}
-
-.vm-canvas {
-    width: 320px;
-    height: 320px;
+    display: block;
+    
+    white-space: pre;
+    font-family: 'Press Start 2P', monospace;
+    font: 8px monospace;
+    line-height: 8px
 }
