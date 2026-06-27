@@ -9,8 +9,8 @@ const geometry2 = new Three.BoxGeometry(0.4, 0.4, 0.4)
 const material2 = new Three.MeshLambertMaterial({ color: 0xff0000 })
 
 export class Robot {
-    constructor(scene, x, y, z) {
-        this.scene = scene
+    constructor(gameBasic, x, y, z) {
+        this.gameBasic = gameBasic
         this.data = {
             speed: 3,
 
@@ -26,7 +26,7 @@ export class Robot {
 
     init() {
         this.object = new Three.Mesh(geometry, material)
-        this.scene.add(this.object)
+        this.gameBasic.scene.add(this.object)
 
         const cube2 = new Three.Mesh(geometry2, material2)
         cube2.position.set(0.3, 0.1, 0)

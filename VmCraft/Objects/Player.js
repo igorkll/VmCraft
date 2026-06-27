@@ -7,8 +7,8 @@ const eyeHeight = height - 0.2;
 const deadZone = Math.PI / 180;
 
 export class Player {
-    constructor(renderer, x, y, z) {
-        this.renderer = renderer;
+    constructor(gameBasic, x, y, z) {
+        this.gameBasic = gameBasic;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -29,13 +29,13 @@ export class Player {
 
         // ------------------ controls
 
-        this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
+        this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
         this.controls.pointerSpeed = this.pointerSpeed
-        this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
+        this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
         this.controls.minPolarAngle = deadZone; 
         this.controls.maxPolarAngle = Math.PI - deadZone;
 
-        this.renderer.domElement.addEventListener("click", () => {
+        this.gameBasic.renderer.domElement.addEventListener("click", () => {
             this.controls.lock();
         }, { signal: this.abortController.signal })
 

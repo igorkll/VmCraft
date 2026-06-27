@@ -27,9 +27,9 @@ export class World {
     genWorld() {
         this.newWorld()
 
-        this.player = new Player(this.gameBasic.renderer, 0, 10, 0)
+        this.player = new Player(this.gameBasic, 0, 10, 0)
 
-        let robot = new Robot(this.gameBasic.scene, 10, 0, 0)
+        let robot = new Robot(this.gameBasic, 10, 0, 0)
         robot.init()
         this.interactive_blocks.push(robot)
     }
