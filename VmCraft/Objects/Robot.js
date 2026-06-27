@@ -11,14 +11,17 @@ const material2 = new Three.MeshLambertMaterial({ color: 0xff0000 })
 export class Robot {
     constructor(scene, x, y, z) {
         this.scene = scene
-        this.x = x
-        this.y = y
-        this.z = z
-        this.targetX = x
-        this.targetY = y
-        this.targetZ = z
+        this.data = {
+            speed: 3,
 
-        this.speed = 3
+            x: x,
+            y: y,
+            z: z,
+
+            targetX: x,
+            targetY: y,
+            targetZ: z
+        }
 
         this.object = new Three.Mesh(geometry, material)
         scene.add(this.object)
@@ -98,21 +101,21 @@ export class Robot {
     }
 
     move(x, y, z) {
-        this.targetX += x
-        this.targetY += y
-        this.targetZ += z
+        this.data.targetX += x
+        this.data.targetY += y
+        this.data.targetZ += z
     }
 
     update(delta) {
-        this.x += (this.targetX - this.x) * delta * this.speed
-        this.y += (this.targetY - this.y) * delta * this.speed
-        this.z += (this.targetZ - this.z) * delta * this.speed
-        this.stopped = Math.abs(this.targetX - this.x) < 0.01 && Math.abs(this.targetY - this.y) < 0.01 && Math.abs(this.targetY - this.z) < 0.01
-
-        if (this.stopped) {
-            this.targetX = this.x
-            this.targetY = this.y
-            this.targetZ = this.z
+        this.data.x += (this.data.targetX - this.data.x) * delta * this.data.speed
+        this.data.y += (this.data.targetY - this.data.y) * delta * this.data.speed
+        this.data.z += (this.data.targetZ - this.data.z) * delta * this.data.speed
+        
+        const stopped = Math.abs(this.data.targetX - this.data.x) < 0.01 && Math.abs(this.data.targetY - this.data.y) < 0.01 && Math.abs(this.data.targetY - this.data.z) < 0.01
+        if (stopped) {
+            this.data.targetX = this.data.x
+            this.data.targetY = this.data.y
+            this.data.targetZ = this.data.z
         }
     }
     
