@@ -61,11 +61,6 @@ export class Robot {
 
         const canvas = document.createElement('canvas')
 
-        setTimeout(() => {
-            canvas.width = this.v86Container.scrollWidth
-            canvas.height = this.v86Container.scrollHeight
-        }, 1000)
-
         const vmTexture = new Three.CanvasTexture(canvas)
         vmTexture.minFilter = Three.NearestFilter
         vmTexture.magFilter = Three.NearestFilter
@@ -83,6 +78,8 @@ export class Robot {
 
         this.updateTimer = setInterval(() => {
             this.v86Container.style.display = 'block'
+            canvas.width = this.v86Container.scrollWidth
+            canvas.height = this.v86Container.scrollHeight
             html2canvas(this.v86Container, {
                 canvas: canvas,
                 useCORS: true,
@@ -92,11 +89,11 @@ export class Robot {
             }).then(() => {
                 vmTexture.needsUpdate = true
             })
-            //this.v86Container.style.display = ''
+            this.v86Container.style.display = ''
         }, 100)
 
         setInterval(() => {
-            //this.move(1, 0, 0)
+            this.move(1, 0, 0)
         }, 4000)
     }
 
