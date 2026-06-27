@@ -33,9 +33,17 @@ document.body.appendChild(renderer.domElement)
 // ---------------------- frame handle
 
 let delta = 0
+let fps = 0
+
+function updateFps() {
+    if (delta > 0) fps = Math.floor(1 / delta)
+}
+
+setInterval(updateFps, 1000)
+updateFps()
 
 function getOverlayText() {
-    return `FPS: ${Math.floor(1 / delta)}
+    return `FPS: ${fps}
 Position: ${world.player.data.x.toFixed(3)} ${world.player.data.y.toFixed(3)} ${world.player.data.z.toFixed(3)}`
 }
 
