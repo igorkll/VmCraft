@@ -60,12 +60,11 @@ export class Robot {
         // ---------------------- display
 
         const canvas = document.createElement('canvas')
-        const rect = this.v86Container.getBoundingClientRect()
-        canvas.style.width = `${333}px`
-        canvas.style.height = `${333}px`
-        this.v86Container.style.width = '3030px'
-        this.v86Container.style.height = '3030px'
-        document.body.appendChild(canvas)
+
+        setTimeout(() => {
+            canvas.width = this.v86Container.scrollWidth
+            canvas.height = this.v86Container.scrollHeight
+        }, 1000)
 
         const vmTexture = new Three.CanvasTexture(canvas)
         vmTexture.minFilter = Three.NearestFilter
@@ -87,11 +86,13 @@ export class Robot {
             html2canvas(this.v86Container, {
                 canvas: canvas,
                 useCORS: true,
-                scale: 1
+                scale: 1,
+                width: 64,
+                height: 64,
             }).then(() => {
                 vmTexture.needsUpdate = true
             })
-            this.v86Container.style.display = ''
+            //this.v86Container.style.display = ''
         }, 100)
 
         setInterval(() => {
