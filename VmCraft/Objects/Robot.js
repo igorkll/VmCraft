@@ -55,8 +55,8 @@ export class Robot {
                 url: "images/linux.iso"
             },
         
-            memory_size: 64 * 1024 * 1024,
-            vga_memory_size: 8 * 1024 * 1024,
+            memory_size: 512 * 1024 * 1024,
+            vga_memory_size: 256 * 1024 * 1024,
 
             autostart: true,
             disable_keyboard: true
@@ -98,7 +98,7 @@ export class Robot {
         }, 100)
 
         setInterval(() => {
-            this.move(1, 0, 0)
+            //this.move(1, 0, 0)
         }, 4000)
     }
 
