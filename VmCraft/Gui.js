@@ -1,5 +1,3 @@
-import * as Game from './Game.js';
-
 const menu = document.getElementById("menu")
 const hud = document.getElementById("hud")
 const overlay = document.getElementById("overlay")
@@ -13,8 +11,8 @@ function changeOverlayState(overlayOpened) {
     overlay.style.display = overlayOpened ? "block" : ""
 }
 
-function updateOverlay() {
-    overlay.textContent = Game.getOverlayText()
+export function updateOverlay(text) {
+    overlay.textContent = text
 }
 
 // --------------------------------
@@ -42,6 +40,3 @@ document.addEventListener('keydown', (e) => {
             }
     }
 });
-
-setInterval(updateOverlay, 1000)
-updateOverlay()

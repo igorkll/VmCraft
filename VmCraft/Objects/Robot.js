@@ -22,9 +22,11 @@ export class Robot {
             targetY: y,
             targetZ: z
         }
+    }
 
+    init() {
         this.object = new Three.Mesh(geometry, material)
-        scene.add(this.object)
+        this.scene.add(this.object)
 
         const cube2 = new Three.Mesh(geometry2, material2)
         cube2.position.set(0.3, 0.1, 0)
@@ -117,6 +119,8 @@ export class Robot {
             this.data.targetY = this.data.y
             this.data.targetZ = this.data.z
         }
+
+        this.object.position.set(this.data.x, this.data.y, this.data.z)
     }
     
     destroy() {

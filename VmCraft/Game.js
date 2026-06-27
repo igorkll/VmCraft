@@ -1,6 +1,7 @@
 import * as Three from 'three'
 import { Player } from './Player.js'
 import { Robot } from './Objects/Robot.js'
+import * as Gui from './Gui.js';
 
 // ---------------------- main
 
@@ -36,7 +37,9 @@ function newWorld() {
 }
 
 function genWorld() {
-    interactive_blocks.push(new Robot(scene, 10, 0, 0))
+    let robot = new Robot(scene, 10, 0, 0)
+    robot.init()
+    interactive_blocks.push(robot)
 }
 
 newWorld()
@@ -55,6 +58,11 @@ scene.add(ambientLight)
 
 let delta = 0
 
+function getOverlayText() {
+    return `FPS: ${Math.floor(1 / delta)}
+Position: ${player.x.toFixed(3)} ${player.y.toFixed(3)} ${player.z.toFixed(3)}`
+}
+
 function frameHandle() {
     requestAnimationFrame(frameHandle)
 
@@ -65,11 +73,12 @@ function frameHandle() {
 
     for (let i = 0; i < interactive_blocks.length; i++) {
         let block = interactive_blocks[i]
-        block.object.position.set(block.x, block.y, block.z)
         block.update(delta)
     }
 
     renderer.render(scene, player.camera)
+
+    Gui.updateOverlay(getOverlayText())
 }
 frameHandle()
 
@@ -78,8 +87,3 @@ window.addEventListener('resize', () => {
     player.camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
-
-export function getOverlayText() {
-    return `FPS: ${Math.floor(1 / delta)}
-Position: ${player.x.toFixed(3)} ${player.y.toFixed(3)} ${player.z.toFixed(3)}`
-}
