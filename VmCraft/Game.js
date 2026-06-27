@@ -36,7 +36,7 @@ let delta = 0
 
 function getOverlayText() {
     return `FPS: ${Math.floor(1 / delta)}
-Position: ${world.player.x.toFixed(3)} ${world.player.y.toFixed(3)} ${world.player.z.toFixed(3)}`
+Position: ${world.player.data.x.toFixed(3)} ${world.player.data.y.toFixed(3)} ${world.player.data.z.toFixed(3)}`
 }
 
 function frameHandle() {

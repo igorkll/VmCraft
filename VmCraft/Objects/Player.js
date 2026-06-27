@@ -9,28 +9,32 @@ const deadZone = Math.PI / 180;
 export class Player {
     constructor(gameBasic, x, y, z) {
         this.gameBasic = gameBasic;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.data = {
+            x: x,
+            y: y,
+            z: z,
 
-        this.fly = true;
-        this.speed = 5
-        this.pointerSpeed = 1.5
-        this.runningSpeedMultiplier = 2
-        this.flightSpeedMultiplier = 2
+            fly: true,
+            speed: 5,
+            pointerSpeed: 1.5,
+            runningSpeedMultiplier: 2,
+            flightSpeedMultiplier: 2
+        }
+    }
 
+    init() {
         this.abortController = new AbortController();
 
         // ------------------ camera
         
         this.camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.updateCamera(0);
-        this.camera.lookAt(this.x + 1, this.y + eyeHeight, this.z);
+        this.camera.lookAt(this.data.x + 1, this.data.y + eyeHeight, this.data.z);
 
         // ------------------ controls
 
         this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
-        this.controls.pointerSpeed = this.pointerSpeed
+        this.controls.pointerSpeed = this.data.pointerSpeed
         this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
         this.controls.minPolarAngle = deadZone; 
         this.controls.maxPolarAngle = Math.PI - deadZone;
@@ -50,7 +54,7 @@ export class Player {
         }
 
         const onDoubleSpace = Utils.detectDoubleKey("Space", () => {
-            this.fly = !this.fly
+            this.data.fly = !this.data.fly
         });
 
         document.addEventListener("keydown", (e) => {
@@ -85,7 +89,7 @@ export class Player {
     updateControls(delta) {
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
-        //if (!this.fly) forward.y = 0;
+        //if (!this.data.fly) forward.y = 0;
         forward.y = 0;
         forward.normalize();
 
@@ -100,31 +104,31 @@ export class Player {
         if (this.keys.a) move.sub(right);
         if (this.keys.d) move.add(right);
 
-        if (this.fly) {
+        if (this.data.fly) {
             if (this.keys.space) move.add(alwaysUp);
             if (this.keys.shift) move.sub(alwaysUp);
         }
 
         if (move.lengthSq() > 0) {
-            let speed = this.speed
-            if (this.keys.control) speed *= this.runningSpeedMultiplier
-            if (this.fly) speed *= this.flightSpeedMultiplier
+            let speed = this.data.speed
+            if (this.keys.control) speed *= this.data.runningSpeedMultiplier
+            if (this.data.fly) speed *= this.data.flightSpeedMultiplier
 
             move.normalize()
-            this.x += move.x * speed * delta
-            this.z += move.z * speed * delta
-            if (this.fly) {
-                this.y += move.y * speed * delta
+            this.data.x += move.x * speed * delta
+            this.data.z += move.z * speed * delta
+            if (this.data.fly) {
+                this.data.y += move.y * speed * delta
             }
         }
     }
 
     updateCamera(delta) {
-        this.camera.position.set(this.x, this.y + eyeHeight, this.z)
+        this.camera.position.set(this.data.x, this.data.y + eyeHeight, this.data.z)
     }
 
     update(delta) {
-        this.controls.pointerSpeed = this.pointerSpeed
+        this.controls.pointerSpeed = this.data.pointerSpeed
 
         this.updateControls(delta)
         this.updateCamera(delta)
