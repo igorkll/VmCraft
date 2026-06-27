@@ -1,6 +1,6 @@
 import * as Three from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
-import * as Utils from "./Utils.js";
+import * as Utils from "../Utils.js";
 
 const height = 1.8;
 const eyeHeight = height - 0.2;
