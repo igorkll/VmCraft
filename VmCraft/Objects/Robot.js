@@ -66,8 +66,6 @@ export class Robot {
 
         const canvas = document.createElement('canvas')
 
-        document.getElementById("hud").appendChild(this.v86Container)
-
         const vmTexture = new Three.CanvasTexture(canvas)
         vmTexture.minFilter = Three.NearestFilter
         vmTexture.magFilter = Three.NearestFilter
@@ -94,12 +92,24 @@ export class Robot {
             }).then(() => {
                 vmTexture.needsUpdate = true
             })
-            this.v86Container.style.display = ''
-        }, 1000)
+
+            if (!this.v86Container.openedModal) {
+                this.v86Container.style.display = ''
+            }
+        }, 100)
 
         setInterval(() => {
             //this.move(1, 0, 0)
         }, 4000)
+    }
+
+    interact() {
+        this.v86Container.style.display = 'block'
+        this.v86Container.openedModal = true
+        Utils.modalWindow(this.v86Container, () => {
+            this.v86Container.style.display = ''
+            this.v86Container.openedModal = false
+        })
     }
 
     move(x, y, z) {
