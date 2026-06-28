@@ -60,7 +60,7 @@ function frameHandle() {
 frameHandle()
 
 window.addEventListener('resize', () => {
-    player.camera.aspect = window.innerWidth / window.innerHeight
-    player.camera.updateProjectionMatrix()
+    world.player.camera.aspect = window.innerWidth / window.innerHeight
+    world.player.camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
 })

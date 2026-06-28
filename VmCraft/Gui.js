@@ -17,7 +17,7 @@ export function updateOverlay(text) {
 
 // --------------------------------
 
-let menuState = true
+let menuState = false
 let overlayState = false
 
 changeMenuState(menuState)

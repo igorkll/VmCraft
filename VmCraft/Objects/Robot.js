@@ -66,6 +66,8 @@ export class Robot {
 
         const canvas = document.createElement('canvas')
 
+        document.getElementById("hud").appendChild(this.v86Container)
+
         const vmTexture = new Three.CanvasTexture(canvas)
         vmTexture.minFilter = Three.NearestFilter
         vmTexture.magFilter = Three.NearestFilter
@@ -88,14 +90,12 @@ export class Robot {
             html2canvas(this.v86Container, {
                 canvas: canvas,
                 useCORS: true,
-                scale: 1,
-                width: 64,
-                height: 64,
+                scale: 1
             }).then(() => {
                 vmTexture.needsUpdate = true
             })
             this.v86Container.style.display = ''
-        }, 100)
+        }, 1000)
 
         setInterval(() => {
             //this.move(1, 0, 0)
