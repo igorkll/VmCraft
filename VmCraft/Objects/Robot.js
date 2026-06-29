@@ -60,7 +60,13 @@ export class Robot {
             vga_memory_size: 256 * 1024 * 1024,
 
             autostart: true,
-            disable_keyboard: true
+            disable_keyboard: false
+        })
+
+        this.emulator.add_listener("emulator-ready", () => {
+            this.emulator.keyboard_set_status(false)
+            this.emulator.ready = true
+            //this.interact()
         })
 
         // ---------------------- display
@@ -102,14 +108,17 @@ export class Robot {
         setInterval(() => {
             //this.move(1, 0, 0)
         }, 4000)
-
-        this.interact()
     }
 
     interact() {
+        if (!this.emulator.ready) return
+        
+        this.emulator.keyboard_set_status(true)
         this.v86Container.style.display = 'block'
         this.v86Container.openedModal = true
+
         Gui.openModalWindow(this.v86Container, () => {
+            this.emulator.keyboard_set_status(false)
             this.v86Container.style.display = ''
             this.v86Container.openedModal = false
         })
