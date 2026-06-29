@@ -1,6 +1,7 @@
 import * as Three from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import * as Utils from "../Utils.js";
+import * as Gui from "../Gui.js";
 
 const height = 1.8;
 const eyeHeight = height - 0.2;
@@ -20,6 +21,7 @@ export class Player {
             runningSpeedMultiplier: 2,
             flightSpeedMultiplier: 2
         }
+        this.oldControlLocked = false
     }
 
     init() {
@@ -87,6 +89,8 @@ export class Player {
     }
 
     updateControls(delta) {
+        const controlLocked = Gui.isControlLocked()
+
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
         //if (!this.data.fly) forward.y = 0;
@@ -99,15 +103,20 @@ export class Player {
         right.crossVectors(forward, new Three.Vector3(0, 1, 0)).normalize();
 
         const move = new Three.Vector3(0, 0, 0);
-        if (this.keys.w) move.add(forward);
-        if (this.keys.s) move.sub(forward);
-        if (this.keys.a) move.sub(right);
-        if (this.keys.d) move.add(right);
+        if (!controlLocked) {
+            if (this.keys.w) move.add(forward)
+            if (this.keys.s) move.sub(forward)
+            if (this.keys.a) move.sub(right)
+            if (this.keys.d) move.add(right)
 
-        if (this.data.fly) {
-            if (this.keys.space) move.add(alwaysUp);
-            if (this.keys.shift) move.sub(alwaysUp);
+            if (this.data.fly) {
+                if (this.keys.space) move.add(alwaysUp)
+                if (this.keys.shift) move.sub(alwaysUp)
+            }
+        } else if (this.oldControlLocked) {
+            //this.controls.unlock()
         }
+        this.oldControlLocked = controlLocked
 
         if (move.lengthSq() > 0) {
             let speed = this.data.speed

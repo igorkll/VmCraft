@@ -33,6 +33,20 @@ export function openModalWindow(modalObject) {
     hud.appendChild(modalRoot)
 }
 
+export function closeModalWindow() {
+    if (modalRoot == null) return
+    hud.removeChild(modalRoot)
+    modalRoot = null
+}
+
+export function getModalWindow() {
+    return modalRoot
+}
+
+export function isControlLocked() {
+    return !!(modalRoot || menuState)
+}
+
 // --------------------------------
 
 changeMenuState(menuState)
@@ -43,8 +57,12 @@ document.addEventListener('keydown', (e) => {
 
     switch (e.code) {
         case 'Backquote':
-            menuState = !menuState
-            changeMenuState(menuState)
+            if (getModalWindow()) {
+                closeModalWindow()
+            } else {
+                menuState = !menuState
+                changeMenuState(menuState)
+            }
             break
         
         case 'F3':
