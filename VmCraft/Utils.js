@@ -11,8 +11,3 @@ export function detectDoubleKey(keyCode, callback, delay = 300) {
         }
     };
 }
-
-export function modalWindow(element) {
-    const hud = document.getElementById("hud")
-    hud.appendChild(element)
-}

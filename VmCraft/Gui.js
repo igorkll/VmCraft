@@ -2,23 +2,37 @@ const menu = document.getElementById("menu")
 const hud = document.getElementById("hud")
 const overlay = document.getElementById("overlay")
 
-function changeMenuState(menuOpened) {
+let menuState = false
+let overlayState = false
+let modalRoot = null
+
+// --------------------------------
+
+export function changeMenuState(menuOpened) {
     menu.style.display = menuOpened ? "block" : ""
     hud.style.display = menuOpened ? "" : "block"
+    menuState = menuOpened
 }
 
-function changeOverlayState(overlayOpened) {
+export function changeOverlayState(overlayOpened) {
     overlay.style.display = overlayOpened ? "block" : ""
+    overlayState = overlayOpened
 }
 
 export function updateOverlay(text) {
     overlay.textContent = text
 }
 
-// --------------------------------
+export function openModalWindow(modalObject) {
+    if (modalRoot != null) return
 
-let menuState = false
-let overlayState = false
+    modalRoot = document.createElement("div")
+    modalRoot.appendChild(modalObject)
+
+    hud.appendChild(modalRoot)
+}
+
+// --------------------------------
 
 changeMenuState(menuState)
 changeOverlayState(overlayState)
@@ -27,6 +41,11 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault()
 
     switch (e.code) {
+        case 'Backquote':
+            menuState = !menuState
+            changeMenuState(menuState)
+            break
+        
         case 'F3':
             overlayState = !overlayState
             changeOverlayState(overlayState)
