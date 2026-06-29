@@ -42,7 +42,9 @@ export class Player {
         this.controls.maxPolarAngle = Math.PI - deadZone;
 
         this.gameBasic.renderer.domElement.addEventListener("click", () => {
-            this.controls.lock();
+            if (!Gui.isControlLocked()) {
+                this.controls.lock()
+            }
         }, { signal: this.abortController.signal })
 
         this.keys = {
@@ -113,9 +115,16 @@ export class Player {
                 if (this.keys.space) move.add(alwaysUp)
                 if (this.keys.shift) move.sub(alwaysUp)
             }
-        } else if (this.oldControlLocked) {
-            //this.controls.unlock()
         }
+
+        if (controlLocked && !this.oldControlLocked) {
+            this.controls.unlock()
+        }
+
+        if (!controlLocked && this.oldControlLocked) {
+            this.controls.lock()
+        }
+
         this.oldControlLocked = controlLocked
 
         if (move.lengthSq() > 0) {
