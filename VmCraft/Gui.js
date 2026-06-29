@@ -27,6 +27,7 @@ export function openModalWindow(modalObject) {
     if (modalRoot != null) return
 
     modalRoot = document.createElement("div")
+    modalRoot.classList.add("modal-window")
     modalRoot.appendChild(modalObject)
 
     hud.appendChild(modalRoot)

@@ -1,5 +1,6 @@
 import * as Three from "three"
 import * as Utils from "../Utils.js"
+import * as Gui from "../Gui.js"
 import html2canvas from '../html2canvas.esm.js'
 
 const geometry = new Three.BoxGeometry(0.8, 0.8, 0.8)
@@ -101,12 +102,14 @@ export class Robot {
         setInterval(() => {
             //this.move(1, 0, 0)
         }, 4000)
+
+        this.interact()
     }
 
     interact() {
         this.v86Container.style.display = 'block'
         this.v86Container.openedModal = true
-        Utils.modalWindow(this.v86Container, () => {
+        Gui.openModalWindow(this.v86Container, () => {
             this.v86Container.style.display = ''
             this.v86Container.openedModal = false
         })

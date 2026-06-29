@@ -11,6 +11,11 @@ html, body {
 
 body {
     position: relative;
+    user-select: none;
+}
+
+img {
+    -webkit-user-drag: none;
 }
 
 body > * {
@@ -25,6 +30,7 @@ body > * {
     z-index: 10;
     pointer-events: none;
     display: none;
+    position: relative;
 }
 
 .block {
@@ -39,12 +45,27 @@ body > * {
 }
 
 .vm-display {
-    width: 0px;
-    height: 0px;
+    width: fit-content;
+    height: fit-content;
     background-color: black;
     display: none;
     
     white-space: pre;
     font: 14px monospace;
     line-height: 14px
+}
+
+.modal-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    box-sizing: content-box;
+
+    pointer-events: initial;
+    background-color: #888888;
 }
