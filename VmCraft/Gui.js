@@ -5,6 +5,7 @@ const overlay = document.getElementById("overlay")
 let menuState = false
 let overlayState = false
 let modalRoot = null
+let modalOnCloseCallback = null
 
 // --------------------------------
 
@@ -23,8 +24,10 @@ export function updateOverlay(text) {
     overlay.textContent = text
 }
 
-export function openModalWindow(modalObject) {
+export function openModalWindow(modalObject, _modalOnCloseCallback) {
     if (modalRoot != null) return
+
+    modalOnCloseCallback = _modalOnCloseCallback
 
     modalRoot = document.createElement("div")
     modalRoot.classList.add("modal-window")
@@ -37,6 +40,8 @@ export function closeModalWindow() {
     if (modalRoot == null) return
     hud.removeChild(modalRoot)
     modalRoot = null
+    
+    if (modalOnCloseCallback != null) modalOnCloseCallback()
 }
 
 export function getModalWindow() {

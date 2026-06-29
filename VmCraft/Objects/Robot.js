@@ -66,7 +66,7 @@ export class Robot {
         this.emulator.add_listener("emulator-ready", () => {
             this.emulator.keyboard_set_status(false)
             this.emulator.ready = true
-            //this.interact()
+            this.interact()
         })
 
         // ---------------------- display
@@ -121,6 +121,7 @@ export class Robot {
             this.emulator.keyboard_set_status(false)
             this.v86Container.style.display = ''
             this.v86Container.openedModal = false
+            document.body.appendChild(this.v86Container)
         })
     }
 

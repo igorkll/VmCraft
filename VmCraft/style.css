@@ -12,6 +12,7 @@ html, body {
 body {
     position: relative;
     user-select: none;
+    overflow: hidden;
 }
 
 img {
