@@ -18,4 +18,6 @@ each command is one character, and the return of each command is one character
 
 ### response codes
 * B - robot is busy
+* S - successfully
+* F - failed
 

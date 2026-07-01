@@ -82,40 +82,43 @@ export class Robot {
             this.emulator.add_listener("emulator-ready", () => {
                 this.emulator.keyboard_set_status(false)
                 this.emulator.ready = true
-    
+
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
                     if (this.isBusy()) {
-                        this.emulator.serial0_send_byte('B')
+                        this.emulator.serial0_send('B')
                         return
                     }
 
                     const ch = String.fromCharCode(byte)
+                    let successfully = false
 
                     switch (ch) {
                         case 'w':
-                            this.move(1)
+                            successfully = this.move(1)
                             break
         
                         case 's':
-                            this.move(-1)
+                            successfully = this.move(-1)
                             break
         
                         case 'a':
-                            this.turn(-1)
+                            successfully = this.turn(-1)
                             break
         
                         case 'd':
-                            this.turn(1)
+                            successfully = this.turn(1)
                             break
         
                         case 'r':
-                            this.rawmove(0, 1, 0)
+                            successfully = this.rawmove(0, 1, 0)
                             break
         
                         case 'f':
-                            this.rawmove(0, -1, 0)
+                            successfully = this.rawmove(0, -1, 0)
                             break
                     }
+
+                    this.emulator.serial0_send(successfully ? 'S' : "F")
                 })
     
                 this.interact()
@@ -181,25 +184,22 @@ export class Robot {
         this.data.targetRotate += side
         if (this.data.targetRotate < 0) this.data.targetRotate = 3
         if (this.data.targetRotate > 3) this.data.targetRotate = 0
+        return true
     }
 
     move(value) {
         switch (this.data.targetRotate) {
             case 0:
-                this.rawmove(value, 0, 0)
-                break
+                return this.rawmove(value, 0, 0)
 
             case 1:
-                this.rawmove(0, 0, value)
-                break
+                return this.rawmove(0, 0, value)
 
             case 2:
-                this.rawmove(value * -1, 0, 0)
-                break
+                return this.rawmove(value * -1, 0, 0)
 
             case 3:
-                this.rawmove(0, 0, value * -1)
-                break
+                return this.rawmove(0, 0, value * -1)
         }
     }
 
@@ -207,13 +207,22 @@ export class Robot {
         this.data.targetX += x
         this.data.targetY += y
         this.data.targetZ += z
+        return true
+    }
+
+    mode_delta(side) {
+        if (side > 0) {
+            return 1
+        } else if (side < 0) {
+            return -1
+        }
     }
 
     update(delta) {
-        this.data.x += (this.data.targetX - this.data.x) * delta * this.data.speed
-        this.data.y += (this.data.targetY - this.data.y) * delta * this.data.speed
-        this.data.z += (this.data.targetZ - this.data.z) * delta * this.data.speed
-        this.data.rotate += (this.data.targetRotate - this.data.rotate) * delta * this.data.speed
+        this.data.x += this.mode_delta(this.data.targetX - this.data.x) * delta * this.data.speed
+        this.data.y += this.mode_delta(this.data.targetY - this.data.y) * delta * this.data.speed
+        this.data.z += this.mode_delta(this.data.targetZ - this.data.z) * delta * this.data.speed
+        this.data.rotate += this.mode_delta(this.data.targetRotate - this.data.rotate) * delta * this.data.speed
         
         this.stopped = Math.abs(this.data.targetX - this.data.x) < 0.01 && Math.abs(this.data.targetY - this.data.y) < 0.01 && Math.abs(this.data.targetY - this.data.z) < 0.01
         if (this.stopped) {
