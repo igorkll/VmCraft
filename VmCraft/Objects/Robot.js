@@ -54,7 +54,7 @@ export class Robot {
         this.v86Container.classList.add("vm-display")
         document.body.appendChild(this.v86Container)
 
-        loadAndCombineImages(imageParts).then((hda_buffer) => {
+        Utils.loadAndCombineImages(imageParts).then((hda_buffer) => {
             this.emulator = new window.V86({
                 wasm_path: "v86/v86.wasm",
             
