@@ -216,6 +216,7 @@ export class Robot {
         } else if (side < 0) {
             return -1
         }
+        return 0
     }
 
     update(delta) {
@@ -237,7 +238,9 @@ export class Robot {
         }
 
         this.object.position.set(this.data.x, this.data.y, this.data.z)
-        this.object.rotation.y = (Math.PI / 2) * -this.data.rotate;
+        this.object.rotation.y = (Math.PI / 2) * -this.data.rotate
+
+        console.log(this.data)
     }
 
     isBusy() {
