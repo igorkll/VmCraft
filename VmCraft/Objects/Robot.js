@@ -225,22 +225,20 @@ export class Robot {
         this.data.z += this.mode_delta(this.data.targetZ - this.data.z) * delta * this.data.speed
         this.data.rotate += this.mode_delta(this.data.targetRotate - this.data.rotate) * delta * this.data.speed
         
-        this.stopped = Math.abs(this.data.targetX - this.data.x) < 0.01 && Math.abs(this.data.targetY - this.data.y) < 0.01 && Math.abs(this.data.targetY - this.data.z) < 0.01
+        this.stopped = Math.abs(this.data.targetX - this.data.x) < 0.05 && Math.abs(this.data.targetY - this.data.y) < 0.05 && Math.abs(this.data.targetY - this.data.z) < 0.05
         if (this.stopped) {
             this.data.x = this.data.targetX
             this.data.y = this.data.targetY
             this.data.z = this.data.targetZ
         }
 
-        this.stoppedRotate = Math.abs(this.data.targetRotate - this.data.rotate) < 0.01
+        this.stoppedRotate = Math.abs(this.data.targetRotate - this.data.rotate) < 0.05
         if (this.stoppedRotate) {
             this.data.rotate = this.data.targetRotate
         }
 
         this.object.position.set(this.data.x, this.data.y, this.data.z)
         this.object.rotation.y = (Math.PI / 2) * -this.data.rotate
-
-        console.log(this.data)
     }
 
     isBusy() {
