@@ -7,7 +7,11 @@ const geometry = new Three.BoxGeometry(0.8, 0.8, 0.8)
 const material = new Three.MeshLambertMaterial({ color: 0x666666 })
 
 const geometry2 = new Three.BoxGeometry(0.4, 0.4, 0.4)
-const material2 = new Three.MeshLambertMaterial({ color: 0xff0000 })
+const material2 = new Three.MeshLambertMaterial({
+    color: 0xff0000,
+    emissive: new Three.Color(0xff0000),
+    emissiveIntensity: 1.0
+})
 
 export class Robot {
     constructor(gameBasic, x, y, z) {
@@ -21,7 +25,11 @@ export class Robot {
 
             targetX: x,
             targetY: y,
-            targetZ: z
+            targetZ: z,
+
+            rotate: 0,
+
+            targetRotate: 0
         }
     }
 
@@ -52,8 +60,8 @@ export class Robot {
                 url: "v86/bios/vgabios.bin",
             },
 
-            cdrom: {
-                url: "images/linux.iso"
+            hda: {
+                url: "images/ALinux.img"
             },
         
             memory_size: 512 * 1024 * 1024,
@@ -78,9 +86,12 @@ export class Robot {
         vmTexture.magFilter = Three.NearestFilter
         vmTexture.format = Three.RGBAFormat
 
-        const screenMaterial = new Three.MeshLambertMaterial({
-            map: vmTexture
-        })
+        const screenMaterial = new Three.MeshStandardMaterial({
+            map: vmTexture,
+            emissive: new Three.Color(0xffffff),
+            emissiveMap: vmTexture,
+            emissiveIntensity: 1.0
+        });
 
         const screenGeometry = new Three.PlaneGeometry(0.6, 0.6)
         this.screen = new Three.Mesh(screenGeometry, screenMaterial)
@@ -105,9 +116,40 @@ export class Robot {
             }
         }, 100)
 
-        setInterval(() => {
-            //this.move(1, 0, 0)
-        }, 4000)
+        // ------------------------ serial control
+
+        this.emulator.add_listener('serial0-output-byte', (byte) => {
+            const ch = String.fromCharCode(byte);
+            if (ch === '\r') return;
+
+            console.log(ch)
+            
+            switch (ch) {
+                case 'w':
+                    this.move(1)
+                    break
+
+                case 's':
+                    this.move(-1)
+                    break
+
+                case 'a':
+                    this.turn(-1)
+                    break
+
+                case 'd':
+                    this.turn(1)
+                    break
+
+                case 'r':
+                    this.rawmove(0, 1, 0)
+                    break
+
+                case 'f':
+                    this.rawmove(0, -1, 0)
+                    break
+            }
+        });
     }
 
     interact() {
@@ -125,7 +167,33 @@ export class Robot {
         })
     }
 
-    move(x, y, z) {
+    turn(side) {
+        this.data.targetRotate += side
+        if (this.data.targetRotate < 0) this.data.targetRotate = 3
+        if (this.data.targetRotate > 3) this.data.targetRotate = 0
+    }
+
+    move(value) {
+        switch (this.data.targetRotate) {
+            case 0:
+                this.rawmove(value, 0, 0)
+                break
+
+            case 1:
+                this.rawmove(0, 0, value)
+                break
+
+            case 2:
+                this.rawmove(value * -1, 0, 0)
+                break
+
+            case 3:
+                this.rawmove(0, 0, value * -1)
+                break
+        }
+    }
+
+    rawmove(x, y, z) {
         this.data.targetX += x
         this.data.targetY += y
         this.data.targetZ += z
@@ -135,15 +203,22 @@ export class Robot {
         this.data.x += (this.data.targetX - this.data.x) * delta * this.data.speed
         this.data.y += (this.data.targetY - this.data.y) * delta * this.data.speed
         this.data.z += (this.data.targetZ - this.data.z) * delta * this.data.speed
+        this.data.rotate += (this.data.targetRotate - this.data.rotate) * delta * this.data.speed
         
         const stopped = Math.abs(this.data.targetX - this.data.x) < 0.01 && Math.abs(this.data.targetY - this.data.y) < 0.01 && Math.abs(this.data.targetY - this.data.z) < 0.01
         if (stopped) {
-            this.data.targetX = this.data.x
-            this.data.targetY = this.data.y
-            this.data.targetZ = this.data.z
+            this.data.x = this.data.targetX
+            this.data.y = this.data.targetY
+            this.data.z = this.data.targetZ
+        }
+
+        const stoppedRotate = Math.abs(this.data.targetRotate - this.data.rotate) < 0.01
+        if (stoppedRotate) {
+            this.data.rotate = this.data.targetRotate
         }
 
         this.object.position.set(this.data.x, this.data.y, this.data.z)
+        this.object.rotation.y = (Math.PI / 2) * -this.data.rotate;
     }
     
     destroy() {

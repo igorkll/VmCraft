@@ -52,8 +52,13 @@ body > * {
     display: none;
     
     white-space: pre;
-    font: 14px monospace;
-    line-height: 14px
+
+    font-family: 'VT323', monospace;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    font-size: 24px;
 }
 
 .modal-window {
