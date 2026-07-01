@@ -213,15 +213,15 @@ export class Robot {
         this.data.z += (this.data.targetZ - this.data.z) * delta * this.data.speed
         this.data.rotate += (this.data.targetRotate - this.data.rotate) * delta * this.data.speed
         
-        const stopped = Math.abs(this.data.targetX - this.data.x) < 0.01 && Math.abs(this.data.targetY - this.data.y) < 0.01 && Math.abs(this.data.targetY - this.data.z) < 0.01
-        if (stopped) {
+        this.stopped = Math.abs(this.data.targetX - this.data.x) < 0.01 && Math.abs(this.data.targetY - this.data.y) < 0.01 && Math.abs(this.data.targetY - this.data.z) < 0.01
+        if (this.stopped) {
             this.data.x = this.data.targetX
             this.data.y = this.data.targetY
             this.data.z = this.data.targetZ
         }
 
-        const stoppedRotate = Math.abs(this.data.targetRotate - this.data.rotate) < 0.01
-        if (stoppedRotate) {
+        this.stoppedRotate = Math.abs(this.data.targetRotate - this.data.rotate) < 0.01
+        if (this.stoppedRotate) {
             this.data.rotate = this.data.targetRotate
         }
 
