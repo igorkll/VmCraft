@@ -84,8 +84,13 @@ export class Robot {
                 this.emulator.ready = true
     
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
-                    const ch = String.fromCharCode(byte);
-                    
+                    if (this.isBusy()) {
+                        this.emulator.serial0_send_byte('B')
+                        return
+                    }
+
+                    const ch = String.fromCharCode(byte)
+
                     switch (ch) {
                         case 'w':
                             this.move(1)
@@ -111,7 +116,7 @@ export class Robot {
                             this.rawmove(0, -1, 0)
                             break
                     }
-                });
+                })
     
                 this.interact()
             })
@@ -224,6 +229,12 @@ export class Robot {
 
         this.object.position.set(this.data.x, this.data.y, this.data.z)
         this.object.rotation.y = (Math.PI / 2) * -this.data.rotate;
+    }
+
+    isBusy() {
+        if (!this.stopped || !this.stoppedRotate) return true
+
+        return false
     }
     
     destroy() {
