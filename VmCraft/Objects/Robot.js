@@ -85,9 +85,6 @@ export class Robot {
     
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
                     const ch = String.fromCharCode(byte);
-                    if (ch === '\r') return;
-        
-                    console.log(ch)
                     
                     switch (ch) {
                         case 'w':
