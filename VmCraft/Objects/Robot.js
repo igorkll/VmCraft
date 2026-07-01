@@ -2,7 +2,6 @@ import * as Three from "three"
 import * as Utils from "../Utils.js"
 import * as Gui from "../Gui.js"
 import html2canvas from '../html2canvas.esm.js'
-import { buffer } from "three/src/nodes/accessors/BufferNode.js"
 
 const geometry = new Three.BoxGeometry(0.8, 0.8, 0.8)
 const material = new Three.MeshLambertMaterial({ color: 0x666666 })
