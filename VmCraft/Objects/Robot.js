@@ -2,6 +2,7 @@ import * as Three from "three"
 import * as Utils from "../Utils.js"
 import * as Gui from "../Gui.js"
 import html2canvas from '../html2canvas.esm.js'
+import { buffer } from "three/src/nodes/accessors/BufferNode.js"
 
 const geometry = new Three.BoxGeometry(0.8, 0.8, 0.8)
 const material = new Three.MeshLambertMaterial({ color: 0x666666 })
@@ -12,6 +13,13 @@ const material2 = new Three.MeshLambertMaterial({
     emissive: new Three.Color(0xff0000),
     emissiveIntensity: 1.0
 })
+
+const imageParts = [
+    "images/ALinux.img.aa",
+    "images/ALinux.img.ab",
+    "images/ALinux.img.ac",
+    "images/ALinux.img.ad"
+]
 
 export class Robot {
     constructor(gameBasic, x, y, z) {
@@ -47,34 +55,70 @@ export class Robot {
         this.v86Container.classList.add("vm-display")
         document.body.appendChild(this.v86Container)
 
-        this.emulator = new window.V86({
-            wasm_path: "v86/v86.wasm",
+        loadAndCombineImages(imageParts).then((hda_buffer) => {
+            this.emulator = new window.V86({
+                wasm_path: "v86/v86.wasm",
+            
+                screen_container: this.v86Container,
+            
+                bios: {
+                    url: "v86/bios/seabios.bin",
+                },
+            
+                vga_bios: {
+                    url: "v86/bios/vgabios.bin",
+                },
+    
+                hda: {
+                    buffer: hda_buffer
+                },
+            
+                memory_size: 512 * 1024 * 1024,
+                vga_memory_size: 256 * 1024 * 1024,
+    
+                autostart: true,
+                disable_keyboard: false
+            })
+    
+            this.emulator.add_listener("emulator-ready", () => {
+                this.emulator.keyboard_set_status(false)
+                this.emulator.ready = true
+    
+                this.emulator.add_listener('serial0-output-byte', (byte) => {
+                    const ch = String.fromCharCode(byte);
+                    if (ch === '\r') return;
         
-            screen_container: this.v86Container,
+                    console.log(ch)
+                    
+                    switch (ch) {
+                        case 'w':
+                            this.move(1)
+                            break
         
-            bios: {
-                url: "v86/bios/seabios.bin",
-            },
+                        case 's':
+                            this.move(-1)
+                            break
         
-            vga_bios: {
-                url: "v86/bios/vgabios.bin",
-            },
-
-            hda: {
-                url: "images/ALinux.img"
-            },
+                        case 'a':
+                            this.turn(-1)
+                            break
         
-            memory_size: 512 * 1024 * 1024,
-            vga_memory_size: 256 * 1024 * 1024,
-
-            autostart: true,
-            disable_keyboard: false
-        })
-
-        this.emulator.add_listener("emulator-ready", () => {
-            this.emulator.keyboard_set_status(false)
-            this.emulator.ready = true
-            this.interact()
+                        case 'd':
+                            this.turn(1)
+                            break
+        
+                        case 'r':
+                            this.rawmove(0, 1, 0)
+                            break
+        
+                        case 'f':
+                            this.rawmove(0, -1, 0)
+                            break
+                    }
+                });
+    
+                this.interact()
+            })
         })
 
         // ---------------------- display
@@ -115,45 +159,10 @@ export class Robot {
                 this.v86Container.style.display = ''
             }
         }, 100)
-
-        // ------------------------ serial control
-
-        this.emulator.add_listener('serial0-output-byte', (byte) => {
-            const ch = String.fromCharCode(byte);
-            if (ch === '\r') return;
-
-            console.log(ch)
-            
-            switch (ch) {
-                case 'w':
-                    this.move(1)
-                    break
-
-                case 's':
-                    this.move(-1)
-                    break
-
-                case 'a':
-                    this.turn(-1)
-                    break
-
-                case 'd':
-                    this.turn(1)
-                    break
-
-                case 'r':
-                    this.rawmove(0, 1, 0)
-                    break
-
-                case 'f':
-                    this.rawmove(0, -1, 0)
-                    break
-            }
-        });
     }
 
     interact() {
-        if (!this.emulator.ready) return
+        if (!this.emulator || !this.emulator.ready) return
         
         this.emulator.keyboard_set_status(true)
         this.v86Container.style.display = 'block'
