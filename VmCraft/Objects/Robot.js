@@ -14,10 +14,10 @@ const material2 = new Three.MeshLambertMaterial({
 })
 
 const imageParts = [
-    "images/ALinux.img.aa",
-    "images/ALinux.img.ab",
-    "images/ALinux.img.ac",
-    "images/ALinux.img.ad"
+    "images/ALinux/ALinux.img.part_aa",
+    "images/ALinux/ALinux.img.part_ab",
+    "images/ALinux/ALinux.img.part_ac",
+    "images/ALinux/ALinux.img.part_ad"
 ]
 
 export class Robot {
