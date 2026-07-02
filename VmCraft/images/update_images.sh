@@ -30,17 +30,18 @@ unpack_image() {
     local IMAGE_NAME="$1"
 
     echo "Download complete. Splitting into 80MB parts..."
-    split -b 80M "$IMAGE_NAME" "${IMAGE_NAME}.part_"
+    split -b 80M "$IMAGE_NAME.img" "${IMAGE_NAME}.img.part_"
 
     echo "Done. Parts:"
-    ls -lh "${IMAGE_NAME}.part_"*
+    ls -lh "${IMAGE_NAME}.img.part_"*
 }
 
 update_image() {
     local IMAGE_NAME="$1"
 
     cd "$IMAGE_NAME"
-    rm -rf "$IMAGE_NAME.img.*"
+    rm -f "$IMAGE_NAME.img"
+    rm -rf "$IMAGE_NAME.img."*
     download_image "igorkll/$IMAGE_NAME" "$IMAGE_NAME.img"
     unpack_image "$IMAGE_NAME"
     cd ..
