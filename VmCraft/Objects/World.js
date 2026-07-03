@@ -53,7 +53,8 @@ export class World {
     setBlock(globalPosition, blockId) {
         const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
         const chunk = this.getChunk(chunkPosition)
-        const localPosition = chunk.getGlobalPositionFromLocalPosition()
+        const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
+        chunk.setBlock(localPosition, blockId)
     }
 
     getChunkPositionFromGlobalPosition(pos) {

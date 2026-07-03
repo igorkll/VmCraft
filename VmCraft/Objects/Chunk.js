@@ -11,7 +11,7 @@ export class Chunk {
         }
 
         this.interactive_blocks = []
-        this.blocks = []
+        this.blocks = new Uint8Array(this.chunkBlockCount)
 
         this.loadChunk()
     }
@@ -36,5 +36,17 @@ export class Chunk {
 
     getGlobalPositionFromLocalPosition(pos) {
         return this.data.pos.clone().add(pos)
+    }
+
+    getLocalPositionFromGlobalPosition(pos) {
+        return pos.clone().sub(this.data.pos)
+    }
+
+    getBlockArrayIndex(localPosition) {
+        return localPosition.x + (localPosition.y * this.gameBasic.chunkSize.x) + (localPosition.z * this.gameBasic.chunkSize.x * this.gameBasic.chunkSize.y)
+    }
+
+    setBlock(localPosition, blockId) {
+        this.blocks[this.getBlockArrayIndex(localPosition)] = blockId
     }
 }
