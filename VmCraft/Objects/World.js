@@ -17,7 +17,6 @@ export class World {
         const generate = true
         const playerPosition = new Three.Vector3(0, 10, 0)
 
-        console.log(this.getChunkPositionFromGlobalPosition(playerPosition))
         const firstChunk = this.loadChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
 
         const player = new Player(this.gameBasic, playerPosition)
