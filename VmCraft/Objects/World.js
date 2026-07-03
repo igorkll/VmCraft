@@ -15,16 +15,14 @@ export class World {
         this.destroy()
 
         const generate = true
+        const playerPosition = new Three.Vector3(0, 10, 0)
 
-        const firstChunk = this.loadChunk(new Three.Vector3(0, 0, 0))
+        console.log(this.getChunkPositionFromGlobalPosition(playerPosition))
+        const firstChunk = this.loadChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
 
-        const player = new Player(this.gameBasic, firstChunk.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
+        const player = new Player(this.gameBasic, playerPosition)
         player.init()
         this.player = player
-
-        const robot = new Robot(this.gameBasic, firstChunk.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
-        robot.init()
-        firstChunk.interactive_blocks.push(robot)
     }
 
     update(delta) {
@@ -42,11 +40,11 @@ export class World {
     }
 
     getChunkPositionFromGlobalPosition(pos) {
-        const chunkSize = this.gameBasic.chunkSize;
-        return new THREE.Vector3(
-            Math.floor(pos.x / chunkSize),
-            Math.floor(pos.y / chunkSize),
-            Math.floor(pos.z / chunkSize)
+        const chunkSize = this.gameBasic.chunkSize
+        return new Three.Vector3(
+            Math.floor(pos.x / chunkSize.x),
+            Math.floor(pos.y / chunkSize.y),
+            Math.floor(pos.z / chunkSize.z)
         )
     }
     
