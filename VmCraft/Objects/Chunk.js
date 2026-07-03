@@ -10,10 +10,26 @@ export class Chunk {
             pos: pos
         }
 
+        this.needUpdateMesh = true
         this.interactive_blocks = []
         this.blocks = new Uint8Array(this.chunkBlockCount)
 
         this.loadChunk()
+    }
+
+    updateMesh() {
+        if (this.object != null) {
+            this.gameBasic.scene.remove(this.object)
+            this.object = null
+        }
+
+        const geometry = new Three.BoxGeometry(32, 32, 32)
+        const material = new Three.MeshLambertMaterial({ color: 0xff6666 })
+        this.object = new Three.Mesh(geometry, material)
+        this.object.position.set(15.5, 15.5, 15.5)
+        this.gameBasic.scene.add(this.object)
+        
+        this.needUpdateMesh = false
     }
 
     loadChunk() {
@@ -26,6 +42,8 @@ export class Chunk {
         for (let i = 0; i < this.interactive_blocks.length; i++) {
             this.interactive_blocks[i].update(delta)
         }
+
+        if (this.needUpdateMesh) this.updateMesh()
     }
     
     destroy() {

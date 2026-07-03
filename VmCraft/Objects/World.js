@@ -7,6 +7,7 @@ import { Chunk } from './Chunk.js'
 export class World {
     constructor(gameBasic) {
         this.gameBasic = gameBasic
+        gameBasic.world = this
 
         this.loadWorld()
     }
@@ -52,15 +53,22 @@ export class World {
     setBlock(globalPosition, blockId) {
         const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
         const chunk = this.getChunk(chunkPosition)
-        const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
-        chunk.setBlock(localPosition, blockId)
+        if (chunk != null) {
+            const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
+            chunk.setBlock(localPosition, blockId)
+            return true
+        }
+        return false
     }
 
     getBlock(globalPosition) {
         const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
         const chunk = this.getChunk(chunkPosition)
-        const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
-        return chunk.getBlock(localPosition)
+        if (chunk != null) {
+            const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
+            return chunk.getBlock(localPosition)
+        }
+        return 0
     }
 
     getChunkPositionFromGlobalPosition(pos) {
