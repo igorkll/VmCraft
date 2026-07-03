@@ -49,4 +49,8 @@ export class Chunk {
     setBlock(localPosition, blockId) {
         this.blocks[this.getBlockArrayIndex(localPosition)] = blockId
     }
+
+    getBlock(localPosition) {
+        return this.blocks[this.getBlockArrayIndex(localPosition)]
+    }
 }

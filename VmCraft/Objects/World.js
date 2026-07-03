@@ -56,6 +56,13 @@ export class World {
         chunk.setBlock(localPosition, blockId)
     }
 
+    getBlock(globalPosition) {
+        const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
+        const chunk = this.getChunk(chunkPosition)
+        const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
+        return chunk.getBlock(localPosition)
+    }
+
     getChunkPositionFromGlobalPosition(pos) {
         const chunkSize = this.gameBasic.chunkSize
         return new Three.Vector3(
