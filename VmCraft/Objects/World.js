@@ -23,6 +23,10 @@ export class World {
         const player = new Player(this.gameBasic, playerPosition)
         player.init()
         this.player = player
+
+        this.createInteractiveBlock(new Three.Vector3(50, 0, 0), Robot)
+        this.createInteractiveBlock(new Three.Vector3(50, 0, 1), Robot)
+        this.createInteractiveBlock(new Three.Vector3(50, 0, 2), Robot)
     }
 
     update(delta) {
@@ -71,6 +75,15 @@ export class World {
         return 0
     }
 
+    createInteractiveBlock(globalPosition, constructor, ...args) {
+        const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
+        const chunk = this.getChunk(chunkPosition)
+        if (chunk != null) {
+            return chunk.createInteractiveBlock(globalPosition, constructor, ...args)
+        }
+        return null
+    }
+
     getChunkPositionFromGlobalPosition(pos) {
         const chunkSize = this.gameBasic.chunkSize
         return new Three.Vector3(
@@ -80,8 +93,13 @@ export class World {
         )
     }
 
-    getChunk(chunkPosition) {
-        return objects.find(obj => obj.pos.equals(chunkPosition))
+    getChunk(chunkPosition, forceLoad=true) {
+        let chunk = this.chunks.find(obj => obj.data.pos.equals(chunkPosition))
+        if (forceLoad && chunk == null) {
+            this.loadChunk(chunkPosition)
+            chunk = this.getChunk(chunkPosition, false)
+        }
+        return chunk
     }
     
     destroy() {

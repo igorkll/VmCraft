@@ -1,6 +1,5 @@
 import * as Three from "three"
 import * as Utils from "../Utils.js"
-import { Robot } from './Robot.js'
 
 export class Chunk {
     constructor(gameBasic, pos) {
@@ -26,16 +25,14 @@ export class Chunk {
         const geometry = new Three.BoxGeometry(32, 32, 32)
         const material = new Three.MeshLambertMaterial({ color: 0xff6666 })
         this.object = new Three.Mesh(geometry, material)
-        this.object.position.set(15.5, 15.5, 15.5)
+        this.object.position.copy(this.data.pos.clone().multi add(new Three.Vector3(15.5, 15.5, 15.5)))
         this.gameBasic.scene.add(this.object)
         
         this.needUpdateMesh = false
     }
 
     loadChunk() {
-        const robot = new Robot(this.gameBasic, this.getGlobalPositionFromLocalPosition(new Three.Vector3(10, 0, 0)))
-        robot.init()
-        this.interactive_blocks.push(robot)
+        
     }
 
     update(delta) {
@@ -50,6 +47,10 @@ export class Chunk {
         for (let i = 0; i < this.interactive_blocks.length; i++) {
             this.interactive_blocks[i].destroy()
         }
+    }
+
+    getGlobalPosition() {
+        return this.data.pos.clone().add(pos)
     }
 
     getGlobalPositionFromLocalPosition(pos) {
@@ -70,5 +71,12 @@ export class Chunk {
 
     getBlock(localPosition) {
         return this.blocks[this.getBlockArrayIndex(localPosition)]
+    }
+
+    createInteractiveBlock(globalPosition, constructor, ...args) {
+        const interactive_block = new constructor(this.gameBasic, globalPosition, ...args)
+        interactive_block.init()
+        this.interactive_blocks.push(interactive_block)
+        return interactive_block
     }
 }
