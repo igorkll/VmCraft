@@ -54,11 +54,11 @@ export class Chunk {
     }
 
     getGlobalPositionFromLocalPosition(pos) {
-        return this.data.pos.clone().add(pos)
+        return this.getGlobalPosition().clone().add(pos)
     }
 
     getLocalPositionFromGlobalPosition(pos) {
-        return pos.clone().sub(this.data.pos)
+        return pos.clone().sub(this.getGlobalPosition())
     }
 
     getBlockArrayIndex(localPosition) {
