@@ -15,15 +15,7 @@ export class World {
     loadWorld() {
         this.destroy()
 
-        const generate = true
-        const playerPosition = new Three.Vector3(0, 10, 0)
-
-        const firstChunk = this.loadChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
-
-        const player = new Player(this.gameBasic, playerPosition)
-        player.init()
-        this.player = player
-
+        this.createPlayer(new Three.Vector3(0, 10, 0))
         this.createInteractiveBlock(new Three.Vector3(50, 0, 0), Robot)
         this.createInteractiveBlock(new Three.Vector3(50, 0, 50), Robot)
         this.createInteractiveBlock(new Three.Vector3(50, 0, 100), Robot)
@@ -84,6 +76,14 @@ export class World {
         return null
     }
 
+    createPlayer(playerPosition) {
+        this.getChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
+        const player = new Player(this.gameBasic, playerPosition)
+        player.init()
+        this.player = player
+        return player
+    }
+
     getChunkPositionFromGlobalPosition(pos) {
         const chunkSize = this.gameBasic.chunkSize
         return new Three.Vector3(
@@ -96,8 +96,7 @@ export class World {
     getChunk(chunkPosition, forceLoad=true) {
         let chunk = this.chunks.find(obj => obj.data.pos.equals(chunkPosition))
         if (forceLoad && chunk == null) {
-            this.loadChunk(chunkPosition)
-            chunk = this.getChunk(chunkPosition, false)
+            chunk = this.loadChunk(chunkPosition)
         }
         return chunk
     }
