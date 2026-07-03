@@ -246,7 +246,7 @@ export class Robot {
     }
     
     destroy() {
-        this.scene.remove(this.object)
+        this.gameBasic.scene.remove(this.object)
 
         if (this.emulator && typeof emulator.stop === 'function') {
             this.emulator.stop()

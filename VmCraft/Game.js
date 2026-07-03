@@ -26,7 +26,6 @@ scene.add(ambientLight)
 const gameBasic = new GameBasic(renderer, scene)
 
 const world = new World(gameBasic)
-world.genWorld()
 
 document.body.appendChild(renderer.domElement)
 
@@ -44,7 +43,7 @@ updateFps()
 
 function getOverlayText() {
     return `FPS: ${fps}
-Position: ${world.player.data.x.toFixed(3)} ${world.player.data.y.toFixed(3)} ${world.player.data.z.toFixed(3)}`
+Position: ${world.player.data.pos.x.toFixed(3)} ${world.player.data.pos.y.toFixed(3)} ${world.player.data.pos.z.toFixed(3)}`
 }
 
 function frameHandle() {

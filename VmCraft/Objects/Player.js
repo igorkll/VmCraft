@@ -29,7 +29,7 @@ export class Player {
         
         this.camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.updateCamera(0);
-        this.camera.lookAt(this.data.x + 1, this.data.y + eyeHeight, this.data.z);
+        this.camera.lookAt(this.data.pos.x + 1, this.data.pos.y + eyeHeight, this.data.pos.z);
 
         // ------------------ controls
 
@@ -131,16 +131,16 @@ export class Player {
             if (this.data.fly) speed *= this.data.flightSpeedMultiplier
 
             move.normalize()
-            this.data.x += move.x * speed * delta
-            this.data.z += move.z * speed * delta
+            this.data.pos.x += move.x * speed * delta
+            this.data.pos.z += move.z * speed * delta
             if (this.data.fly) {
-                this.data.y += move.y * speed * delta
+                this.data.pos.y += move.y * speed * delta
             }
         }
     }
 
     updateCamera(delta) {
-        this.camera.position.set(this.data.x, this.data.y + eyeHeight, this.data.z)
+        this.camera.position.set(this.data.pos.x, this.data.pos.y + eyeHeight, this.data.pos.z)
     }
 
     update(delta) {

@@ -14,25 +14,35 @@ export class World {
     loadWorld() {
         this.destroy()
 
-        const player = new Player(this.gameBasic, Three.Vector3(0, 10, 0))
+        this.chunks = []
+        this.primaryChunk = this.loadChunk(new Three.Vector3(0, 0, 0))
+
+        const player = new Player(this.gameBasic, this.primaryChunk.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
         player.init()
         this.player = player
     }
 
     update(delta) {
         this.player.update(delta)
-        
-        for (let i = 0; i < this.interactive_blocks.length; i++) {
-            this.interactive_blocks[i].update(delta)
-        }
 
         for (let i = 0; i < this.chunks.length; i++) {
             this.chunks[i].update(delta)
         }
     }
 
-    loadChunk(chunkX, chunkY, chunkZ) {
-        
+    loadChunk(chunkPosition) {
+        const chunk = new Chunk(this.gameBasic, chunkPosition)
+        this.chunks.push(chunk)
+        return chunk
+    }
+
+    getChunkPositionFromGlobalPosition(pos) {
+        const chunkSize = this.gameBasic.chunkSize;
+        return new THREE.Vector3(
+            Math.floor(pos.x / chunkSize),
+            Math.floor(pos.y / chunkSize),
+            Math.floor(pos.z / chunkSize)
+        )
     }
     
     destroy() {
