@@ -14,12 +14,17 @@ export class World {
     loadWorld() {
         this.destroy()
 
-        this.chunks = []
-        this.primaryChunk = this.loadChunk(new Three.Vector3(0, 0, 0))
+        const generate = true
 
-        const player = new Player(this.gameBasic, this.primaryChunk.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
+        const firstChunk = this.loadChunk(new Three.Vector3(0, 0, 0))
+
+        const player = new Player(this.gameBasic, firstChunk.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
         player.init()
         this.player = player
+
+        const robot = new Robot(this.gameBasic, firstChunk.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
+        robot.init()
+        firstChunk.interactive_blocks.push(robot)
     }
 
     update(delta) {
@@ -55,7 +60,7 @@ export class World {
             for (let i = 0; i < this.chunks.length; i++) {
                 this.chunks[i].destroy()
             }
-            this.chunks = []
         }
+        this.chunks = []
     }
 }

@@ -16,9 +16,7 @@ export class Chunk {
     }
 
     loadChunk() {
-        const robot = new Robot(this.gameBasic, this.getGlobalPositionFromInternalPosition(new Three.Vector3(0, 10, 0)))
-        robot.init()
-        this.interactive_blocks.push(robot)
+        
     }
 
     update(delta) {
