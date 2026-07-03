@@ -220,16 +220,14 @@ export class Robot {
     }
 
     update(delta) {
-        this.data.x += this.mode_delta(this.data.targetX - this.data.x) * delta * this.data.speed
-        this.data.y += this.mode_delta(this.data.targetY - this.data.y) * delta * this.data.speed
-        this.data.z += this.mode_delta(this.data.targetZ - this.data.z) * delta * this.data.speed
+        this.data.pos.x += this.mode_delta(this.data.targetPos.x - this.data.pos.x) * delta * this.data.speed
         this.data.rot += this.mode_delta(this.data.targetRot - this.data.rot) * delta * this.data.speed
         
-        this.stopped = Math.abs(this.data.targetX - this.data.x) < 0.05 && Math.abs(this.data.targetY - this.data.y) < 0.05 && Math.abs(this.data.targetY - this.data.z) < 0.05
+        this.stopped = Math.abs(this.data.targetX - this.data.pos.x) < 0.05 && Math.abs(this.data.targetY - this.data.pos.y) < 0.05 && Math.abs(this.data.targetY - this.data.pos.z) < 0.05
         if (this.stopped) {
-            this.data.x = this.data.targetX
-            this.data.y = this.data.targetY
-            this.data.z = this.data.targetZ
+            this.data.pos.x = this.data.targetX
+            this.data.pos.y = this.data.targetY
+            this.data.pos.z = this.data.targetZ
         }
 
         this.stoppedrot = Math.abs(this.data.targetRot - this.data.rot) < 0.05
@@ -237,7 +235,7 @@ export class Robot {
             this.data.rot = this.data.targetRot
         }
 
-        this.object.position.set(this.data.x, this.data.y, this.data.z)
+        this.object.position.copy(this.data.pos);
         this.object.rotation.y = (Math.PI / 2) * -this.data.rot
     }
 
