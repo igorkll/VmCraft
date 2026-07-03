@@ -23,9 +23,9 @@ export class Chunk {
         }
 
         const geometry = new Three.BoxGeometry(32, 32, 32)
-        const material = new Three.MeshLambertMaterial({ color: 0xff6666 })
+        const material = new Three.MeshLambertMaterial({ color: Math.random() * 0xffffff })
         this.object = new Three.Mesh(geometry, material)
-        this.object.position.copy(this.data.pos.clone().multi add(new Three.Vector3(15.5, 15.5, 15.5)))
+        this.object.position.copy(this.getGlobalPosition().add(new Three.Vector3(15.5, 15.5, 15.5)))
         this.gameBasic.scene.add(this.object)
         
         this.needUpdateMesh = false
@@ -50,7 +50,7 @@ export class Chunk {
     }
 
     getGlobalPosition() {
-        return this.data.pos.clone().add(pos)
+        return this.data.pos.clone().multiply(this.gameBasic.chunkSize)
     }
 
     getGlobalPositionFromLocalPosition(pos) {

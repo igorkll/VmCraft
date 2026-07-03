@@ -25,8 +25,8 @@ export class World {
         this.player = player
 
         this.createInteractiveBlock(new Three.Vector3(50, 0, 0), Robot)
-        this.createInteractiveBlock(new Three.Vector3(50, 0, 1), Robot)
-        this.createInteractiveBlock(new Three.Vector3(50, 0, 2), Robot)
+        this.createInteractiveBlock(new Three.Vector3(50, 0, 50), Robot)
+        this.createInteractiveBlock(new Three.Vector3(50, 0, 100), Robot)
     }
 
     update(delta) {
