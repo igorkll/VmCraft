@@ -21,22 +21,16 @@ const imageParts = [
 ]
 
 export class Robot {
-    constructor(gameBasic, x, y, z) {
+    constructor(gameBasic, pos) {
         this.gameBasic = gameBasic
         this.data = {
             speed: 3,
 
-            x: x,
-            y: y,
-            z: z,
+            pos: pos,
+            targetPos: pos,
 
-            targetX: x,
-            targetY: y,
-            targetZ: z,
-
-            rotate: 0,
-
-            targetRotate: 0
+            rot: 0,
+            targetRot: 0
         }
     }
 
@@ -83,42 +77,48 @@ export class Robot {
                 this.emulator.keyboard_set_status(false)
                 this.emulator.ready = true
 
+                let recive_buffer = ""
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
                     if (this.isBusy()) {
-                        this.emulator.serial0_send('B')
+                        this.emulator.serial0_send('busy\n')
                         return
                     }
 
                     const ch = String.fromCharCode(byte)
-                    let successfully = false
 
-                    switch (ch) {
-                        case 'w':
-                            successfully = this.move(1)
-                            break
-        
-                        case 's':
-                            successfully = this.move(-1)
-                            break
-        
-                        case 'a':
-                            successfully = this.turn(-1)
-                            break
-        
-                        case 'd':
-                            successfully = this.turn(1)
-                            break
-        
-                        case 'r':
-                            successfully = this.rawmove(0, 1, 0)
-                            break
-        
-                        case 'f':
-                            successfully = this.rawmove(0, -1, 0)
-                            break
+                    if (ch == '\n') {
+                        let successfully = false
+                        switch (recive_buffer) {
+                            case "forward":
+                                successfully = this.move(1)
+                                break
+            
+                            case "back":
+                                successfully = this.move(-1)
+                                break
+            
+                            case "turn_left":
+                                successfully = this.turn(-1)
+                                break
+            
+                            case "turn_right":
+                                successfully = this.turn(1)
+                                break
+            
+                            case "top":
+                                successfully = this.rawmove(0, 1, 0)
+                                break
+            
+                            case "bottom":
+                                successfully = this.rawmove(0, -1, 0)
+                                break
+                        }
+
+                        recive_buffer = ""
+                        this.emulator.serial0_send(successfully ? 'successfully\n' : "failed\n")
+                    } else {
+                        recive_buffer += ch
                     }
-
-                    this.emulator.serial0_send(successfully ? 'S' : "F")
                 })
     
                 this.interact()
@@ -181,14 +181,14 @@ export class Robot {
     }
 
     turn(side) {
-        this.data.targetRotate += side
-        if (this.data.targetRotate < 0) this.data.targetRotate = 3
-        if (this.data.targetRotate > 3) this.data.targetRotate = 0
+        this.data.targetRot += side
+        if (this.data.targetRot < 0) this.data.targetRot = 3
+        if (this.data.targetRot > 3) this.data.targetRot = 0
         return true
     }
 
     move(value) {
-        switch (this.data.targetRotate) {
+        switch (this.data.targetRot) {
             case 0:
                 return this.rawmove(value, 0, 0)
 
@@ -223,7 +223,7 @@ export class Robot {
         this.data.x += this.mode_delta(this.data.targetX - this.data.x) * delta * this.data.speed
         this.data.y += this.mode_delta(this.data.targetY - this.data.y) * delta * this.data.speed
         this.data.z += this.mode_delta(this.data.targetZ - this.data.z) * delta * this.data.speed
-        this.data.rotate += this.mode_delta(this.data.targetRotate - this.data.rotate) * delta * this.data.speed
+        this.data.rot += this.mode_delta(this.data.targetRot - this.data.rot) * delta * this.data.speed
         
         this.stopped = Math.abs(this.data.targetX - this.data.x) < 0.05 && Math.abs(this.data.targetY - this.data.y) < 0.05 && Math.abs(this.data.targetY - this.data.z) < 0.05
         if (this.stopped) {
@@ -232,17 +232,17 @@ export class Robot {
             this.data.z = this.data.targetZ
         }
 
-        this.stoppedRotate = Math.abs(this.data.targetRotate - this.data.rotate) < 0.05
-        if (this.stoppedRotate) {
-            this.data.rotate = this.data.targetRotate
+        this.stoppedrot = Math.abs(this.data.targetRot - this.data.rot) < 0.05
+        if (this.stoppedrot) {
+            this.data.rot = this.data.targetRot
         }
 
         this.object.position.set(this.data.x, this.data.y, this.data.z)
-        this.object.rotation.y = (Math.PI / 2) * -this.data.rotate
+        this.object.rotation.y = (Math.PI / 2) * -this.data.rot
     }
 
     isBusy() {
-        if (!this.stopped || !this.stoppedRotate) return true
+        if (!this.stopped || !this.stoppedrot) return true
 
         return false
     }

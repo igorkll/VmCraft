@@ -8,12 +8,10 @@ const eyeHeight = height - 0.2;
 const deadZone = Math.PI / 180;
 
 export class Player {
-    constructor(gameBasic, x, y, z) {
+    constructor(gameBasic, pos) {
         this.gameBasic = gameBasic;
         this.data = {
-            x: x,
-            y: y,
-            z: z,
+            pos: pos,
 
             fly: true,
             speed: 5,
