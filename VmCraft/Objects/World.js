@@ -39,6 +39,23 @@ export class World {
         return chunk
     }
 
+    unloadChunk(chunkPosition) {
+        this.chunks = chunks.filter(obj => {
+            if (obj.pos.equals(chunkPosition)) {
+                obj.destroy()
+                removed.push(obj)
+                return false
+            }
+            return true
+        })
+    }
+
+    setBlock(globalPosition, blockId) {
+        const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
+        const chunk = this.getChunk(chunkPosition)
+        const localPosition = chunk.getGlobalPositionFromLocalPosition()
+    }
+
     getChunkPositionFromGlobalPosition(pos) {
         const chunkSize = this.gameBasic.chunkSize
         return new Three.Vector3(
@@ -46,6 +63,10 @@ export class World {
             Math.floor(pos.y / chunkSize.y),
             Math.floor(pos.z / chunkSize.z)
         )
+    }
+
+    getChunk(chunkPosition) {
+        return objects.find(obj => obj.pos.equals(chunkPosition))
     }
     
     destroy() {

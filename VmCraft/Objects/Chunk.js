@@ -11,12 +11,13 @@ export class Chunk {
         }
 
         this.interactive_blocks = []
+        this.blocks = []
 
         this.loadChunk()
     }
 
     loadChunk() {
-        const robot = new Robot(this.gameBasic, this.getGlobalPositionFromInternalPosition(new Three.Vector3(10, 0, 0)))
+        const robot = new Robot(this.gameBasic, this.getGlobalPositionFromLocalPosition(new Three.Vector3(10, 0, 0)))
         robot.init()
         this.interactive_blocks.push(robot)
     }
@@ -33,7 +34,7 @@ export class Chunk {
         }
     }
 
-    getGlobalPositionFromInternalPosition(pos) {
+    getGlobalPositionFromLocalPosition(pos) {
         return this.data.pos.clone().add(pos)
     }
 }
