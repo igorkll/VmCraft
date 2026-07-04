@@ -7,10 +7,13 @@ const height = 1.8;
 const eyeHeight = height - 0.2;
 const eyeHeightSeat = height - 0.5;
 const deadZone = Math.PI / 180;
+const terminalVelocity = -50
+const gravity = 25
+const jumpSpeed = 8
 
 export class Player {
     constructor(gameBasic, pos) {
-        this.gameBasic = gameBasic;
+        this.gameBasic = gameBasic
         this.data = {
             pos: pos,
             fly: true,
@@ -18,16 +21,12 @@ export class Player {
             pointerSpeed: 1.5,
             runningSpeedMultiplier: 2,
             flightSpeedMultiplier: 2,
-            seatSpeedMultiplier: 0.5
-        };
-        this.oldControlLocked = false;
+            seatSpeedMultiplier: 0.5,
+            onGround: false,
+            velocity: new Three.Vector3(0, 0, 0)
+        }
 
-        // ---- Добавлено для физики ----
-        this.velocity = new Three.Vector3(0, 0, 0);
-        this.onGround = false;
-        this.gravity = 25;                 // ускорение вниз (блок/с²)
-        this.jumpSpeed = 8;                // начальная скорость прыжка
-        this.terminalVelocity = -50;       // ограничение скорости падения
+        this.oldControlLocked = false
         this.spaceDown = false
     }
 
@@ -80,9 +79,9 @@ export class Player {
 
                     this.keys.up = true;
 
-                    if (!this.data.fly && this.onGround) {
-                        this.velocity.y = this.jumpSpeed;
-                        this.onGround = false;
+                    if (!this.data.fly && this.data.onGround) {
+                        this.data.velocity.y = jumpSpeed;
+                        this.data.onGround = false;
                     }
 
                     onDoubleSpace(e);
@@ -114,20 +113,12 @@ export class Player {
     //  ФИЗИКА И КОЛЛИЗИИ
     // ------------------------------------------------------------
 
-    /**
-     * Проверяет, является ли блок твёрдым (непроходимым).
-     * Замените реализацию на свою – обращение к вашему хранилищу блоков.
-     */
     isBlockSolid(x, y, z) {
         const block = this.world?.getBlock(new Three.Vector3(x, y, z));
         return block != null && block !== 0;
     }
 
-    /**
-     * Обрабатывает вертикальные столкновения с блоками:
-     * - стоит ли игрок на земле
-     * - не врезался ли головой в потолок
-     */
+
     handleVerticalCollisions() {
         const pos = this.data.pos;
         // Округляем координаты до целых блоков (куда попадают ноги)
@@ -139,31 +130,35 @@ export class Player {
         if (this.isBlockSolid(blockX, blockY - 1, blockZ)) {
             // Ставим игрока точно на верхнюю грань этого блока
             pos.y = blockY;
-            this.velocity.y = 0;
-            this.onGround = true;
+            this.data.velocity.y = 0;
+            this.data.onGround = true;
         } else {
-            this.onGround = false;
+            this.data.onGround = false;
         }
 
         // 2. Проверка блока на уровне головы (если летим вверх)
-        if (this.velocity.y > 0) {
+        if (this.data.velocity.y > 0) {
             const headY = Math.floor(pos.y + height);
             if (this.isBlockSolid(blockX, headY, blockZ)) {
                 // Останавливаем движение вверх и опускаем голову под блок
                 pos.y = headY - height;
-                this.velocity.y = 0;
+                this.data.velocity.y = 0;
             }
         }
     }
 
-    // ------------------------------------------------------------
-    //  ОБНОВЛЕНИЕ УПРАВЛЕНИЯ
-    // ------------------------------------------------------------
-
     updateControls(delta) {
-        const controlLocked = Gui.isControlLocked();
+        const controlLocked = Gui.isControlLocked()
+        if (controlLocked && !this.oldControlLocked) {
+            this.controls.unlock()
+        }
+        if (!controlLocked && this.oldControlLocked) {
+            this.controls.lock()
+        }
+        this.oldControlLocked = controlLocked
 
-        // Направления движения (горизонталь)
+
+
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
         forward.y = 0;
@@ -180,60 +175,37 @@ export class Player {
             if (this.keys.d) move.add(right);
         }
 
-        // ---- Блокировка мыши (ваш существующий код) ----
-        if (controlLocked && !this.oldControlLocked) {
-            this.controls.unlock();
-        }
-        if (!controlLocked && this.oldControlLocked) {
-            this.controls.lock();
-        }
-        this.oldControlLocked = controlLocked;
-
-        // ---- Горизонтальное перемещение ----
         if (move.lengthSq() > 0) {
             let speed = this.data.speed;
             if (this.keys.sprint) speed *= this.data.runningSpeedMultiplier;
-            // В режиме полёта скорость выше, но и вертикаль тоже управляется отдельно
             if (this.data.fly) speed *= this.data.flightSpeedMultiplier;
             else if (this.keys.down) speed *= this.data.seatSpeedMultiplier;
-
+            
             move.normalize();
             this.data.pos.x += move.x * speed * delta;
             this.data.pos.z += move.z * speed * delta;
         }
 
-        // ---- Вертикальное перемещение ----
         if (this.data.fly) {
-            // Режим полёта: управляем Y напрямую клавишами up/down
             if (this.keys.up) {
                 this.data.pos.y += this.data.speed * this.data.flightSpeedMultiplier * delta;
             }
             if (this.keys.down) {
                 this.data.pos.y -= this.data.speed * this.data.flightSpeedMultiplier * delta;
             }
-            // Сбрасываем физические параметры
-            this.velocity.y = 0;
-            this.onGround = false;
+            this.data.velocity.y = 0;
+            this.data.onGround = false;
         } else {
-            // ---- Режим ходьбы с гравитацией ----
-            // Применяем гравитацию
-            this.velocity.y -= this.gravity * delta;
-            // Ограничиваем максимальную скорость падения
-            if (this.velocity.y < this.terminalVelocity) {
-                this.velocity.y = this.terminalVelocity;
+            this.data.velocity.y -= gravity * delta;
+            if (this.data.velocity.y < terminalVelocity) {
+                this.data.velocity.y = terminalVelocity;
             }
 
-            // Обновляем позицию по Y
-            this.data.pos.y += this.velocity.y * delta;
+            this.data.pos.y += this.data.velocity.y * delta;
 
-            // Обрабатываем столкновения с блоками по вертикали
             this.handleVerticalCollisions();
         }
     }
-
-    // ------------------------------------------------------------
-    //  ОБНОВЛЕНИЕ КАМЕРЫ
-    // ------------------------------------------------------------
 
     updateCamera(delta) {
         let y = this.data.pos.y + eyeHeight;
@@ -243,19 +215,11 @@ export class Player {
         this.camera.position.set(this.data.pos.x, y, this.data.pos.z);
     }
 
-    // ------------------------------------------------------------
-    //  ОСНОВНОЙ ЦИКЛ ОБНОВЛЕНИЯ
-    // ------------------------------------------------------------
-
     update(delta) {
         this.controls.pointerSpeed = this.data.pointerSpeed;
         this.updateControls(delta);
         this.updateCamera(delta);
     }
-
-    // ------------------------------------------------------------
-    //  УНИЧТОЖЕНИЕ
-    // ------------------------------------------------------------
 
     destroy() {
         this.abortController.abort();
