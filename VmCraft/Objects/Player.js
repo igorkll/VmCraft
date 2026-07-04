@@ -115,12 +115,9 @@ export class Player {
                 if (this.keys.up) move.add(alwaysUp)
                 if (this.keys.down) move.sub(alwaysUp)
             } else {
+                // ТУТ ПАДЕНИЕ
                 if (this.keys.up) {
-
-                }
-
-                if (this.keys.down) {
-
+                    // ТУТ ПРЫЖОК
                 }
             }
         }
