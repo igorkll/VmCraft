@@ -2,8 +2,9 @@ import * as Three from "three"
 import * as Utils from "../Utils.js"
 
 export class Chunk {
-    constructor(gameBasic, pos) {
+    constructor(gameBasic, world, pos) {
         this.gameBasic = gameBasic
+        this.world = world
 
         this.data = {
             pos: pos

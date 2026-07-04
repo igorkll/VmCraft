@@ -21,6 +21,7 @@ export class World {
     }
 
     update(delta) {
+        this.updateInteractive(this.player)
         this.player.update(delta)
 
         for (let i = 0; i < this.chunks.length; i++) {
@@ -35,12 +36,17 @@ export class World {
         }
     }
 
+    updateInteractivePrepair(interactive) {
+        interactive.world = this
+    }
+
     updateInteractive(interactive) {
+        this.updateInteractivePrepair(interactive)
         interactive.chunk = this.getChunk(this.getChunkPositionFromGlobalPosition(interactive.data.pos))
     }
 
     loadChunk(chunkPosition) {
-        const chunk = new Chunk(this.gameBasic, chunkPosition)
+        const chunk = new Chunk(this.gameBasic, this, chunkPosition)
         this.chunks.push(chunk)
         return chunk
     }
@@ -79,7 +85,7 @@ export class World {
 
     createInteractive(globalPosition, constructor, ...args) {
         const interactive = new constructor(this.gameBasic, globalPosition, ...args)
-        interactive.world = this
+        this.updateInteractivePrepair(interactive)
         interactive.init()
         this.updateInteractive(interactive)
         this.interactives.push(interactive)
@@ -89,7 +95,9 @@ export class World {
     createPlayer(playerPosition) {
         this.getChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
         const player = new Player(this.gameBasic, playerPosition)
+        this.updateInteractivePrepair(player)
         player.init()
+        this.updateInteractive(player)
         this.player = player
         return player
     }
