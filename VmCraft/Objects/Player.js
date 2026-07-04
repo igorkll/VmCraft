@@ -142,8 +142,6 @@ export class Player {
             this.keys = Object.assign({}, this.defaultKeys)
         }
 
- 
-
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
         forward.y = 0;
@@ -172,7 +170,6 @@ export class Player {
             move.normalize()
             this.data.velocity.x += move.x * speed * delta;
             this.data.velocity.z += move.z * speed * delta;
-            console.log(this.data.velocity)
         }
 
         if (this.data.fly) {
