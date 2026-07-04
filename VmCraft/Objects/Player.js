@@ -27,7 +27,6 @@ export class Player {
         }
 
         this.oldControlLocked = false
-        this.spaceDown = false
     }
 
     init() {
@@ -50,7 +49,7 @@ export class Player {
             }
         }, { signal: this.abortController.signal });
 
-        this.keys = {
+        this.defaultKeys = {
             w: false,
             a: false,
             s: false,
@@ -58,9 +57,12 @@ export class Player {
             up: false,
             down: false,
             sprint: false
-        };
+        }
 
-        const onDoubleSpace = Utils.detectDoubleKey("Space", () => {
+        this.keys = this.defaultKeys.clone()
+        this.oldKeys = this.defaultKeys.clone()
+
+        const [onDoubleSpace_keydown, onDoubleSpace_keyup] = Utils.detectDoubleKey("Space", () => {
             this.data.fly = !this.data.fly;
         });
 
@@ -73,23 +75,12 @@ export class Player {
                 case "KeyA": this.keys.a = true; break;
                 case "KeyS": this.keys.s = true; break;
                 case "KeyD": this.keys.d = true; break;
-                case "Space": {
-                    if (this.spaceDown) break;
-                    this.spaceDown = true;
-
-                    this.keys.up = true;
-
-                    if (!this.data.fly && this.data.onGround) {
-                        this.data.velocity.y = jumpSpeed;
-                        this.data.onGround = false;
-                    }
-
-                    onDoubleSpace(e);
-                    break;
-                }
+                case "Space": this.keys.up = true; break;
                 case "ShiftLeft": this.keys.down = true; break;
                 case "AltLeft": this.keys.sprint = true; break;
             }
+
+            onDoubleSpace_keydown(e)
         }, { signal: this.abortController.signal });
 
         document.addEventListener("keyup", (e) => {
@@ -98,14 +89,12 @@ export class Player {
                 case "KeyA": this.keys.a = false; break;
                 case "KeyS": this.keys.s = false; break;
                 case "KeyD": this.keys.d = false; break;
-                case "Space": {
-                    this.keys.up = false;
-                    this.spaceDown = false;
-                    break;
-                }
+                case "Space": this.keys.up = false; break;
                 case "ShiftLeft": this.keys.down = false; break;
                 case "AltLeft": this.keys.sprint = false; break;
             }
+
+            onDoubleSpace_keyup(e)
         }, { signal: this.abortController.signal });
     }
 
@@ -157,7 +146,11 @@ export class Player {
         }
         this.oldControlLocked = controlLocked
 
+        if (controlLocked) {
+            this.keys = this.defaultKeys.clone()
+        }
 
+ 
 
         const forward = new Three.Vector3();
         this.camera.getWorldDirection(forward);
@@ -168,11 +161,14 @@ export class Player {
         right.crossVectors(forward, new Three.Vector3(0, 1, 0)).normalize();
 
         const move = new Three.Vector3(0, 0, 0);
-        if (!controlLocked) {
-            if (this.keys.w) move.add(forward);
-            if (this.keys.s) move.sub(forward);
-            if (this.keys.a) move.sub(right);
-            if (this.keys.d) move.add(right);
+        if (this.keys.w) move.add(forward)
+        if (this.keys.s) move.sub(forward)
+        if (this.keys.a) move.sub(right)
+        if (this.keys.d) move.add(right)
+
+        if (!this.data.fly && this.data.onGround && !this.oldKeys.up) {
+            this.data.velocity.y = jumpSpeed;
+            this.data.onGround = false;
         }
 
         if (move.lengthSq() > 0) {
@@ -205,6 +201,8 @@ export class Player {
 
             this.handleVerticalCollisions();
         }
+
+        this.oldKeys = this.keys.clone()
     }
 
     updateCamera(delta) {

@@ -1,15 +1,26 @@
 
 export function detectDoubleKey(keyCode, callback, delay = 300) {
-    let lastTime = 0;
-    return (e) => {
+    let lastTime = 0
+    let pressed = false
+
+    const keydown = (e) => {
         if (e.code === keyCode) {
+            if (pressed) return
+            pressed = true
+
             const now = performance.now();
             if (now - lastTime <= delay) {
                 callback(e);
             }
             lastTime = now;
         }
-    };
+    }
+
+    const keyup = (e) => {
+        if (e.code === keyCode) pressed = false
+    }
+
+    return [keydown, keyup]
 }
 
 async function loadPart(url) {
