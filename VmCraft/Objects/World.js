@@ -7,7 +7,6 @@ import { Chunk } from './Chunk.js'
 export class World {
     constructor(gameBasic) {
         this.gameBasic = gameBasic
-        gameBasic.world = this
 
         this.loadWorld()
     }
@@ -16,17 +15,28 @@ export class World {
         this.destroy()
 
         this.createPlayer(new Three.Vector3(0, 10, 0))
-        this.createInteractiveBlock(new Three.Vector3(50, 0, 0), Robot)
-        this.createInteractiveBlock(new Three.Vector3(50, 0, 50), Robot)
-        this.createInteractiveBlock(new Three.Vector3(50, 0, 100), Robot)
+        this.createInteractive(new Three.Vector3(50, 0, 0), Robot)
+        //this.createInteractive(new Three.Vector3(50, 0, 50), Robot)
+        //this.createInteractive(new Three.Vector3(50, 0, 100), Robot)
     }
 
     update(delta) {
         this.player.update(delta)
 
         for (let i = 0; i < this.chunks.length; i++) {
-            this.chunks[i].update(delta)
+            const chunk = this.chunks[i]
+            chunk.update(delta)
         }
+
+        for (let i = 0; i < this.interactives.length; i++) {
+            const interactive = this.interactives[i]
+            this.updateInteractive(interactive)
+            interactive.update(delta)
+        }
+    }
+
+    updateInteractive(interactive) {
+        interactive.chunk = this.getChunk(this.getChunkPositionFromGlobalPosition(interactive.data.pos))
     }
 
     loadChunk(chunkPosition) {
@@ -67,13 +77,13 @@ export class World {
         return 0
     }
 
-    createInteractiveBlock(globalPosition, constructor, ...args) {
-        const chunkPosition = this.getChunkPositionFromGlobalPosition(globalPosition)
-        const chunk = this.getChunk(chunkPosition)
-        if (chunk != null) {
-            return chunk.createInteractiveBlock(globalPosition, constructor, ...args)
-        }
-        return null
+    createInteractive(globalPosition, constructor, ...args) {
+        const interactive = new constructor(this.gameBasic, globalPosition, ...args)
+        interactive.world = this
+        interactive.init()
+        this.updateInteractive(interactive)
+        this.interactives.push(interactive)
+        return interactive
     }
 
     createPlayer(playerPosition) {
@@ -113,5 +123,12 @@ export class World {
             }
         }
         this.chunks = []
+
+        if (this.interactives != null) {
+            for (let i = 0; i < this.interactives.length; i++) {
+                this.interactives[i].destroy()
+            }
+        }
+        this.interactives = []
     }
 }

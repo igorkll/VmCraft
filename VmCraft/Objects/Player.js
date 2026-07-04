@@ -67,9 +67,9 @@ export class Player {
                 case "KeyA": this.keys.a = true; break;
                 case "KeyS": this.keys.s = true; break;
                 case "KeyD": this.keys.d = true; break;
-                case "Space": this.keys.space = true; break;
-                case "ShiftLeft": this.keys.shift = true; break;
-                case "ControlLeft": this.keys.control = true; break;
+                case "Space": this.keys.up = true; break;
+                case "ShiftLeft": this.keys.down = true; break;
+                case "AltLeft": this.keys.sprint = true; break;
             }
 
             onDoubleSpace(e)
@@ -81,9 +81,9 @@ export class Player {
                 case "KeyA": this.keys.a = false; break;
                 case "KeyS": this.keys.s = false; break;
                 case "KeyD": this.keys.d = false; break;
-                case "Space": this.keys.space = false; break;
-                case "ShiftLeft": this.keys.shift = false; break;
-                case "ControlLeft": this.keys.control = false; break;
+                case "Space": this.keys.up = false; break;
+                case "ShiftLeft": this.keys.down = false; break;
+                case "AltLeft": this.keys.sprint = false; break;
             }
         }, { signal: this.abortController.signal })
     }
@@ -110,8 +110,8 @@ export class Player {
             if (this.keys.d) move.add(right)
 
             if (this.data.fly) {
-                if (this.keys.space) move.add(alwaysUp)
-                if (this.keys.shift) move.sub(alwaysUp)
+                if (this.keys.up) move.add(alwaysUp)
+                if (this.keys.down) move.sub(alwaysUp)
             }
         }
 
@@ -127,7 +127,7 @@ export class Player {
 
         if (move.lengthSq() > 0) {
             let speed = this.data.speed
-            if (this.keys.control) speed *= this.data.runningSpeedMultiplier
+            if (this.keys.sprint) speed *= this.data.runningSpeedMultiplier
             if (this.data.fly) speed *= this.data.flightSpeedMultiplier
 
             move.normalize()

@@ -10,7 +10,6 @@ export class Chunk {
         }
 
         this.needUpdateMesh = true
-        this.interactive_blocks = []
         this.blocks = new Uint8Array(this.chunkBlockCount)
 
         this.loadChunk()
@@ -32,21 +31,15 @@ export class Chunk {
     }
 
     loadChunk() {
-        
+        this.destroy()
     }
 
     update(delta) {
-        for (let i = 0; i < this.interactive_blocks.length; i++) {
-            this.interactive_blocks[i].update(delta)
-        }
-
         if (this.needUpdateMesh) this.updateMesh()
     }
     
     destroy() {
-        for (let i = 0; i < this.interactive_blocks.length; i++) {
-            this.interactive_blocks[i].destroy()
-        }
+        
     }
 
     getGlobalPosition() {
@@ -71,12 +64,5 @@ export class Chunk {
 
     getBlock(localPosition) {
         return this.blocks[this.getBlockArrayIndex(localPosition)]
-    }
-
-    createInteractiveBlock(globalPosition, constructor, ...args) {
-        const interactive_block = new constructor(this.gameBasic, globalPosition, ...args)
-        interactive_block.init()
-        this.interactive_blocks.push(interactive_block)
-        return interactive_block
     }
 }
