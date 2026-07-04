@@ -10,6 +10,7 @@ const deadZone = Math.PI / 180;
 const terminalVelocity = -50
 const gravity = 25
 const jumpSpeed = 8
+const baseVelocityMul = 0.1
 
 export class Player {
     constructor(gameBasic, pos) {
@@ -172,35 +173,38 @@ export class Player {
         }
 
         if (move.lengthSq() > 0) {
-            let speed = this.data.speed;
-            if (this.keys.sprint) speed *= this.data.runningSpeedMultiplier;
-            if (this.data.fly) speed *= this.data.flightSpeedMultiplier;
-            else if (this.keys.down) speed *= this.data.seatSpeedMultiplier;
+            let speed = this.data.speed
+            if (this.keys.sprint) speed *= this.data.runningSpeedMultiplier
+            if (this.data.fly) speed *= this.data.flightSpeedMultiplier
+            else if (this.keys.down) speed *= this.data.seatSpeedMultiplier
             
-            move.normalize();
-            this.data.pos.x += move.x * speed * delta;
-            this.data.pos.z += move.z * speed * delta;
+            move.normalize()
+            this.data.velocity.x += move.x * speed * delta;
+            this.data.velocity.z += move.z * speed * delta;
         }
 
         if (this.data.fly) {
             if (this.keys.up) {
-                this.data.pos.y += this.data.speed * this.data.flightSpeedMultiplier * delta;
+                this.data.pos.y += this.data.speed * this.data.flightSpeedMultiplier * delta
             }
             if (this.keys.down) {
-                this.data.pos.y -= this.data.speed * this.data.flightSpeedMultiplier * delta;
+                this.data.pos.y -= this.data.speed * this.data.flightSpeedMultiplier * delta
             }
-            this.data.velocity.y = 0;
-            this.data.onGround = false;
+            this.data.velocity.y = 0
         } else {
             this.data.velocity.y -= gravity * delta;
             if (this.data.velocity.y < terminalVelocity) {
                 this.data.velocity.y = terminalVelocity;
             }
-
-            this.data.pos.y += this.data.velocity.y * delta;
-
-            this.handleVerticalCollisions();
         }
+
+        this.data.pos.add(this.data.velocity.clone().multiplyScalar(delta))
+
+        let velocityMul = baseVelocityMul
+
+        this.data.velocity.x *= velocityMul * delta
+        this.data.velocity.z *= velocityMul * delta;
+        this.handleVerticalCollisions()
 
         this.oldKeys = Object.assign({}, this.keys)
     }
