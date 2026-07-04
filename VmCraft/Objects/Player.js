@@ -5,6 +5,7 @@ import * as Gui from "../Gui.js";
 
 const height = 1.8;
 const eyeHeight = height - 0.2;
+const eyeHeightSeat = height - 0.5;
 const deadZone = Math.PI / 180;
 
 export class Player {
@@ -17,7 +18,8 @@ export class Player {
             speed: 5,
             pointerSpeed: 1.5,
             runningSpeedMultiplier: 2,
-            flightSpeedMultiplier: 2
+            flightSpeedMultiplier: 2,
+            seatSpeedMultiplier: 0.5
         }
         this.oldControlLocked = false
     }
@@ -28,7 +30,7 @@ export class Player {
         // ------------------ camera
         
         this.camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.updateCamera(0);
+        this.camera.position.set(this.data.pos.x, this.data.pos.y + eyeHeight, this.data.pos.z)
         this.camera.lookAt(this.data.pos.x + 1, this.data.pos.y + eyeHeight, this.data.pos.z);
 
         // ------------------ controls
@@ -50,9 +52,9 @@ export class Player {
             a: false,
             s: false,
             d: false,
-            space: false,
-            shift: false,
-            control: false
+            up: false,
+            down: false,
+            sprint: false
         }
 
         const onDoubleSpace = Utils.detectDoubleKey("Space", () => {
@@ -112,6 +114,14 @@ export class Player {
             if (this.data.fly) {
                 if (this.keys.up) move.add(alwaysUp)
                 if (this.keys.down) move.sub(alwaysUp)
+            } else {
+                if (this.keys.up) {
+
+                }
+
+                if (this.keys.down) {
+
+                }
             }
         }
 
@@ -128,7 +138,11 @@ export class Player {
         if (move.lengthSq() > 0) {
             let speed = this.data.speed
             if (this.keys.sprint) speed *= this.data.runningSpeedMultiplier
-            if (this.data.fly) speed *= this.data.flightSpeedMultiplier
+            if (this.data.fly) {
+                speed *= this.data.flightSpeedMultiplier
+            } else if (this.keys.down) {
+                speed *= this.data.seatSpeedMultiplier
+            } 
 
             move.normalize()
             this.data.pos.x += move.x * speed * delta
@@ -140,7 +154,9 @@ export class Player {
     }
 
     updateCamera(delta) {
-        this.camera.position.set(this.data.pos.x, this.data.pos.y + eyeHeight, this.data.pos.z)
+        let y = this.data.pos.y + eyeHeight
+        if (this.keys.down && !this.data.fly) y = this.data.pos.y + eyeHeightSeat
+        this.camera.position.set(this.data.pos.x, y, this.data.pos.z)
     }
 
     update(delta) {
