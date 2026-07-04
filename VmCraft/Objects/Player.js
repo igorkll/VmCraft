@@ -10,7 +10,7 @@ const deadZone = Math.PI / 180;
 const terminalVelocity = -50
 const gravity = 25
 const jumpSpeed = 8
-const velocity_drop = 0.0005
+const velocity_drop = 0.00025
 
 export class Player {
     constructor(gameBasic, pos) {
@@ -99,10 +99,6 @@ export class Player {
         }, { signal: this.abortController.signal });
     }
 
-    // ------------------------------------------------------------
-    //  ФИЗИКА И КОЛЛИЗИИ
-    // ------------------------------------------------------------
-
     isBlockSolid(x, y, z) {
         const block = this.world?.getBlock(new Three.Vector3(x, y, z));
         return block != null && block !== 0;
@@ -111,14 +107,11 @@ export class Player {
 
     handleVerticalCollisions() {
         const pos = this.data.pos;
-        // Округляем координаты до целых блоков (куда попадают ноги)
         const blockX = Math.floor(pos.x);
         const blockY = Math.floor(pos.y);
         const blockZ = Math.floor(pos.z);
 
-        // 1. Проверка блока под ногами (на один блок ниже)
         if (this.isBlockSolid(blockX, blockY - 1, blockZ)) {
-            // Ставим игрока точно на верхнюю грань этого блока
             pos.y = blockY;
             this.data.velocity.y = 0;
             this.data.onGround = true;
@@ -126,11 +119,9 @@ export class Player {
             this.data.onGround = false;
         }
 
-        // 2. Проверка блока на уровне головы (если летим вверх)
         if (this.data.velocity.y > 0) {
             const headY = Math.floor(pos.y + height);
             if (this.isBlockSolid(blockX, headY, blockZ)) {
-                // Останавливаем движение вверх и опускаем голову под блок
                 pos.y = headY - height;
                 this.data.velocity.y = 0;
             }
