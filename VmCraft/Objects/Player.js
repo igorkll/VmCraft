@@ -59,8 +59,8 @@ export class Player {
             sprint: false
         }
 
-        this.keys = this.defaultKeys.clone()
-        this.oldKeys = this.defaultKeys.clone()
+        this.keys = Object.assign({}, this.defaultKeys)
+        this.oldKeys = Object.assign({}, this.defaultKeys)
 
         const [onDoubleSpace_keydown, onDoubleSpace_keyup] = Utils.detectDoubleKey("Space", () => {
             this.data.fly = !this.data.fly;
@@ -147,7 +147,7 @@ export class Player {
         this.oldControlLocked = controlLocked
 
         if (controlLocked) {
-            this.keys = this.defaultKeys.clone()
+            this.keys = Object.assign({}, this.defaultKeys)
         }
 
  
@@ -202,7 +202,7 @@ export class Player {
             this.handleVerticalCollisions();
         }
 
-        this.oldKeys = this.keys.clone()
+        this.oldKeys = Object.assign({}, this.keys)
     }
 
     updateCamera(delta) {
