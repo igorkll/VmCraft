@@ -80,7 +80,7 @@ export class World {
             const localPosition = chunk.getLocalPositionFromGlobalPosition(globalPosition)
             return chunk.getBlock(localPosition)
         }
-        return 0
+        return null
     }
 
     createInteractive(globalPosition, constructor, ...args) {
