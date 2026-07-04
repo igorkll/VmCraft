@@ -10,7 +10,7 @@ const deadZone = Math.PI / 180;
 const terminalVelocity = -50
 const gravity = 25
 const jumpSpeed = 8
-const baseVelocityMul = 0.1
+const velocity_drop = 0.0005
 
 export class Player {
     constructor(gameBasic, pos) {
@@ -18,7 +18,7 @@ export class Player {
         this.data = {
             pos: pos,
             fly: true,
-            speed: 5,
+            speed: 30,
             pointerSpeed: 1.5,
             runningSpeedMultiplier: 2,
             flightSpeedMultiplier: 2,
@@ -168,7 +168,7 @@ export class Player {
         if (this.keys.d) move.add(right)
 
         if (!this.data.fly && this.data.onGround && !this.oldKeys.up) {
-            this.data.velocity.y = jumpSpeed;
+            this.data.velocity.y += jumpSpeed;
             this.data.onGround = false;
         }
 
@@ -181,16 +181,16 @@ export class Player {
             move.normalize()
             this.data.velocity.x += move.x * speed * delta;
             this.data.velocity.z += move.z * speed * delta;
+            console.log(this.data.velocity)
         }
 
         if (this.data.fly) {
             if (this.keys.up) {
-                this.data.pos.y += this.data.speed * this.data.flightSpeedMultiplier * delta
+                this.data.velocity.y += this.data.speed * this.data.flightSpeedMultiplier * delta
             }
             if (this.keys.down) {
-                this.data.pos.y -= this.data.speed * this.data.flightSpeedMultiplier * delta
+                this.data.velocity.y -= this.data.speed * this.data.flightSpeedMultiplier * delta
             }
-            this.data.velocity.y = 0
         } else {
             this.data.velocity.y -= gravity * delta;
             if (this.data.velocity.y < terminalVelocity) {
@@ -200,12 +200,15 @@ export class Player {
 
         this.data.pos.add(this.data.velocity.clone().multiplyScalar(delta))
 
-        let velocityMul = baseVelocityMul
-
-        this.data.velocity.x *= velocityMul * delta
-        this.data.velocity.z *= velocityMul * delta;
+        var voxel_velocity_drop_mul = 1
+        var speed_mul = Math.pow(velocity_drop * voxel_velocity_drop_mul, delta);
+        this.data.velocity.x *= speed_mul
+        if (this.data.fly) {
+            this.data.velocity.y *= speed_mul
+        }
+        this.data.velocity.z *= speed_mul
+        
         this.handleVerticalCollisions()
-
         this.oldKeys = Object.assign({}, this.keys)
     }
 
