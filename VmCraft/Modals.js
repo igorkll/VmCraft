@@ -1,5 +1,5 @@
 import * as Gui from './Gui.js';
 
-export function modalInput(title) {
-    
+export async function modalInput(title) {
+    return "test"
 }

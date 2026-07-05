@@ -1,6 +1,7 @@
 import * as Gui from './Gui.js';
 import * as WorldManager from './WorldManager.js';
 import * as Game from './Game.js';
+import * as Modals from './Modals.js';
 
 // -------------------------------- create menu
 
@@ -96,6 +97,20 @@ function deleteWorldModal(world) {
     refreshWorldsList()
 }
 
+function newWorldModal() {
+    Modals.modalInput("NEW WORLD NAME").then(name => {
+        if (name) {
+            WorldManager.saveWorld({name}, true)
+            refreshWorldsList()
+        }
+    })
+}
+
+function importWorldModal() {
+
+    refreshWorldsList()
+}
+
 function addWorldToList(menu, world) {
     const highlight = world.id === Game.world.worldId
 
@@ -138,9 +153,11 @@ function refreshWorldsList() {
         Gui.closeModalWindow()
     }, serviceHeight, [
         addButton("worlds", "NEW WORLD", () => {
+            newWorldModal()
         }, serviceHeight, true),
 
         addButton("worlds", "IMPORT", () => {
+            importWorldModal()
         }, serviceHeight, true)
     ])
 }

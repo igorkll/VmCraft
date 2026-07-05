@@ -101,6 +101,12 @@ body > * {
 .scroll-box {
     overflow-y: auto;
     height: 400px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
 }
 
 .menu-button {
