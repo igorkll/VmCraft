@@ -138,6 +138,10 @@ function importWorldModal() {
 function addWorldToList(menu, world) {
     const highlight = world.id === Game.world.worldId
 
+    const btn_export = addButton(menu, "C", () => {
+        Modals.windowExportFileAdvanced(world, world.name)
+    }, null, true)
+
     const btn_rename = addButton(menu, "B", () => {
         renameWorldModal(world)
     }, null, true)
@@ -146,15 +150,17 @@ function addWorldToList(menu, world) {
         deleteWorldModal(world)
     }, null, true)
 
+    smallSecondButton(btn_export)
     smallSecondButton(btn_rename)
     smallSecondButton(btn_delete)
 
     const btn_loadWorld = addButton(menu, world.name, () => {
         loadWorld(world)
-    }, null, [btn_rename, btn_delete])
+    }, null, [btn_export, btn_rename, btn_delete])
 
     if (highlight) {
         highlightButton(btn_loadWorld)
+        highlightButton(btn_export)
         highlightButton(btn_rename)
         highlightButton(btn_delete)
     }
