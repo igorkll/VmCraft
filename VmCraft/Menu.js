@@ -91,17 +91,20 @@ function renameWorldModal(world) {
 
 }
 
+function deleteWorldModal(world) {
+    WorldManager.deleteWorld(world.id)
+    refreshWorldsList()
+}
+
 function addWorldToList(menu, world) {
     const highlight = world.id === Game.world.worldId
 
     const btn_rename = addButton(menu, "B", () => {
         renameWorldModal(world)
-
     }, null, true)
 
     const btn_delete = addButton(menu, "A", () => {
-        WorldManager.deleteWorld(world.id)
-        refreshWorldsList()
+        deleteWorldModal(world)
     }, null, true)
 
     smallSecondButton(btn_rename)

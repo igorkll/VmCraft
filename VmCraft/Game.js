@@ -29,15 +29,19 @@ const gameBasic = new GameBasic(renderer, scene)
 document.body.appendChild(renderer.domElement)
 
 export let world
-WorldManager.worldList().then(worlds => {
+
+(async () => {
+    const worlds = await WorldManager.worldList()
     let _world = worlds[0] || null
+    
     if (_world == null) {
-        _world = WorldManager.saveWorld({
+        _world = await WorldManager.saveWorld({
             name: "default"
-        })
+        }, true)
     }
+
     world = new World(gameBasic, _world)
-})
+})()
 
 // ---------------------- frame handle
 

@@ -38,16 +38,22 @@ export async function getWorldFromName(name) {
     }
 }
 
-export async function saveWorld(world) {
+export async function saveWorld(world, forceNew=false) {
     try {
-        const existing = await db.worlds.where('id').equals(world.id).first()
+        let existing
+        if (forceNew) {
+            existing = false
+        } else {
+            existing = await db.worlds.where('id').equals(world.id).first()
+        }
 
         if (existing) {
             await db.worlds.put(world)
             console.log(`World "${world.name}" saved`)
             return world
         } else {
-            await db.worlds.add(world)
+            const id = await db.worlds.add(world)
+            world.id = id
             console.log(`World "${world.name}" created`)
             return world
         }
