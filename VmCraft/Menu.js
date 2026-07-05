@@ -74,7 +74,7 @@ addSubMenu("worlds")
 
 // -------------------------------- worlds menu
 
-function loadWorld() {
+function loadWorld(world) {
 
 }
 
@@ -87,18 +87,28 @@ function highlightButton(btn) {
     btn.classList.add("menu-button-highlight")
 }
 
-function addWorldToList(menu, name, highlight=false) {
+function renameWorldModal(world) {
+
+}
+
+function addWorldToList(menu, world) {
+    const highlight = world.id === Game.world.worldId
+
     const btn_rename = addButton(menu, "B", () => {
+        renameWorldModal(world)
+
     }, null, true)
 
     const btn_delete = addButton(menu, "A", () => {
+        WorldManager.deleteWorld(world.id)
+        refreshWorldsList()
     }, null, true)
 
     smallSecondButton(btn_rename)
     smallSecondButton(btn_delete)
 
-    const btn_loadWorld = addButton(menu, name, () => {
-        
+    const btn_loadWorld = addButton(menu, world.name, () => {
+        loadWorld(world)
     }, null, [btn_rename, btn_delete])
 
     if (highlight) {
@@ -116,7 +126,7 @@ function refreshWorldsList() {
 
     WorldManager.worldList().then(worlds => {
         worlds.forEach(world => {
-            addWorldToList(scrollbox, world.name, world.id === Game.world.worldId)
+            addWorldToList(scrollbox, world)
         })
     })
 

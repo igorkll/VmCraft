@@ -68,3 +68,13 @@ export async function renameWorld(id, newName) {
         console.error('Rename failed:', error);
     }
 }
+
+export async function deleteWorld(id) {
+    try {
+        await db.worlds.delete(id);
+        console.log(`World with ID ${id} deleted`);
+    } catch (error) {
+        console.error('Delete failed:', error);
+        throw error;
+    }
+}
