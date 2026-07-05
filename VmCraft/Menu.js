@@ -114,8 +114,10 @@ function refreshWorldsList() {
 
     const scrollbox = addScrollBox("worlds")
 
-    WorldManager.worldList().then(world => {
-        addWorldToList(scrollbox, world.name)
+    WorldManager.worldList().then(worlds => {
+        worlds.forEach(() => {
+            addWorldToList(scrollbox, world.name)
+        })
     })
 
     const serviceHeight = '40px'
