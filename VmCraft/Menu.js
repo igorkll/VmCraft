@@ -1,4 +1,5 @@
 import * as Gui from './Gui.js';
+import * as WorldManager from './WorldManager.js';
 
 // -------------------------------- create menu
 
@@ -37,7 +38,11 @@ function addButton(menu, name, callback, height=null, additionalButtons=[]) {
             btnhost.appendChild(additionalBtn)
         })
 
-        getMenu(menu).appendChild(btnhost)
+        if (typeof menu === 'string') {
+            getMenu(menu).appendChild(btnhost)
+        } else {
+            menu.appendChild(btnhost)
+        }
     }
 
     return btn
@@ -52,13 +57,25 @@ function addTitle(menu, name) {
     return title
 }
 
+function addScrollBox(menu) {
+    const scrollbox = document.createElement("div")
+    scrollbox.classList.add("scroll-box")
+
+    getMenu(menu).appendChild(scrollbox)
+    return scrollbox
+}
+
+function cleanMenu(menu) {
+    getMenu(menu).htmlContent = ''
+}
+
 addSubMenu("main")
 addSubMenu("worlds")
 
 // -------------------------------- worlds menu
 
 function loadWorld() {
-    
+
 }
 
 function smallSecondButton(btn) {
@@ -70,17 +87,17 @@ function highlightButton(btn) {
     btn.classList.add("menu-button-highlight")
 }
 
-function addWorldToList(name, highlight=false) {
-    const btn_rename = addButton("worlds", "B", () => {
+function addWorldToList(menu, name, highlight=false) {
+    const btn_rename = addButton(menu, "B", () => {
     }, null, true)
 
-    const btn_delete = addButton("worlds", "A", () => {
+    const btn_delete = addButton(menu, "A", () => {
     }, null, true)
 
     smallSecondButton(btn_rename)
     smallSecondButton(btn_delete)
 
-    const btn_loadWorld = addButton("worlds", name, () => {
+    const btn_loadWorld = addButton(menu, name, () => {
         
     }, null, [btn_rename, btn_delete])
 
@@ -92,10 +109,14 @@ function addWorldToList(name, highlight=false) {
 }
 
 function refreshWorldsList() {
+    cleanMenu("worlds")
     addTitle("worlds", "WORLDS")
 
-    addWorldToList("test1", true)
-    addWorldToList("test2")
+    const scrollbox = addScrollBox("worlds")
+
+    WorldManager.worldList().then(world => {
+        addWorldToList(scrollbox, world.name)
+    })
 
     const serviceHeight = '40px'
     addButton("worlds", "< BACK", () => {

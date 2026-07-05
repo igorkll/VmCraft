@@ -98,6 +98,11 @@ body > * {
     gap: 10px;
 }
 
+.scroll-box {
+    overflow-y: auto;
+    height: 400px;
+}
+
 .menu-button {
     all: unset;
     cursor: pointer;

@@ -5,13 +5,13 @@ import { Robot } from './Robot.js'
 import { Chunk } from './Chunk.js'
 
 export class World {
-    constructor(gameBasic) {
+    constructor(gameBasic, worldData=null) {
         this.gameBasic = gameBasic
 
-        this.loadWorld()
+        this.loadWorld(worldData)
     }
 
-    loadWorld() {
+    loadWorld(worldData) {
         this.destroy()
 
         this.createPlayer(new Three.Vector3(0, 10, 0))
