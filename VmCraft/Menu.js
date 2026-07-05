@@ -21,22 +21,25 @@ function openSubMenu(name) {
 }
 
 function addButton(menu, name, callback, height=null, additionalButtons=[]) {
-    const btnhost = document.createElement("div")
-    btnhost.classList.add("game-menu-hor")
-
     const btn = document.createElement("button")
     btn.style.flex = '1'
     btn.textContent = name
     btn.classList.add("menu-button")
     if (height) btn.style.height = height
     btn.addEventListener("pointerup", callback)
-    btnhost.appendChild(btn)
 
-    additionalButtons.forEach(additionalBtn => {
-        btnhost.appendChild(additionalBtn)
-    })
+    if (additionalButtons != true) {
+        const btnhost = document.createElement("div")
+        btnhost.classList.add("game-menu-hor")
+        
+        btnhost.appendChild(btn)
+        additionalButtons.forEach(additionalBtn => {
+            btnhost.appendChild(additionalBtn)
+        })
 
-    getMenu(menu).appendChild(btnhost)
+        getMenu(menu).appendChild(btnhost)
+    }
+
     return btn
 }
 
@@ -58,18 +61,36 @@ function loadWorld() {
 
 }
 
+function addWorldToList(name) {
+    const btn_rename = addButton("worlds", "B", () => {
+    }, null, true)
+
+    const btn_delete = addButton("worlds", "A", () => {
+    }, null, true)
+
+    btn_rename.style.flex = ''
+    btn_delete.style.flex = ''
+
+    addButton("worlds", name, () => {
+        
+    }, null, [btn_rename, btn_delete])
+}
+
 function refreshWorldsList() {
     addTitle("worlds", "WORLDS")
+
+    addWorldToList("test1")
+    addWorldToList("test2")
 
     const serviceHeight = '40px'
     addButton("worlds", "< BACK", () => {
         Gui.closeModalWindow()
     }, serviceHeight, [
         addButton("worlds", "NEW WORLD", () => {
-        }, serviceHeight),
+        }, serviceHeight, true),
 
         addButton("worlds", "IMPORT", () => {
-        }, serviceHeight)
+        }, serviceHeight, true)
     ])
 }
 
