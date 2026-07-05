@@ -77,6 +77,10 @@ addSubMenu("worlds")
 
 // -------------------------------- worlds menu
 
+function isSelectedWorld(world) {
+    return world.id === Game.world.worldId
+}
+
 function loadWorld(world) {
 
 }
@@ -106,12 +110,16 @@ maybe it's better to preserve it for future generations?...
 Spare your labor...`
 
 function deleteWorldModal(world) {
-    Modals.modalYesno("DELETE WORLD? (" + world.name + ")", deleteWorldDescription).then(accept => {
-        if (accept) {
-            WorldManager.deleteWorld(world.id)
-            refreshWorldsList()
-        }
-    })
+    if (isSelectedWorld(world)) {
+        Modals.modalShow("DELETE FAILED", "the active world cannot be deleted")
+    } else {
+        Modals.modalYesno("DELETE WORLD? (" + world.name + ")", deleteWorldDescription).then(accept => {
+            if (accept) {
+                WorldManager.deleteWorld(world.id)
+                refreshWorldsList()
+            }
+        })
+    }
 }
 
 function newWorldModal() {
@@ -136,7 +144,7 @@ function importWorldModal() {
 }
 
 function addWorldToList(menu, world) {
-    const highlight = world.id === Game.world.worldId
+    const highlight = isSelectedWorld(world)
 
     const btn_export = addButton(menu, "C", () => {
         Modals.windowExportFileAdvanced(world, world.name)
