@@ -41,7 +41,7 @@ function updateFps() {
 setInterval(updateFps, 1000)
 updateFps()
 
-function getOverlayText() {
+function getDebugOverlayText() {
     return `FPS: ${fps}
 Position: ${world.player.data.pos.x.toFixed(3)} ${world.player.data.pos.y.toFixed(3)} ${world.player.data.pos.z.toFixed(3)}`
 }
@@ -54,7 +54,7 @@ function frameHandle() {
     world.update(delta)
     renderer.render(scene, world.player.camera)
 
-    Gui.updateOverlay(getOverlayText())
+    Gui.updateDebugOverlay(getDebugOverlayText())
 }
 frameHandle()
 

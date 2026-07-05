@@ -1,9 +1,10 @@
 const menu = document.getElementById("menu")
 const hud = document.getElementById("hud")
-const overlay = document.getElementById("overlay")
+const debugOverlay = document.getElementById("debug-overlay")
 
 let menuState = false
-let overlayState = false
+let debugOverlayState = false
+
 let modalRoot = null
 let modalOnCloseCallback = null
 
@@ -15,19 +16,30 @@ export function changeMenuState(menuOpened) {
     menuState = menuOpened
 }
 
-export function changeOverlayState(overlayOpened) {
-    overlay.style.display = overlayOpened ? "block" : ""
-    overlayState = overlayOpened
+export function changeDebugOverlayState(debugOverlayOpened) {
+    debugOverlay.style.display = debugOverlayOpened ? "block" : ""
+    debugOverlayState = debugOverlayOpened
 }
 
-export function updateOverlay(text) {
-    overlay.textContent = text
+export function updateDebugOverlay(text) {
+    debugOverlay.textContent = text
 }
 
 export function openModalWindow(modalObject, _modalOnCloseCallback) {
-    if (modalRoot != null) return
+    if (modalRoot) {
+        modalRoot.style.display = 'none'
 
-    modalOnCloseCallback = _modalOnCloseCallback
+        const old_modalRoot = modalRoot
+        const old_modalOnCloseCallback = modalOnCloseCallback
+        modalOnCloseCallback = () => {
+            modalRoot.style.display = ''
+
+            modalRoot = old_modalRoot
+            modalOnCloseCallback = old_modalOnCloseCallback
+        }
+    } else {
+        modalOnCloseCallback = _modalOnCloseCallback
+    }
 
     modalRoot = document.createElement("div")
     modalRoot.classList.add("modal-window")
@@ -37,11 +49,11 @@ export function openModalWindow(modalObject, _modalOnCloseCallback) {
 }
 
 export function closeModalWindow() {
-    if (modalRoot == null) return
+    if (!modalRoot) return
     hud.removeChild(modalRoot)
     modalRoot = null
     
-    if (modalOnCloseCallback != null) modalOnCloseCallback()
+    if (modalOnCloseCallback) modalOnCloseCallback()
 }
 
 export function getModalWindow() {
@@ -55,7 +67,7 @@ export function isControlLocked() {
 // -------------------------------- hotkeys
 
 changeMenuState(menuState)
-changeOverlayState(overlayState)
+changeDebugOverlayState(debugOverlayState)
 
 document.addEventListener('keydown', (e) => {
     e.preventDefault()
@@ -71,8 +83,8 @@ document.addEventListener('keydown', (e) => {
             break
         
         case 'F3':
-            overlayState = !overlayState
-            changeOverlayState(overlayState)
+            debugOverlayState = !debugOverlayState
+            changeDebugOverlayState(debugOverlayState)
             break
 
         case 'F11':
