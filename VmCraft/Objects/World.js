@@ -3,11 +3,13 @@ import * as Utils from "../Utils.js"
 import { Player } from './Player.js'
 import { Robot } from './Robot.js'
 import { Chunk } from './Chunk.js'
+import * as WorldManager from '../WorldManager.js';
 
 export class World {
     constructor(gameBasic, worldData) {
         this.gameBasic = gameBasic
         this.worldId = worldData.id
+        this.worldName = worldData.name
 
         this.loadWorld(worldData)
     }
@@ -139,5 +141,24 @@ export class World {
             }
         }
         this.interactives = []
+    }
+
+    serializeData() {
+        const worldData = {}
+
+        return worldData
+    }
+
+    serialize() {
+        const world = {}
+        world.id = this.worldId
+        world.worldName = this.worldName
+        world.data = this.serializeData()
+
+        return world
+    }
+
+    save() {
+        WorldManager.saveWorld(this.serialize())
     }
 }
