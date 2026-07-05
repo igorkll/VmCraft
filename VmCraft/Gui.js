@@ -1,3 +1,5 @@
+import * as Menu from './Menu.js';
+
 const menu = document.getElementById("menu")
 const hud = document.getElementById("hud")
 const debugOverlay = document.getElementById("debug-overlay")
@@ -9,12 +11,6 @@ let modalRoot = null
 let modalOnCloseCallback = null
 
 // --------------------------------
-
-export function changeMenuState(menuOpened) {
-    menu.style.display = menuOpened ? "block" : ""
-    hud.style.display = menuOpened ? "" : "block"
-    menuState = menuOpened
-}
 
 export function changeDebugOverlayState(debugOverlayOpened) {
     debugOverlay.style.display = debugOverlayOpened ? "block" : ""
@@ -45,15 +41,17 @@ export function openModalWindow(modalObject, _modalOnCloseCallback) {
     modalRoot.classList.add("modal-window")
     modalRoot.appendChild(modalObject)
 
-    hud.appendChild(modalRoot)
+    menu.appendChild(modalRoot)
 }
 
 export function closeModalWindow() {
     if (!modalRoot) return
-    hud.removeChild(modalRoot)
+    menu.removeChild(modalRoot)
     modalRoot = null
     
     if (modalOnCloseCallback) modalOnCloseCallback()
+
+    hud.style.display = modalRoot ? "block" : ""
 }
 
 export function getModalWindow() {
@@ -66,7 +64,6 @@ export function isControlLocked() {
 
 // -------------------------------- hotkeys
 
-changeMenuState(menuState)
 changeDebugOverlayState(debugOverlayState)
 
 document.addEventListener('keydown', (e) => {
@@ -77,8 +74,7 @@ document.addEventListener('keydown', (e) => {
             if (getModalWindow()) {
                 closeModalWindow()
             } else {
-                menuState = !menuState
-                changeMenuState(menuState)
+                Menu.openModal()
             }
             break
         
