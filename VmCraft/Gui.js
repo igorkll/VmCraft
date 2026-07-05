@@ -83,3 +83,58 @@ document.addEventListener('keydown', (e) => {
             }
     }
 });
+
+// -------------------------------- menu
+
+const menuNames = [
+    "main",
+    "worlds"
+]
+
+function getMenu(name) {
+    return document.getElementById("menu-" + name)
+}
+
+function openSubMenu(name) {
+    menuNames.forEach(name => {
+        getMenu(name).style.display = "none"
+    })
+
+    getMenu(name).style.display = ""
+}
+
+function addButton(menu, name, callback) {
+    const btn = document.createElement("button")
+    btn.textContent = name
+    btn.classList.add("menu-button")
+    btn.addEventListener("pointerup", callback)
+    getMenu(menu).appendChild(btn)
+    return btn
+}
+
+function loadWorld() {
+
+}
+
+function refreshWorldsList() {
+    addButton("worlds", "< BACK", () => {
+        openSubMenu("main")
+    })
+}
+
+// ------------ main menu buttons
+
+addButton("main", "RESUME", () => {
+    
+})
+
+addButton("main", "WORLDS", () => {
+    openSubMenu("worlds")
+})
+
+addButton("main", "CLOSE", () => {
+    
+})
+
+openSubMenu("main")
+refreshWorldsList()
