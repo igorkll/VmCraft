@@ -80,7 +80,7 @@ refreshWorldsList()
 addTitle("main", "VmCraft")
 
 addButton("main", "RESUME", () => {
-    Gui.changeMenuState(false)
+    Gui.closeModalWindow()
 })
 
 addButton("main", "WORLDS", () => {
@@ -91,4 +91,6 @@ addButton("main", "EXIT", () => {
     
 })
 
-openSubMenu("main")
+export function openModal() {
+    openSubMenu("main")
+}

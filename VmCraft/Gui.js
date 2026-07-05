@@ -32,7 +32,9 @@ export function openModalWindow(modalObject, _modalOnCloseCallback) {
         const old_modalRoot = modalRoot
         const old_modalOnCloseCallback = modalOnCloseCallback
         modalOnCloseCallback = () => {
-            modalRoot.style.display = ''
+            if (_modalOnCloseCallback) _modalOnCloseCallback()
+            
+            old_modalRoot.style.display = ''
 
             modalRoot = old_modalRoot
             modalOnCloseCallback = old_modalOnCloseCallback
