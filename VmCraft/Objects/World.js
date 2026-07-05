@@ -152,7 +152,7 @@ export class World {
     serialize() {
         const world = {}
         world.id = this.worldId
-        world.worldName = this.worldName
+        world.name = this.worldName
         world.data = this.serializeData()
 
         return world
