@@ -1,35 +1,24 @@
 import * as Gui from './Gui.js';
 
-const menu = document.getElementById("menu")
-
 // -------------------------------- create menu
 
-const menuNames = []
+const submenuList = {}
 
 function addSubMenu(name) {
     const submenu = document.createElement("div")
     submenu.classList.add("modal-window")
     submenu.classList.add("game-menu")
     submenu.id = "menu-" + name
-    menu.appendChild(submenu)
-    menuNames.push(name)
-    return submenu
+    submenuList[name] = submenu
 }
 
 function getMenu(name) {
-    return document.getElementById("menu-" + name)
+    return submenuList[name]
 }
 
 function openSubMenu(name) {
-    menuNames.forEach(name => {
-        getMenu(name).style.display = "none"
-    })
-
-    getMenu(name).style.display = ""
+    Gui.openModalWindow(getMenu(name))
 }
-
-addSubMenu("main")
-addSubMenu("worlds")
 
 function addButton(menu, name, callback, height=null, additionalButtons=[]) {
     const btnhost = document.createElement("div")
@@ -60,6 +49,9 @@ function addTitle(menu, name) {
     return title
 }
 
+addSubMenu("main")
+addSubMenu("worlds")
+
 // -------------------------------- worlds menu
 
 function loadWorld() {
@@ -71,14 +63,12 @@ function refreshWorldsList() {
 
     const serviceHeight = '40px'
     addButton("worlds", "< BACK", () => {
-        openSubMenu("main")
+        Gui.closeModalWindow()
     }, serviceHeight, [
         addButton("worlds", "NEW WORLD", () => {
-            openSubMenu("main")
         }, serviceHeight),
 
         addButton("worlds", "IMPORT", () => {
-            openSubMenu("main")
         }, serviceHeight)
     ])
 }

@@ -12,6 +12,10 @@ let modalOnCloseCallback = null
 
 // --------------------------------
 
+function updateHudState() {
+    hud.style.display = modalRoot ? "" : "block"
+}
+
 export function changeDebugOverlayState(debugOverlayOpened) {
     debugOverlay.style.display = debugOverlayOpened ? "block" : ""
     debugOverlayState = debugOverlayOpened
@@ -42,6 +46,8 @@ export function openModalWindow(modalObject, _modalOnCloseCallback) {
     modalRoot.appendChild(modalObject)
 
     menu.appendChild(modalRoot)
+
+    updateHudState()
 }
 
 export function closeModalWindow() {
@@ -51,7 +57,7 @@ export function closeModalWindow() {
     
     if (modalOnCloseCallback) modalOnCloseCallback()
 
-    hud.style.display = modalRoot ? "block" : ""
+    updateHudState()
 }
 
 export function getModalWindow() {
@@ -61,6 +67,8 @@ export function getModalWindow() {
 export function isControlLocked() {
     return !!(modalRoot || menuState)
 }
+
+updateHudState()
 
 // -------------------------------- hotkeys
 
