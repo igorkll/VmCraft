@@ -40,7 +40,10 @@ export class Chunk {
     }
     
     destroy() {
-        
+        if (this.object != null) {
+            this.gameBasic.scene.remove(this.object)
+            this.object = null
+        }
     }
 
     getGlobalPosition() {

@@ -43,6 +43,11 @@ export let world
     world = new World(gameBasic, _world)
 })()
 
+export function loadWorld(_world) {
+    world.destroy()
+    world = new World(gameBasic, _world)
+}
+
 // ---------------------- frame handle
 
 let delta = 0

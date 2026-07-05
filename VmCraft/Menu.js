@@ -81,10 +81,6 @@ function isSelectedWorld(world) {
     return world.id === Game.world.worldId
 }
 
-function loadWorld(world) {
-
-}
-
 function smallSecondButton(btn) {
     btn.style.flex = ''
     btn.style.width = '60px'
@@ -163,7 +159,8 @@ function addWorldToList(menu, world) {
     smallSecondButton(btn_delete)
 
     const btn_loadWorld = addButton(menu, world.name, () => {
-        loadWorld(world)
+        Game.loadWorld(world)
+        refreshWorldsList()
     }, null, [btn_export, btn_rename, btn_delete])
 
     if (highlight) {

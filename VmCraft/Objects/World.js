@@ -53,7 +53,7 @@ export class World {
     }
 
     unloadChunk(chunkPosition) {
-        this.chunks = chunks.filter(obj => {
+        this.chunks = this.chunks.filter(obj => {
             if (obj.pos.equals(chunkPosition)) {
                 obj.destroy()
                 removed.push(obj)
