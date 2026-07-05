@@ -211,6 +211,10 @@ addButton("main", "WORLDS", () => {
     openSubMenu("worlds")
 })
 
+addButton("main", "SAVE", () => {
+    Game.world.save()
+})
+
 addButton("main", "EXIT", () => {
     
 })
