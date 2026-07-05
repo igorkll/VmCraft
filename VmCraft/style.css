@@ -117,6 +117,13 @@ body > * {
     background-color: #bbbbbb;
 }
 
+.menu-title {
+    font-size: 60px;
+    color: #eeeeee;
+    text-align: center;
+    text-shadow: #000000 0px 0 4px;
+}
+
 .cross {
 
 }
