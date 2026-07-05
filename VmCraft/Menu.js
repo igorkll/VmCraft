@@ -101,9 +101,17 @@ function renameWorldModal(world) {
     })
 }
 
+const deleteWorldDescription = `Do you really want to delete your world 😥?
+maybe it's better to preserve it for future generations?...
+Spare your labor...`
+
 function deleteWorldModal(world) {
-    WorldManager.deleteWorld(world.id)
-    refreshWorldsList()
+    Modals.yesnoInput("DELETE WORLD? (" + world.name + ")", deleteWorldDescription).then(accept => {
+        if (accept) {
+            WorldManager.deleteWorld(world.id)
+            refreshWorldsList()
+        }
+    })
 }
 
 function newWorldModal() {
