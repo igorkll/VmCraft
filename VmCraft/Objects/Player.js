@@ -77,8 +77,8 @@ export class Player {
                 case "KeyS": this.keys.s = true; break;
                 case "KeyD": this.keys.d = true; break;
                 case "Space": this.keys.up = true; break;
-                case "ShiftLeft": this.keys.down = true; break;
-                case "AltLeft": this.keys.sprint = true; break;
+                case "KeyC": this.keys.down = true; break;
+                case "ShiftLeft": this.keys.sprint = true; break;
             }
 
             onDoubleSpace_keydown(e)
@@ -91,8 +91,8 @@ export class Player {
                 case "KeyS": this.keys.s = false; break;
                 case "KeyD": this.keys.d = false; break;
                 case "Space": this.keys.up = false; break;
-                case "ShiftLeft": this.keys.down = false; break;
-                case "AltLeft": this.keys.sprint = false; break;
+                case "KeyC": this.keys.down = false; break;
+                case "ShiftLeft": this.keys.sprint = false; break;
             }
 
             onDoubleSpace_keyup(e)
@@ -161,23 +161,23 @@ export class Player {
             this.data.onGround = false;
         }
 
+        let current_speed_mul = 1
+        if (this.keys.sprint) current_speed_mul *= this.data.runningSpeedMultiplier
+        if (this.data.fly) current_speed_mul *= this.data.flightSpeedMultiplier
+        else if (this.keys.down) current_speed_mul *= this.data.seatSpeedMultiplier
+
         if (move.lengthSq() > 0) {
-            let speed = this.data.speed
-            if (this.keys.sprint) speed *= this.data.runningSpeedMultiplier
-            if (this.data.fly) speed *= this.data.flightSpeedMultiplier
-            else if (this.keys.down) speed *= this.data.seatSpeedMultiplier
-            
             move.normalize()
-            this.data.velocity.x += move.x * speed * delta;
-            this.data.velocity.z += move.z * speed * delta;
+            this.data.velocity.x += current_speed_mul * move.x * this.data.speed * delta;
+            this.data.velocity.z += current_speed_mul * move.z * this.data.speed * delta;
         }
 
         if (this.data.fly) {
             if (this.keys.up) {
-                this.data.velocity.y += this.data.speed * this.data.flightSpeedMultiplier * delta
+                this.data.velocity.y += current_speed_mul * this.data.speed * delta
             }
             if (this.keys.down) {
-                this.data.velocity.y -= this.data.speed * this.data.flightSpeedMultiplier * delta
+                this.data.velocity.y -= current_speed_mul * this.data.speed * delta
             }
         } else {
             this.data.velocity.y -= gravity * delta;

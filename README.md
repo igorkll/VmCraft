@@ -7,8 +7,8 @@ Nevertheless, it works and the VMs start up
 * esc - release the cursor
 * ~ - close/open menu
 * wasd - move
-* shift - sit down/slow down
-* alt - sprint
+* C - sit down/slow down
+* shift - sprint
 * f11 - fullscreen
 * f3 - show debug
 
