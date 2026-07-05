@@ -5,8 +5,9 @@ import { Robot } from './Robot.js'
 import { Chunk } from './Chunk.js'
 
 export class World {
-    constructor(gameBasic, worldData=null) {
+    constructor(gameBasic, worldData) {
         this.gameBasic = gameBasic
+        this.worldId = worldData.id
 
         this.loadWorld(worldData)
     }

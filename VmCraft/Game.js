@@ -28,9 +28,15 @@ const gameBasic = new GameBasic(renderer, scene)
 
 document.body.appendChild(renderer.domElement)
 
-let world
+export let world
 WorldManager.worldList().then(worlds => {
-    world = new World(gameBasic, worlds[0] || null)
+    let _world = worlds[0] || null
+    if (_world == null) {
+        _world = WorldManager.saveWorld({
+            name: "default"
+        })
+    }
+    world = new World(gameBasic, _world)
 })
 
 // ---------------------- frame handle

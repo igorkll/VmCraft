@@ -1,5 +1,6 @@
 import * as Gui from './Gui.js';
 import * as WorldManager from './WorldManager.js';
+import * as Game from './Game.js';
 
 // -------------------------------- create menu
 
@@ -14,7 +15,10 @@ function addSubMenu(name) {
 }
 
 function getMenu(name) {
-    return submenuList[name]
+    if (typeof name === 'string') {
+        return submenuList[name]
+    }
+    return name
 }
 
 function openSubMenu(name) {
@@ -38,11 +42,7 @@ function addButton(menu, name, callback, height=null, additionalButtons=[]) {
             btnhost.appendChild(additionalBtn)
         })
 
-        if (typeof menu === 'string') {
-            getMenu(menu).appendChild(btnhost)
-        } else {
-            menu.appendChild(btnhost)
-        }
+        getMenu(menu).appendChild(btnhost)
     }
 
     return btn
@@ -66,7 +66,7 @@ function addScrollBox(menu) {
 }
 
 function cleanMenu(menu) {
-    getMenu(menu).htmlContent = ''
+    getMenu(menu).innerHTML = ''
 }
 
 addSubMenu("main")
@@ -115,8 +115,8 @@ function refreshWorldsList() {
     const scrollbox = addScrollBox("worlds")
 
     WorldManager.worldList().then(worlds => {
-        worlds.forEach(() => {
-            addWorldToList(scrollbox, world.name)
+        worlds.forEach(world => {
+            addWorldToList(scrollbox, world.name, world.id === Game.world.worldId)
         })
     })
 
@@ -132,8 +132,6 @@ function refreshWorldsList() {
     ])
 }
 
-refreshWorldsList()
-
 // -------------------------------- main menu
 
 addTitle("main", "VmCraft")
@@ -143,6 +141,7 @@ addButton("main", "RESUME", () => {
 })
 
 addButton("main", "WORLDS", () => {
+    refreshWorldsList()
     openSubMenu("worlds")
 })
 

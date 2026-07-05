@@ -10,6 +10,15 @@ db.version(1).stores({
 
 // -----------------------------------------
 
+export async function getWorldCount() {
+    try {
+        return await db.worlds.count()
+    } catch (error) {
+        console.error('Failed to get world count:', error)
+        return null
+    }
+}
+
 export async function worldList() {
     try {
         return await db.worlds.toArray()
@@ -31,34 +40,31 @@ export async function getWorldFromName(name) {
 
 export async function saveWorld(world) {
     try {
-        const name = world.name.trim()
-
-        const existing = await db.worlds.where('name').equals(name).first()
+        const existing = await db.worlds.where('id').equals(world.id).first()
 
         if (existing) {
-            const updatedWorld = {
-                id: existing.id,
-                name: name,
-                data: world.data ?? {}
-            }
-            await db.worlds.put(updatedWorld)
-            console.log(`World "${name}" saved (ID: ${existing.id})`)
-            return updatedWorld
+            await db.worlds.put(world)
+            console.log(`World "${world.name}" saved`)
+            return world
         } else {
-            const newWorld = {
-                name: name,
-                data: world.data ?? {}
-            }
-            const id = await db.worlds.add(newWorld)
-            console.log(`World "${name}" created (ID: ${id})`)
-            return newWorld
+            await db.worlds.add(world)
+            console.log(`World "${world.name}" created`)
+            return world
         }
     } catch (error) {
         console.error('Failed saving world:', error)
-        throw error
     }
 }
 
-// -----------------------------------------
+export async function renameWorld(id, newName) {
+    try {
+        const world = await db.worlds.get(id);
+        if (!world) {
+            throw new Error(`World with ID ${id} not found`);
+        }
 
-
+        await db.worlds.update(id, { name: newName });
+    } catch (error) {
+        console.error('Rename failed:', error);
+    }
+}
