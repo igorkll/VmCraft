@@ -2,6 +2,7 @@ import * as Gui from './Gui.js';
 import * as WorldManager from './WorldManager.js';
 import * as Game from './Game.js';
 import * as Modals from './Modals.js';
+import * as Kastili from './Kastili.js';
 
 // -------------------------------- create menu
 
@@ -61,6 +62,7 @@ function addTitle(menu, name) {
 function addScrollBox(menu) {
     const scrollbox = document.createElement("div")
     scrollbox.classList.add("scroll-box")
+    Kastili.attachScrollboxPadding(scrollbox)
 
     getMenu(menu).appendChild(scrollbox)
     return scrollbox

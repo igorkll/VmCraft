@@ -109,6 +109,10 @@ body > * {
     gap: 10px;
 }
 
+.scroll-box.has-scrollbar {
+    padding-right: 10px;
+}
+
 ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
