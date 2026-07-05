@@ -115,7 +115,7 @@ function openSubMenu(name) {
 addSubMenu("main")
 addSubMenu("worlds")
 
-function addButton(menu, name, callback, height=null) {
+function addButton(menu, name, callback, height=null, additionalButtons=[]) {
     const btnhost = document.createElement("div")
     btnhost.classList.add("game-menu-hor")
 
@@ -126,6 +126,10 @@ function addButton(menu, name, callback, height=null) {
     if (height) btn.style.height = height
     btn.addEventListener("pointerup", callback)
     btnhost.appendChild(btn)
+
+    additionalButtons.forEach(additionalBtn => {
+        btnhost.appendChild(additionalBtn)
+    })
 
     getMenu(menu).appendChild(btnhost)
     return btn
@@ -138,9 +142,19 @@ function loadWorld() {
 }
 
 function refreshWorldsList() {
+
+    const serviceHeight = '40px'
     addButton("worlds", "< BACK", () => {
         openSubMenu("main")
-    })
+    }, serviceHeight, [
+        addButton("worlds", "NEW WORLD", () => {
+            openSubMenu("main")
+        }, serviceHeight),
+
+        addButton("worlds", "IMPORT", () => {
+            openSubMenu("main")
+        }, serviceHeight)
+    ])
 }
 
 refreshWorldsList()

@@ -78,6 +78,7 @@ body > * {
 
     pointer-events: initial;
     background-color: #888888;
+    border: #444444 ridge 2px;
 }
 
 .game-menu {
@@ -86,7 +87,7 @@ body > * {
     justify-content: flex-start;
     align-items: stretch;
     gap: 20px;
-    width: 300px;
+    width: 600px;
 }
 
 .game-menu-hor {
@@ -94,7 +95,7 @@ body > * {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 20px;
+    gap: 10px;
 }
 
 .menu-button {
