@@ -106,7 +106,7 @@ maybe it's better to preserve it for future generations?...
 Spare your labor...`
 
 function deleteWorldModal(world) {
-    Modals.yesnoInput("DELETE WORLD? (" + world.name + ")", deleteWorldDescription).then(accept => {
+    Modals.modalYesno("DELETE WORLD? (" + world.name + ")", deleteWorldDescription).then(accept => {
         if (accept) {
             WorldManager.deleteWorld(world.id)
             refreshWorldsList()
@@ -124,8 +124,14 @@ function newWorldModal() {
 }
 
 function importWorldModal() {
-
-    refreshWorldsList()
+    Modals.windowSelectJsonFile(world => {
+        world.id = undefined
+        WorldManager.saveWorld(world, true)
+        refreshWorldsList()
+        Modals.modalShow("WORLD IS IMPORTED", `name: ${world.name}`)
+    }).then().catch(err => {
+        Modals.modalShow("IMPORT ERROR", err)
+    })
 }
 
 function addWorldToList(menu, world) {
