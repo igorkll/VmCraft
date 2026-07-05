@@ -124,13 +124,14 @@ function newWorldModal() {
 }
 
 function importWorldModal() {
-    Modals.windowSelectJsonFile(world => {
+    Modals.windowSelectJsonFile().then(world => {
         world.id = undefined
         WorldManager.saveWorld(world, true)
         refreshWorldsList()
         Modals.modalShow("WORLD IS IMPORTED", `name: ${world.name}`)
-    }).then().catch(err => {
+    }).catch(err => {
         Modals.modalShow("IMPORT ERROR", err)
+        console.error(`Failed to import: ${err}`)
     })
 }
 
