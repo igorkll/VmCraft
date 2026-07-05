@@ -86,7 +86,7 @@ body > * {
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    gap: 20px;
+    gap: 10px;
     width: 600px;
 }
 
@@ -115,6 +115,15 @@ body > * {
 .menu-button:active {
     border: #444444 solid 2px;
     background-color: #bbbbbb;
+}
+
+.menu-button-highlight {
+    background-color: #f2baa6;
+}
+
+.menu-button-highlight:active {
+    border: #444444 solid 2px;
+    background-color: #bfaa66;
 }
 
 .menu-title {

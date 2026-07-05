@@ -61,25 +61,40 @@ function loadWorld() {
 
 }
 
-function addWorldToList(name) {
+function smallSecondButton(btn) {
+    btn.style.flex = ''
+    btn.style.width = '60px'
+}
+
+function highlightButton(btn) {
+    btn.classList.add("menu-button-highlight")
+}
+
+function addWorldToList(name, highlight=false) {
     const btn_rename = addButton("worlds", "B", () => {
     }, null, true)
 
     const btn_delete = addButton("worlds", "A", () => {
     }, null, true)
 
-    btn_rename.style.flex = ''
-    btn_delete.style.flex = ''
+    smallSecondButton(btn_rename)
+    smallSecondButton(btn_delete)
 
-    addButton("worlds", name, () => {
+    const btn_loadWorld = addButton("worlds", name, () => {
         
     }, null, [btn_rename, btn_delete])
+
+    if (highlight) {
+        highlightButton(btn_loadWorld)
+        highlightButton(btn_rename)
+        highlightButton(btn_delete)
+    }
 }
 
 function refreshWorldsList() {
     addTitle("worlds", "WORLDS")
 
-    addWorldToList("test1")
+    addWorldToList("test1", true)
     addWorldToList("test2")
 
     const serviceHeight = '40px'
