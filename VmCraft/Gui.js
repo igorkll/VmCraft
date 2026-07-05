@@ -52,7 +52,7 @@ export function isControlLocked() {
     return !!(modalRoot || menuState)
 }
 
-// --------------------------------
+// -------------------------------- hotkeys
 
 changeMenuState(menuState)
 changeOverlayState(overlayState)
@@ -86,10 +86,19 @@ document.addEventListener('keydown', (e) => {
 
 // -------------------------------- menu
 
-const menuNames = [
-    "main",
-    "worlds"
-]
+// ------------ create menu
+
+const menuNames = []
+
+function addSubMenu(name) {
+    const submenu = document.createElement("div")
+    submenu.classList.add("modal-window")
+    submenu.classList.add("game-menu")
+    submenu.id = "menu-" + name
+    menu.appendChild(submenu)
+    menuNames.push(name)
+    return submenu
+}
 
 function getMenu(name) {
     return document.getElementById("menu-" + name)
@@ -103,14 +112,26 @@ function openSubMenu(name) {
     getMenu(name).style.display = ""
 }
 
-function addButton(menu, name, callback) {
+addSubMenu("main")
+addSubMenu("worlds")
+
+function addButton(menu, name, callback, height=null) {
+    const btnhost = document.createElement("div")
+    btnhost.classList.add("game-menu-hor")
+
     const btn = document.createElement("button")
+    btn.style.flex = '1'
     btn.textContent = name
     btn.classList.add("menu-button")
+    if (height) btn.style.height = height
     btn.addEventListener("pointerup", callback)
-    getMenu(menu).appendChild(btn)
+    btnhost.appendChild(btn)
+
+    getMenu(menu).appendChild(btnhost)
     return btn
 }
+
+// ------------ worlds menu
 
 function loadWorld() {
 
@@ -122,7 +143,9 @@ function refreshWorldsList() {
     })
 }
 
-// ------------ main menu buttons
+refreshWorldsList()
+
+// ------------ main buttons
 
 addButton("main", "RESUME", () => {
     changeMenuState(false)
@@ -137,4 +160,3 @@ addButton("main", "CLOSE", () => {
 })
 
 openSubMenu("main")
-refreshWorldsList()
