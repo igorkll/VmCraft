@@ -1,5 +1,6 @@
 import * as Three from 'three'
-import * as Gui from './Gui.js';
+import * as Gui from './Gui.js'
+import * as WorldManager from './WorldManager.js';
 import { World } from './Objects/World.js'
 import { GameBasic } from './Objects/GameBasic.js'
 
@@ -25,9 +26,12 @@ scene.add(ambientLight)
 
 const gameBasic = new GameBasic(renderer, scene)
 
-const world = new World(gameBasic)
-
 document.body.appendChild(renderer.domElement)
+
+let world
+WorldManager.worldList().then(worlds => {
+    world = new World(gameBasic, worlds[0] || null)
+})
 
 // ---------------------- frame handle
 
@@ -51,15 +55,18 @@ function frameHandle() {
 
     timer.update()
     delta = timer.getDelta()
-    world.update(delta)
-    renderer.render(scene, world.player.camera)
-
-    Gui.updateDebugOverlay(getDebugOverlayText())
+    if (world) {
+        world.update(delta)
+        renderer.render(scene, world.player.camera)
+        Gui.updateDebugOverlay(getDebugOverlayText())
+    }
 }
 frameHandle()
 
 window.addEventListener('resize', () => {
-    world.player.camera.aspect = window.innerWidth / window.innerHeight
-    world.player.camera.updateProjectionMatrix()
+    if (world) {
+        world.player.camera.aspect = window.innerWidth / window.innerHeight
+        world.player.camera.updateProjectionMatrix()
+    }
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
