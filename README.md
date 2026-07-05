@@ -3,6 +3,15 @@
 rather an experimental project. I wanted to work with virtual machines and 3D graphics on the web  
 Nevertheless, it works and the VMs start up  
 
+## game control
+* esc - release the cursor
+* ~ - close/open menu
+* wasd - move
+* shift - sit down/slow down
+* alt - sprint
+* f11 - fullscreen
+* f3 - show debug
+
 ## robot control
 the robot is controlled via the pseudo-file /dev/ttyS0  
 send a command with a \n character at the end. you will receive a response from the robot in the same way with a \n character at the end  
