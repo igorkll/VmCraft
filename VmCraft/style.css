@@ -122,8 +122,7 @@ body > * {
 }
 
 .menu-button-highlight:active {
-    border: #444444 solid 2px;
-    background-color: #bfaa66;
+    background-color: #b58a7a;
 }
 
 .menu-title {
