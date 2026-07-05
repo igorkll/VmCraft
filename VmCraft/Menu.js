@@ -91,7 +91,14 @@ function highlightButton(btn) {
 }
 
 function renameWorldModal(world) {
-
+    Modals.modalInput("NEW WORLD", world.name).then(name => {
+        if (name) {
+            name = name.trim()
+            if (name != world.name) {
+                WorldManager.renameWorld(world.id, name).then(refreshWorldsList)
+            }
+        }
+    })
 }
 
 function deleteWorldModal(world) {
@@ -100,10 +107,10 @@ function deleteWorldModal(world) {
 }
 
 function newWorldModal() {
-    Modals.modalInput("NEW WORLD NAME").then(name => {
+    Modals.modalInput("NEW WORLD", "world test").then(name => {
         if (name) {
-            WorldManager.saveWorld({name}, true)
-            refreshWorldsList()
+            name = name.trim()
+            WorldManager.saveWorld({name}, true).then(refreshWorldsList)
         }
     })
 }
