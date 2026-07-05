@@ -125,7 +125,7 @@ function refreshWorldsList() {
 // ------------ main menu buttons
 
 addButton("main", "RESUME", () => {
-    
+    changeMenuState(false)
 })
 
 addButton("main", "WORLDS", () => {
