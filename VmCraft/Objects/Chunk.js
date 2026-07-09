@@ -154,20 +154,9 @@ export class Chunk {
             // Если нужны текстуры, используйте map и атлас
         });
     
-        // 9. Создаём меш и позиционируем его
-        this.object = new Three.Mesh(geometry, material);
-        // Позиция чанка в мировых координатах (предположим, что this.chunkX, this.chunkZ – индексы чанка)
-        // Обычно: worldX = chunkX * chunkSize, worldZ = chunkZ * chunkSize, y = 0
-        const worldPos = new Three.Vector3(
-            this.chunkX * chunkSize,
-            0,
-            this.chunkZ * chunkSize
-        );
-        // Или используем метод getGlobalPosition(), если он уже даёт центр чанка – тогда добавляем смещение на половину размера
-        // this.object.position.copy(this.getGlobalPosition().add(new Three.Vector3(15.5, 15.5, 15.5)));
-        this.object.position.copy(worldPos);
-    
-        this.gameBasic.scene.add(this.object);
+        this.object = new Three.Mesh(geometry, material)
+        this.object.position.copy(this.getGlobalPosition().add(new Three.Vector3(15.5, 15.5, 15.5)))
+        this.gameBasic.scene.add(this.object)
         this.needUpdateMesh = false;
     }
 
