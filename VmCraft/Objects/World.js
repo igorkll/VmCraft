@@ -19,8 +19,12 @@ export class World {
 
         this.createPlayer(new Three.Vector3(0, 10, 0))
         this.createInteractive(new Three.Vector3(50, 0, 0), Robot)
-        //this.createInteractive(new Three.Vector3(50, 0, 50), Robot)
-        //this.createInteractive(new Three.Vector3(50, 0, 100), Robot)
+
+        for (let ix = -15; ix <= 15; ix++) {
+            for (let iz = -15; iz <= 15; iz++) {
+                this.setBlock(new Three.Vector3(ix, 0, iz), 1)
+            }
+        }
     }
 
     update(delta) {

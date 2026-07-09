@@ -18,17 +18,150 @@ export class Chunk {
 
     updateMesh() {
         if (this.object != null) {
-            this.gameBasic.scene.remove(this.object)
-            this.object = null
+            this.gameBasic.scene.remove(this.object);
+            this.object.geometry.dispose();
+            this.object.material.dispose();
+            this.object = null;
         }
 
-        const geometry = new Three.BoxGeometry(32, 32, 32)
-        const material = new Three.MeshLambertMaterial({ color: Math.random() * 0xffffff })
-        this.object = new Three.Mesh(geometry, material)
-        this.object.position.copy(this.getGlobalPosition().add(new Three.Vector3(15.5, 15.5, 15.5)))
-        this.gameBasic.scene.add(this.object)
-        
-        this.needUpdateMesh = false
+        const positions = [];
+        const normals = [];
+        const indices = [];
+    
+        function addFace(x, y, z, dx, dy, dz, nx, ny, nz) {
+            const half = 0.5;
+            let v1, v2, v3, v4;
+            // Для простоты используем заранее заданные смещения для каждой оси
+            // В реальном проекте лучше вычислять универсально, но здесь распишем вручную для наглядности
+            if (nx === 1) { // +X
+                v1 = [x+half, y-half, z-half];
+                v2 = [x+half, y+half, z-half];
+                v3 = [x+half, y+half, z+half];
+                v4 = [x+half, y-half, z+half];
+            } else if (nx === -1) { // -X
+                v1 = [x-half, y-half, z+half];
+                v2 = [x-half, y+half, z+half];
+                v3 = [x-half, y+half, z-half];
+                v4 = [x-half, y-half, z-half];
+            } else if (ny === 1) { // +Y
+                v1 = [x-half, y+half, z-half];
+                v2 = [x+half, y+half, z-half];
+                v3 = [x+half, y+half, z+half];
+                v4 = [x-half, y+half, z+half];
+            } else if (ny === -1) { // -Y
+                v1 = [x-half, y-half, z+half];
+                v2 = [x+half, y-half, z+half];
+                v3 = [x+half, y-half, z-half];
+                v4 = [x-half, y-half, z-half];
+            } else if (nz === 1) { // +Z
+                v1 = [x+half, y-half, z+half];
+                v2 = [x+half, y+half, z+half];
+                v3 = [x-half, y+half, z+half];
+                v4 = [x-half, y-half, z+half];
+            } else if (nz === -1) { // -Z
+                v1 = [x-half, y-half, z-half];
+                v2 = [x-half, y+half, z-half];
+                v3 = [x+half, y+half, z-half];
+                v4 = [x+half, y-half, z-half];
+            }
+    
+            // Добавляем вершины (4 штуки)
+            const baseIndex = positions.length / 3;
+            positions.push(v1[0], v1[1], v1[2]);
+            positions.push(v2[0], v2[1], v2[2]);
+            positions.push(v3[0], v3[1], v3[2]);
+            positions.push(v4[0], v4[1], v4[2]);
+    
+            // Нормали одинаковы для всех вершин грани
+            for (let i = 0; i < 4; i++) {
+                normals.push(nx, ny, nz);
+            }
+    
+            // Индексы для двух треугольников (v1-v2-v3 и v1-v3-v4)
+            indices.push(
+                baseIndex, baseIndex+1, baseIndex+2,
+                baseIndex, baseIndex+2, baseIndex+3
+            );
+        }
+    
+        let chunkSize = this.gameBasic.chunkSize.x
+        for (let i = 0; i < chunkSize; i++) {
+            const blockType = this.blocks[i]
+            if (blockType === 0) continue
+
+            // Проверяем 6 соседей (с учётом границ чанка)
+            // Если соседний блок вне чанка – считаем его видимым (или можно проверять соседние чанки)
+            const neighbors = [
+                { dx: 1, dy: 0, dz: 0, nx: 1, ny: 0, nz: 0 },
+                { dx: -1, dy: 0, dz: 0, nx: -1, ny: 0, nz: 0 },
+                { dx: 0, dy: 1, dz: 0, nx: 0, ny: 1, nz: 0 },
+                { dx: 0, dy: -1, dz: 0, nx: 0, ny: -1, nz: 0 },
+                { dx: 0, dy: 0, dz: 1, nx: 0, ny: 0, nz: 1 },
+                { dx: 0, dy: 0, dz: -1, nx: 0, ny: 0, nz: -1 }
+            ];
+
+            for (const n of neighbors) {
+                const nx = x + n.dx;
+                const ny = y + n.dy;
+                const nz = z + n.dz;
+                // Проверяем, находится ли сосед в пределах чанка
+                let isVisible = false;
+                if (nx < 0 || nx >= chunkSize || ny < 0 || ny >= chunkSize || nz < 0 || nz >= chunkSize) {
+                    // Сосед за пределами чанка – грань видима (если не используется соседний чанк)
+                    isVisible = true;
+                } else {
+                    const neighborBlock = data[nx][ny][nz];
+                    if (neighborBlock === 0) { // сосед – воздух
+                        isVisible = true;
+                    }
+                    // Если блок непрозрачный – не добавляем грань
+                }
+
+                if (isVisible) {
+                    // Добавляем грань со смещением (x,y,z) и нормалью (nx,ny,nz)
+                    addFace(x, y, z, n.dx, n.dy, n.dz, n.nx, n.ny, n.nz);
+                }
+            }
+        }
+    
+        // 6. Если нет ни одной грани – создаём пустой объект или ничего не делаем
+        if (positions.length === 0) {
+            this.object = null;
+            this.needUpdateMesh = false;
+            return;
+        }
+    
+        // 7. Создаём BufferGeometry и заполняем атрибуты
+        const geometry = new Three.BufferGeometry();
+        geometry.setAttribute('position', new Three.Float32BufferAttribute(positions, 3));
+        geometry.setAttribute('normal', new Three.Float32BufferAttribute(normals, 3));
+        geometry.setIndex(indices);
+    
+        // Вычисляем bounding sphere (опционально)
+        geometry.computeBoundingSphere();
+    
+        // 8. Создаём материал (можно задать цвет или использовать текстуру)
+        // Для примера используем случайный цвет, но лучше брать цвет в зависимости от типа блока
+        const material = new Three.MeshLambertMaterial({
+            color: 0x8B8B8B, // серый цвет по умолчанию, или изменить на случайный
+            // Если нужны текстуры, используйте map и атлас
+        });
+    
+        // 9. Создаём меш и позиционируем его
+        this.object = new Three.Mesh(geometry, material);
+        // Позиция чанка в мировых координатах (предположим, что this.chunkX, this.chunkZ – индексы чанка)
+        // Обычно: worldX = chunkX * chunkSize, worldZ = chunkZ * chunkSize, y = 0
+        const worldPos = new Three.Vector3(
+            this.chunkX * chunkSize,
+            0,
+            this.chunkZ * chunkSize
+        );
+        // Или используем метод getGlobalPosition(), если он уже даёт центр чанка – тогда добавляем смещение на половину размера
+        // this.object.position.copy(this.getGlobalPosition().add(new Three.Vector3(15.5, 15.5, 15.5)));
+        this.object.position.copy(worldPos);
+    
+        this.gameBasic.scene.add(this.object);
+        this.needUpdateMesh = false;
     }
 
     loadChunk() {
@@ -60,6 +193,10 @@ export class Chunk {
 
     getBlockArrayIndex(localPosition) {
         return localPosition.x + (localPosition.y * this.gameBasic.chunkSize.x) + (localPosition.z * this.gameBasic.chunkSize.x * this.gameBasic.chunkSize.y)
+    }
+
+    getLocalPositionFromArrayIndex() {
+        return 
     }
 
     setBlock(localPosition, blockId) {
