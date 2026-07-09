@@ -89,6 +89,11 @@ export class Chunk {
             const blockType = this.blocks[i]
             if (blockType === 0) continue
 
+            const pos = this.getLocalPositionFromArrayIndex(i)
+            const x = pos.x
+            const y = pos.y
+            const z = pos.z
+
             // Проверяем 6 соседей (с учётом границ чанка)
             // Если соседний блок вне чанка – считаем его видимым (или можно проверять соседние чанки)
             const neighbors = [
@@ -110,7 +115,11 @@ export class Chunk {
                     // Сосед за пределами чанка – грань видима (если не используется соседний чанк)
                     isVisible = true;
                 } else {
-                    const neighborBlock = data[nx][ny][nz];
+                    const neighborBlock = this.blocks[this.getBlockArrayIndex({
+                        x: nx,
+                        y: ny,
+                        z: nz
+                    })]
                     if (neighborBlock === 0) { // сосед – воздух
                         isVisible = true;
                     }
@@ -124,9 +133,7 @@ export class Chunk {
             }
         }
     
-        // 6. Если нет ни одной грани – создаём пустой объект или ничего не делаем
         if (positions.length === 0) {
-            this.object = null;
             this.needUpdateMesh = false;
             return;
         }
@@ -195,8 +202,12 @@ export class Chunk {
         return localPosition.x + (localPosition.y * this.gameBasic.chunkSize.x) + (localPosition.z * this.gameBasic.chunkSize.x * this.gameBasic.chunkSize.y)
     }
 
-    getLocalPositionFromArrayIndex() {
-        return 
+    getLocalPositionFromArrayIndex(index) {
+        return new Three.Vector3(
+            index % this.gameBasic.chunkSize.x,
+            Math.floor(index / this.gameBasic.chunkSize.x) % this.gameBasic.chunkSize.y,
+            Math.floor(index / this.gameBasic.chunkSize.x / this.gameBasic.chunkSize.y) % this.gameBasic.chunkSize.z
+        )
     }
 
     setBlock(localPosition, blockId) {
