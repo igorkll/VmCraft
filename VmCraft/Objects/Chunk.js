@@ -45,15 +45,15 @@ export class Chunk {
                 v3 = [x-half, y+half, z-half];
                 v4 = [x-half, y-half, z-half];
             } else if (ny === 1) { // +Y
-                v1 = [x-half, y+half, z-half];
-                v2 = [x+half, y+half, z-half];
-                v3 = [x+half, y+half, z+half];
-                v4 = [x-half, y+half, z+half];
+                v1 = [x - half, y + half, z - half];
+                v2 = [x - half, y + half, z + half];
+                v3 = [x + half, y + half, z + half];
+                v4 = [x + half, y + half, z - half];
             } else if (ny === -1) { // -Y
-                v1 = [x-half, y-half, z+half];
-                v2 = [x+half, y-half, z+half];
-                v3 = [x+half, y-half, z-half];
-                v4 = [x-half, y-half, z-half];
+                v1 = [x - half, y - half, z + half];
+                v2 = [x - half, y - half, z - half];
+                v3 = [x + half, y - half, z - half];
+                v4 = [x + half, y - half, z + half];
             } else if (nz === 1) { // +Z
                 v1 = [x+half, y-half, z+half];
                 v2 = [x+half, y+half, z+half];
