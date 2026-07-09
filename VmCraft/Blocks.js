@@ -1,6 +1,8 @@
 
 export const blocks = [
     {
-        
+    },
+    {
+        yp: {}
     }
 ]
