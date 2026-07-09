@@ -158,7 +158,7 @@ export class Chunk {
         });
     
         this.object = new Three.Mesh(geometry, material)
-        this.object.position.copy(this.getGlobalPosition().add(new Three.Vector3(15.5, 15.5, 15.5)))
+        this.object.position.copy(this.getGlobalPosition())
         this.gameBasic.scene.add(this.object)
         this.needUpdateMesh = false;
     }
