@@ -11,6 +11,7 @@ export class Chunk {
         }
 
         this.needUpdateMesh = true
+        this.chunkBlockCount = this.gameBasic.chunkSize.x * this.gameBasic.chunkSize.y * this.gameBasic.chunkSize.z
         this.blocks = new Uint8Array(this.chunkBlockCount)
 
         this.loadChunk()
@@ -84,7 +85,7 @@ export class Chunk {
             );
         }
     
-        let chunkSize = this.gameBasic.chunkSize.x
+        const chunkSize = this.chunkBlockCount
         for (let i = 0; i < chunkSize; i++) {
             const blockType = this.blocks[i]
             if (blockType === 0) continue
@@ -93,6 +94,8 @@ export class Chunk {
             const x = pos.x
             const y = pos.y
             const z = pos.z
+
+            //console.log(x, y, z, blockType)
 
             // Проверяем 6 соседей (с учётом границ чанка)
             // Если соседний блок вне чанка – считаем его видимым (или можно проверять соседние чанки)
