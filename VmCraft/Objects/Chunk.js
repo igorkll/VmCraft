@@ -1,5 +1,6 @@
 import * as Three from "three"
 import * as Utils from "../Utils.js"
+import * as Blocks from "../Blocks.js"
 
 export class Chunk {
     constructor(gameBasic, world, pos) {
