@@ -20,8 +20,6 @@ export class World {
         this.createPlayer(new Three.Vector3(0, 10, 0))
         this.createInteractive(new Three.Vector3(50, 0, 0), Robot)
 
-        this.setBlock(new Three.Vector3(50, 0, 0), 1)
-
         for (let ix = -15; ix <= 15; ix++) {
             for (let iz = -15; iz <= 15; iz++) {
                 this.setBlock(new Three.Vector3(ix, 0, iz), 1)
