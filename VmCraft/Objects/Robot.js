@@ -128,7 +128,7 @@ export class Robot {
                     }
                 })
     
-                //this.interact()
+                this.interact()
             })
         })
 
