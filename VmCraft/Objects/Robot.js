@@ -212,9 +212,9 @@ export class Robot {
     }
 
     rawmove(x, y, z) {
-        this.data.targetX += x
-        this.data.targetY += y
-        this.data.targetZ += z
+        this.data.targetPos.x += x
+        this.data.targetPos.y += y
+        this.data.targetPos.z += z
         return true
     }
 
