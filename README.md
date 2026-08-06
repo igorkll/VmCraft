@@ -5,6 +5,11 @@ Nevertheless, it works and the VMs start up
 Play online: https://igorkll.github.io/VmCraft  
 Download: https://github.com/igorkll/VmCraft/releases  
 
+## chrome dev mode
+### for local testing without a web server,
+### you need to run chrome with special flags to disable some security checks
+* windows: "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="%USERPROFILE%\ChromeDev"
+
 ## game control
 * esc - release the cursor
 * ~ - close/open menu
