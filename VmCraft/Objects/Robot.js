@@ -90,7 +90,7 @@ export class Robot {
 
                     const ch = String.fromCharCode(byte)
 
-                    console.log("recive", ch)
+                    console.log("recive", byte, ch)
                     if (ch == '\n') {
                         console.log("process", recive_buffer)
 
