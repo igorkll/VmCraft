@@ -80,9 +80,12 @@ export class Robot {
                 let recive_buffer = ""
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
                     if (this.isBusy()) {
+                        console.log("robot busy")
                         this.emulator.serial0_send('busy\n')
                         return
                     }
+
+                    console.log("recive", recive_buffer)
 
                     const ch = String.fromCharCode(byte)
 
@@ -221,14 +224,16 @@ export class Robot {
     }
 
     update(delta) {
-        this.data.pos.x += this.mode_delta(this.data.targetPos.x - this.data.pos.x) * delta * this.data.speed
+        const axes = ['x', 'y', 'z'];
+        for (const axis of axes) {
+            this.data.pos[axis] += this.mode_delta(this.data.targetPos[axis] - this.data.pos[axis]) * delta * this.data.speed;
+        }
+
         this.data.rot += this.mode_delta(this.data.targetRot - this.data.rot) * delta * this.data.speed
         
-        this.stopped = Math.abs(this.data.targetX - this.data.pos.x) < 0.05 && Math.abs(this.data.targetY - this.data.pos.y) < 0.05 && Math.abs(this.data.targetY - this.data.pos.z) < 0.05
+        this.stopped = Math.abs(this.data.targetPos.x - this.data.pos.x) < 0.05 && Math.abs(this.data.targetPos.y - this.data.pos.y) < 0.05 && Math.abs(this.data.targetPos.z - this.data.pos.z) < 0.05
         if (this.stopped) {
-            this.data.pos.x = this.data.targetX
-            this.data.pos.y = this.data.targetY
-            this.data.pos.z = this.data.targetZ
+            this.data.pos = this.data.targetPos.clone()
         }
 
         this.stoppedrot = Math.abs(this.data.targetRot - this.data.rot) < 0.05
