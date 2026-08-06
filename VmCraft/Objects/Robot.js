@@ -80,7 +80,7 @@ export class Robot {
                 let recive_buffer = ""
 
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
-                    if (byte === 0xFF) return;
+                    if (byte === 0xFF || byte === 13) return;
 
                     if (this.isBusy()) {
                         console.log("robot busy")
