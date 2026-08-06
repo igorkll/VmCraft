@@ -156,7 +156,11 @@ export class Robot {
         this.screen.rotation.y = -Math.PI / 2
         this.object.add(this.screen)
 
+        let canvasRendering = false
         this.updateTimer = setInterval(() => {
+            if (canvasRendering) return
+            canvasRendering = true
+
             this.v86Container.style.display = 'block'
 
             html2canvas(this.v86Container, {
@@ -164,6 +168,14 @@ export class Robot {
                 useCORS: true,
                 scale: 1
             }).then(() => {
+                const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+                canvasRendering = false
+
+                            
+
                 vmTexture.needsUpdate = true
             })
 
