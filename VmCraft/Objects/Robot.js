@@ -78,20 +78,9 @@ export class Robot {
                 this.emulator.ready = true
 
                 let recive_buffer = ""
-                let skipBytes = 0
-
-                let sendResult = (text) => {
-                    this.emulator.serial0_send(text)
-                    skipBytes += text.length
-                }
 
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
                     if (byte === 0xFF) return;
-
-                    if (skipBytes > 0) {
-                        skipBytes--
-                        return
-                    }
 
                     if (this.isBusy()) {
                         console.log("robot busy")
@@ -133,7 +122,7 @@ export class Robot {
                         }
 
                         recive_buffer = ""
-                        sendResult(successfully ? 'successfully\n' : "failed\n")
+                        this.emulator.serial0_send(successfully ? 'successfully\n' : "failed\n")
                     } else {
                         recive_buffer += ch
                     }
