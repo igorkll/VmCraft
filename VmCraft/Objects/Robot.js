@@ -78,18 +78,33 @@ export class Robot {
                 this.emulator.ready = true
 
                 let recive_buffer = ""
+                let skipBytes = 0
+
+                let sendResult = (text) => {
+                    this.emulator.serial0_send(text)
+                    skipBytes += text.length
+                }
+
                 this.emulator.add_listener('serial0-output-byte', (byte) => {
+                    if (byte === 0xFF) return;
+
+                    if (skipBytes > 0) {
+                        skipBytes--
+                        return
+                    }
+
                     if (this.isBusy()) {
                         console.log("robot busy")
                         this.emulator.serial0_send('busy\n')
                         return
                     }
 
-                    console.log("recive", recive_buffer)
-
                     const ch = String.fromCharCode(byte)
 
+                    console.log("recive", ch)
                     if (ch == '\n') {
+                        console.log("process", recive_buffer)
+
                         let successfully = false
                         switch (recive_buffer) {
                             case "forward":
@@ -118,7 +133,7 @@ export class Robot {
                         }
 
                         recive_buffer = ""
-                        this.emulator.serial0_send(successfully ? 'successfully\n' : "failed\n")
+                        sendResult(successfully ? 'successfully\n' : "failed\n")
                     } else {
                         recive_buffer += ch
                     }
