@@ -128,7 +128,7 @@ export class Robot {
                     }
                 })
     
-                this.interact()
+                //this.interact()
             })
         })
 
@@ -168,10 +168,6 @@ export class Robot {
                 useCORS: true,
                 scale: 1
             }).then(() => {
-                const ctx = canvas.getContext('2d');
-            ctx.fillStyle = 'red';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
                 canvasRendering = false
 
                             
