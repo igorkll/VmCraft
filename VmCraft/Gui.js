@@ -77,6 +77,11 @@ updateHudState()
 changeDebugOverlayState(debugOverlayState)
 
 document.addEventListener('keydown', (e) => {
+    const tag = e.target.tagName
+    if (tag == "INPUT" || tag == "TEXTAREA" || e.target.isContentEditable) {
+        return
+    }
+    
     e.preventDefault()
 
     switch (e.code) {

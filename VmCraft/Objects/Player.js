@@ -69,8 +69,6 @@ export class Player {
 
         // ---- Обработчик нажатий клавиш ----
         document.addEventListener("keydown", (e) => {
-            e.preventDefault();
-
             switch (e.code) {
                 case "KeyW": this.keys.w = true; break;
                 case "KeyA": this.keys.a = true; break;
