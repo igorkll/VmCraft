@@ -200,3 +200,17 @@ body > * {
     height: 80%;
     object-fit: contain;
 }
+
+.menu-input-text {
+    all: unset;
+    cursor: pointer;
+    border: #222222 solid 2px;
+
+    background-color: #eeeeee;
+    height: 80px;
+
+    font-size: 30px;
+    color: #000000;
+
+    text-align: center;
+}

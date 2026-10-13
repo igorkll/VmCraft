@@ -21,10 +21,53 @@ function addModalDescription(modal, description) {
     modal.appendChild(descriptionObj)
 }
 
-export async function modalInput(title, defaultInput="") {
-    const modal = createBaseModal(title)
+function addModalInput(modal, defaultInput) {
+    const inputObj = document.createElement("input")
+    inputObj.classList.add("menu-input-text")
+    inputObj.type = 'text'
+    inputObj.value = defaultInput
 
-    Gui.openModalWindow(modal)
+    modal.appendChild(inputObj)
+    return inputObj
+}
+
+export async function modalInput(title, description=null, defaultInput="") {
+    const modal = createBaseModal(title)
+    if (description) addModalDescription(modal, description)
+
+    const inputObj = addModalInput(modal, defaultInput)
+
+    const enterButton = Menu.addButton(modal, "Enter")
+    const cancelButton = Menu.addButton(modal, "Cancel", null, null, [enterButton])
+
+    return new Promise((resolve) => {
+        let result = null
+        let current = defaultInput
+
+        cancelButton.addEventListener("click", () => {
+            Gui.closeModalWindow()
+        })
+
+        enterButton.addEventListener("click", () => {
+            result = current
+            Gui.closeModalWindow()
+        })
+
+        inputObj.addEventListener("input", (e) => {
+            current = e.target.value
+        })
+
+        inputObj.addEventListener("keydown", (e) => {
+            if (e.key == "Enter") {
+                result = current
+                Gui.closeModalWindow()
+            }
+        })
+
+        Gui.openModalWindow(modal, () => {
+            resolve(result)
+        })
+    });
 }
 
 export function modalYesno(title, description=null) {
@@ -40,12 +83,12 @@ export function modalYesno(title, description=null) {
         noButton.addEventListener("click", () => {
             result = false
             Gui.closeModalWindow()
-        });
+        })
 
         yesButton.addEventListener("click", () => {
             result = true
             Gui.closeModalWindow()
-        });
+        })
 
         Gui.openModalWindow(modal, () => {
             resolve(result)

@@ -92,7 +92,7 @@ function highlightButton(btn) {
 }
 
 function renameWorldModal(world) {
-    Modals.modalInput("NEW WORLD", world.name).then(name => {
+    Modals.modalInput("NEW WORLD", null, world.name).then(name => {
         if (name) {
             name = name.trim()
             if (name != world.name) {
@@ -120,7 +120,7 @@ function deleteWorldModal(world) {
 }
 
 function newWorldModal() {
-    Modals.modalInput("NEW WORLD", "world " + Utils.getRandomSuffix()).then(name => {
+    Modals.modalInput("NEW WORLD", null, "world " + Utils.getRandomSuffix()).then(name => {
         if (name) {
             name = name.trim()
             WorldManager.saveWorld({name}, true).then(refreshWorldsList)
