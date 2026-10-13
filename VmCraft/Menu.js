@@ -28,13 +28,13 @@ function openSubMenu(name) {
     Gui.openModalWindow(getMenu(name))
 }
 
-function addButton(menu, name, callback, height=null, additionalButtons=[]) {
+export function addButton(menu, name, callback=null, height=null, additionalButtons=[]) {
     const btn = document.createElement("button")
     btn.style.flex = '1'
     btn.innerHTML = name
     btn.classList.add("menu-button")
     if (height) btn.style.height = height
-    btn.addEventListener("pointerup", callback)
+    if (callback) btn.addEventListener("pointerup", callback)
 
     if (additionalButtons != true) {
         const btnhost = document.createElement("div")

@@ -1,15 +1,73 @@
 import * as Gui from './Gui.js'
+import * as Menu from './Menu.js'
+
+function createBaseModal(title) {
+    const modal = document.createElement("div")
+    modal.classList.add("modal-window")
+    modal.classList.add("modal-menu")
+
+    const titleObj = document.createElement("div")
+    titleObj.classList.add("menu-title")
+    titleObj.textContent = title
+    modal.appendChild(titleObj)
+
+    return modal
+}
+
+function addModalDescription(modal, description) {
+    const descriptionObj = document.createElement("div")
+    descriptionObj.classList.add("menu-description")
+    descriptionObj.textContent = description
+    modal.appendChild(descriptionObj)
+}
 
 export async function modalInput(title, defaultInput="") {
-    return defaultInput
+    const modal = createBaseModal(title)
+
+    Gui.openModalWindow(modal)
 }
 
-export async function modalYesno(title, description=null) {
-    return true
+export function modalYesno(title, description=null) {
+    const modal = createBaseModal(title)
+    if (description) addModalDescription(modal, description)
+
+    const noButton = Menu.addButton(modal, "No")
+    const yesButton = Menu.addButton(modal, "Yes", null, null, [noButton])
+
+    return new Promise((resolve) => {
+        let result = null
+
+        noButton.addEventListener("click", () => {
+            result = false
+            Gui.closeModalWindow()
+        });
+
+        yesButton.addEventListener("click", () => {
+            result = true
+            Gui.closeModalWindow()
+        });
+
+        Gui.openModalWindow(modal, () => {
+            resolve(result)
+        })
+    });
 }
 
-export async function modalShow(title, description=null) {
+export function modalShow(title, description=null) {
+    const modal = createBaseModal(title)
+    if (description) addModalDescription(modal, description)
 
+    const okayButton = Menu.addButton(modal, "Okay")
+
+    return new Promise((resolve) => {
+        okayButton.addEventListener("click", () => {
+            Gui.closeModalWindow()
+        })
+
+        Gui.openModalWindow(modal, () => {
+            resolve()
+        })
+    });
 }
 
 export async function windowSelectJsonFile() {
