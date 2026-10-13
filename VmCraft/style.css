@@ -178,3 +178,9 @@ body > * {
     width: 30px;
     height: 30px;
 }
+
+.button-img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}

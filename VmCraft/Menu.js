@@ -31,7 +31,7 @@ function openSubMenu(name) {
 function addButton(menu, name, callback, height=null, additionalButtons=[]) {
     const btn = document.createElement("button")
     btn.style.flex = '1'
-    btn.textContent = name
+    btn.innerHTML = name
     btn.classList.add("menu-button")
     if (height) btn.style.height = height
     btn.addEventListener("pointerup", callback)
@@ -143,15 +143,15 @@ function importWorldModal() {
 function addWorldToList(menu, world) {
     const highlight = isSelectedWorld(world)
 
-    const btn_export = addButton(menu, "C", () => {
+    const btn_export = addButton(menu, '<img class="button-img" src="textures/export.png"></img>', () => {
         Modals.windowExportFileAdvanced(world, world.name)
     }, null, true)
 
-    const btn_rename = addButton(menu, "B", () => {
+    const btn_rename = addButton(menu, '<img class="button-img" src="textures/rename.png"></img>', () => {
         renameWorldModal(world)
     }, null, true)
 
-    const btn_delete = addButton(menu, "A", () => {
+    const btn_delete = addButton(menu, '<img class="button-img" src="textures/delete.png"></img>', () => {
         deleteWorldModal(world)
     }, null, true)
 
