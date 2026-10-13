@@ -208,6 +208,8 @@ export class Player {
         this.controls.pointerSpeed = this.data.pointerSpeed;
         this.updateControls(delta);
         this.updateCamera(delta);
+
+        console.log(this.data.pos.y + height, this.data.pos.y + eyeHeight)
     }
 
     destroy() {

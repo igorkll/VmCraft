@@ -130,7 +130,7 @@ export class Chunk {
 
                 if (isVisible) {
                     // Добавляем грань со смещением (x,y,z) и нормалью (nx,ny,nz)
-                    addFace(x, y, z, n.dx, n.dy, n.dz, n.nx, n.ny, n.nz);
+                    addFace(x + 0.5, y + 0.5, z + 0.5, n.dx, n.dy, n.dz, n.nx, n.ny, n.nz);
                 }
             }
         }
