@@ -110,7 +110,7 @@ export class Player {
         const blockZ = Math.floor(pos.z);
 
         if (this.isBlockSolid(blockX, blockY, blockZ)) {
-            pos.y = blockY;
+            pos.y = blockY + 1;
             this.data.velocity.y = 0;
             this.data.onGround = true;
         } else {
@@ -154,7 +154,7 @@ export class Player {
         if (this.keys.a) move.sub(right)
         if (this.keys.d) move.add(right)
 
-        if (!this.data.fly && this.data.onGround && !this.oldKeys.up) {
+        if (this.keys.up && !this.data.fly && this.data.onGround && !this.oldKeys.up) {
             this.data.velocity.y += jumpSpeed;
             this.data.onGround = false;
         }
