@@ -31,8 +31,8 @@ export function modalYesno(title, description=null) {
     const modal = createBaseModal(title)
     if (description) addModalDescription(modal, description)
 
-    const noButton = Menu.addButton(modal, "No")
-    const yesButton = Menu.addButton(modal, "Yes", null, null, [noButton])
+    const yesButton = Menu.addButton(modal, "Yes")
+    const noButton = Menu.addButton(modal, "No", null, null, [yesButton])
 
     return new Promise((resolve) => {
         let result = null
