@@ -117,12 +117,10 @@ export class Player {
             this.data.onGround = false;
         }
 
-        if (this.data.velocity.y > 0) {
-            const headY = Math.ceil(pos.y + height);
-            if (this.isBlockSolid(blockX, headY, blockZ)) {
-                pos.y = headY - height;
-                this.data.velocity.y = 0;
-            }
+        const headY = Math.floor(pos.y + height);
+        if (this.isBlockSolid(blockX, headY, blockZ)) {
+            pos.y = headY - height;
+            this.data.velocity.y = 0;
         }
     }
 
@@ -154,7 +152,7 @@ export class Player {
         if (this.keys.a) move.sub(right)
         if (this.keys.d) move.add(right)
 
-        if (this.keys.up && !this.data.fly && this.data.onGround && !this.oldKeys.up) {
+        if (this.keys.up && !this.data.fly && this.data.onGround) {
             this.data.velocity.y += jumpSpeed;
             this.data.onGround = false;
         }
