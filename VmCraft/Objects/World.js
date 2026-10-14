@@ -14,9 +14,7 @@ export class World {
         this.loadWorld(worldData)
     }
 
-    loadWorld(worldData) {
-        this.destroy()
-
+    _defWorld() {
         this.createPlayer(new Three.Vector3(0, 10, 0))
         this.createInteractive(new Three.Vector3(10, 10, 0), Robot)
 
@@ -24,6 +22,24 @@ export class World {
             for (let iz = -15; iz <= 15; iz++) {
                 this.setBlock(new Three.Vector3(ix, 0, iz), 1)
             }
+        }
+    }
+
+    _loadWorld(worldData) {
+        this.createPlayer(new Three.Vector3(0, 0, 0))
+
+        this.player.data.pos = Utils.jGetVec(worldData.data.playerData.pos);
+    }
+
+    loadWorld(worldData) {
+        this.destroy()
+
+        console.log(worldData)
+
+        if (worldData?.data?.inited) {
+            this._loadWorld(worldData)
+        } else {
+            this._defWorld()
         }
     }
 
@@ -148,7 +164,10 @@ export class World {
     }
 
     serializeData() {
-        const worldData = {}
+        const worldData = {
+            inited: true,
+            playerData: this.player.data
+        }
 
         return worldData
     }

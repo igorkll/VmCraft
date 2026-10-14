@@ -208,8 +208,8 @@ export class Player {
 
         this.data.pos.add(this.data.velocity.clone().multiplyScalar(delta))
 
-        var voxel_velocity_drop_mul = 1
-        var speed_mul = Math.pow(Consts.velocity_drop * voxel_velocity_drop_mul, delta);
+        let voxel_velocity_drop_mul = 1
+        let speed_mul = Math.pow(Consts.velocity_drop * voxel_velocity_drop_mul, delta);
         this.data.velocity.x *= speed_mul
         if (this.data.fly) {
             this.data.velocity.y *= speed_mul

@@ -1,3 +1,4 @@
+import * as Three from "three"
 
 export function detectDoubleKey(keyCode, callback, delay = 300) {
     let lastTime = 0
@@ -56,4 +57,8 @@ export function getRandomSuffix() {
         suffix += getRandomHexNum()
     }
     return suffix
+}
+
+export function jGetVec(vec) {
+    return new Three.Vector3(vec.x, vec.y, vec.z)
 }
