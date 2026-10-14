@@ -59,6 +59,18 @@ export function getRandomSuffix() {
     return suffix
 }
 
-export function jGetVec(vec) {
+export function getVecFromObj(vec) {
     return new Three.Vector3(vec.x, vec.y, vec.z)
+}
+
+export function getNullObj() {
+    return {x: 0, y: 0, z: 0}
+}
+
+export function getObj(x, y, z) {
+    return {x, y, z}
+}
+
+export function anyClone(obj) {
+    return Object.assign({}, obj)
 }

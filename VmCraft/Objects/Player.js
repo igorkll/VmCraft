@@ -8,10 +8,10 @@ const defaultHeight = 1.8;
 const deadZone = Math.PI / 180;
 
 export class Player {
-    constructor(gameBasic, pos) {
+    constructor(gameBasic) {
         this.gameBasic = gameBasic
         this.data = {
-            pos: pos,
+            pos: Utils.getNullObj(),
             fly: true,
             speed: 30,
             pointerSpeed: 1.5,
@@ -19,7 +19,7 @@ export class Player {
             flightSpeedMultiplier: 2,
             seatSpeedMultiplier: 0.5,
             onGround: false,
-            velocity: new Three.Vector3(0, 0, 0),
+            velocity: Utils.getNullObj(),
             jumpSpeed: 8,
             height: defaultHeight,
             eyeHeight: defaultHeight - 0.2,
@@ -206,7 +206,9 @@ export class Player {
             }
         }
 
-        this.data.pos.add(this.data.velocity.clone().multiplyScalar(delta))
+        this.data.pos.x += this.data.velocity.x * delta
+        this.data.pos.y += this.data.velocity.y * delta
+        this.data.pos.z += this.data.velocity.z * delta
 
         let voxel_velocity_drop_mul = 1
         let speed_mul = Math.pow(Consts.velocity_drop * voxel_velocity_drop_mul, delta);

@@ -157,7 +157,7 @@ export class Chunk {
         });
     
         this.object = new Three.Mesh(geometry, material)
-        this.object.position.copy(this.getGlobalPosition())
+        this.object.position.copy(Utils.getVecFromObj(this.getGlobalPosition()))
         this.gameBasic.scene.add(this.object)
         this.needUpdateMesh = false;
     }
@@ -178,15 +178,22 @@ export class Chunk {
     }
 
     getGlobalPosition() {
-        return this.data.pos.clone().multiply(this.gameBasic.chunkSize)
+        //return this.data.pos.clone().multiply(this.gameBasic.chunkSize)
+        const pos = this.data.pos
+        const chunkSize = this.gameBasic.chunkSize
+        return Utils.getObj(pos * chunkSize, pos * chunkSize, pos * chunkSize)
     }
 
     getGlobalPositionFromLocalPosition(pos) {
-        return this.getGlobalPosition().clone().add(pos)
+        //return this.getGlobalPosition().clone().add(pos)
+        const globalPos = this.getGlobalPosition()
+        return Utils.getObj(globalPos.x + pos.x, globalPos.y + pos.y, globalPos.z + pos.z)
     }
 
     getLocalPositionFromGlobalPosition(pos) {
-        return pos.clone().sub(this.getGlobalPosition())
+        //return pos.clone().sub(this.getGlobalPosition())
+        const gpos = this.getGlobalPosition()
+        return Utils.getObj(pos.x - gpos.x, pos.y - gpos.y, pos.z - gpos.z)
     }
 
     getBlockArrayIndex(localPosition) {

@@ -15,26 +15,28 @@ export class World {
     }
 
     _defWorld() {
-        this.createPlayer(new Three.Vector3(0, 10, 0))
-        this.createInteractive(new Three.Vector3(10, 10, 0), Robot)
+        this.createPlayer({
+            pos: Utils.getObj(0, 10, 0)
+        })
+        
+        this.createInteractive({
+            pos: Utils.getObj(10, 10, 0)
+        }, Robot)
 
         for (let ix = -15; ix <= 15; ix++) {
             for (let iz = -15; iz <= 15; iz++) {
-                this.setBlock(new Three.Vector3(ix, 0, iz), 1)
+                this.setBlock(Utils.getObj(ix, 0, iz), 1)
             }
         }
     }
 
     _loadWorld(worldData) {
-        this.createPlayer(new Three.Vector3(0, 0, 0))
-
-        this.player.data.pos = Utils.jGetVec(worldData.data.playerData.pos);
+        this.createPlayer(worldData.data.playerData.pos)
+        this.player.data = worldData.data.playerData;
     }
 
     loadWorld(worldData) {
         this.destroy()
-
-        console.log(worldData)
 
         if (worldData?.data?.inited) {
             this._loadWorld(worldData)
@@ -106,8 +108,9 @@ export class World {
         return null
     }
 
-    createInteractive(globalPosition, constructor, ...args) {
-        const interactive = new constructor(this.gameBasic, globalPosition, ...args)
+    createInteractive(fields, constructor, ...args) {
+        const interactive = new constructor(this.gameBasic, ...args)
+        Object.assign(interactive.data, fields)
         this.updateInteractivePrepair(interactive)
         interactive.init()
         this.updateInteractive(interactive)
@@ -115,9 +118,11 @@ export class World {
         return interactive
     }
 
-    createPlayer(playerPosition) {
+    createPlayer(fields) {
+        const playerPosition = fields?.pos || Utils.getNullObj()
         this.getChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
-        const player = new Player(this.gameBasic, playerPosition)
+        const player = new Player(this.gameBasic)
+        Object.assign(player.data, fields)
         this.updateInteractivePrepair(player)
         player.init()
         this.updateInteractive(player)

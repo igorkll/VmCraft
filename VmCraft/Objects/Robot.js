@@ -21,13 +21,13 @@ const imageParts = [
 ]
 
 export class Robot {
-    constructor(gameBasic, pos) {
+    constructor(gameBasic) {
         this.gameBasic = gameBasic
         this.data = {
             speed: 3,
 
-            pos: pos,
-            targetPos: pos,
+            pos: Utils.getNullObj(),
+            targetPos: null,
 
             rot: 0,
             targetRot: 0
@@ -35,6 +35,10 @@ export class Robot {
     }
 
     init() {
+        if (this.data.targetPos == null) {
+            this.data.targetPos = Utils.anyClone(this.data.pos)
+        }
+
         this.object = new Three.Mesh(geometry, material)
         this.gameBasic.scene.add(this.object)
 
@@ -245,15 +249,15 @@ export class Robot {
         
         this.stopped = Math.abs(this.data.targetPos.x - this.data.pos.x) < 0.05 && Math.abs(this.data.targetPos.y - this.data.pos.y) < 0.05 && Math.abs(this.data.targetPos.z - this.data.pos.z) < 0.05
         if (this.stopped) {
-            this.data.pos = this.data.targetPos.clone()
+            this.data.pos = Utils.anyClone(this.data.targetPos)
         }
 
         this.stoppedrot = Math.abs(this.data.targetRot - this.data.rot) < 0.05
         if (this.stoppedrot) {
-            this.data.rot = this.data.targetRot
+            this.data.rot = Utils.anyClone(this.data.targetRot)
         }
 
-        this.object.position.copy(this.data.pos);
+        this.object.position.copy(Utils.getVecFromObj(this.data.pos));
         this.object.rotation.y = (Math.PI / 2) * -this.data.rot
     }
 
