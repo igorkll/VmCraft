@@ -9,7 +9,7 @@ export class Chunk {
         this.world = world
 
         this.data = {
-            pos: Utils.getNullObj()
+            pos: new Three.Vector3(0, 0, 0)
         }
 
         this.needUpdateMesh = true
@@ -20,21 +20,18 @@ export class Chunk {
 
     getSaveData() {
         return Object.assign({}, this.data, {
+            pos: Utils.getObjFromVec(this.data.pos),
             blocks: Array.from(this.blocks)
         })
     }
 
     setSaveData(data) {
         this.data = {
-            pos: data.pos
+            pos: Utils.getVecFromObj(data.pos)
         }
 
         this.blocks = new Uint8Array(data.blocks)
         this.needUpdateMesh = true
-    }
-
-    getObjPosition() {
-        return this.data.pos
     }
 
     updateMesh() {
@@ -244,22 +241,22 @@ export class Chunk {
     }
 
     getGlobalPosition() {
-        //return this.data.pos.clone().multiply(this.gameBasic.chunkSize)
-        const pos = this.data.pos
-        const chunkSize = this.gameBasic.chunkSize
-        return Utils.getObj(pos.x * chunkSize.x, pos.y * chunkSize.y, pos.z * chunkSize.z)
+        return this.data.pos.clone().multiply(this.gameBasic.chunkSize)
+        //const pos = this.data.pos
+        //const chunkSize = this.gameBasic.chunkSize
+        //return Utils.getObj(pos.x * chunkSize.x, pos.y * chunkSize.y, pos.z * chunkSize.z)
     }
 
     getGlobalPositionFromLocalPosition(pos) {
-        //return this.getGlobalPosition().clone().add(pos)
-        const globalPos = this.getGlobalPosition()
-        return Utils.getObj(globalPos.x + pos.x, globalPos.y + pos.y, globalPos.z + pos.z)
+        return this.getGlobalPosition().clone().add(pos)
+        //const globalPos = this.getGlobalPosition()
+        //return Utils.getObj(globalPos.x + pos.x, globalPos.y + pos.y, globalPos.z + pos.z)
     }
 
     getLocalPositionFromGlobalPosition(pos) {
-        //return pos.clone().sub(this.getGlobalPosition())
-        const gpos = this.getGlobalPosition()
-        return Utils.getObj(pos.x - gpos.x, pos.y - gpos.y, pos.z - gpos.z)
+        return pos.clone().sub(this.getGlobalPosition())
+        //const gpos = this.getGlobalPosition()
+        //return Utils.getObj(pos.x - gpos.x, pos.y - gpos.y, pos.z - gpos.z)
     }
 
     getBlockArrayIndex(localPosition) {
@@ -271,11 +268,16 @@ export class Chunk {
     }
 
     getLocalPositionFromArrayIndex(index) {
-        return {
-            x: index % this.gameBasic.chunkSize.x,
-            y: Math.floor(index / this.gameBasic.chunkSize.x) % this.gameBasic.chunkSize.y,
-            z: Math.floor(index / this.gameBasic.chunkSize.x / this.gameBasic.chunkSize.y) % this.gameBasic.chunkSize.z
-        }
+        return new Three.Vector3(
+            index % this.gameBasic.chunkSize.x,
+            Math.floor(index / this.gameBasic.chunkSize.x) % this.gameBasic.chunkSize.y,
+            Math.floor(index / this.gameBasic.chunkSize.x / this.gameBasic.chunkSize.y) % this.gameBasic.chunkSize.z
+        )
+        //return {
+        //    x: index % this.gameBasic.chunkSize.x,
+        //    y: Math.floor(index / this.gameBasic.chunkSize.x) % this.gameBasic.chunkSize.y,
+        //    z: Math.floor(index / this.gameBasic.chunkSize.x / this.gameBasic.chunkSize.y) % this.gameBasic.chunkSize.z
+        //}
     }
 
     setBlock(localPosition, blockId) {

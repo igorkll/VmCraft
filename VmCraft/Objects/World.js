@@ -22,16 +22,16 @@ export class World {
         console.log("loading world: default")
 
         this.player = this.createCharacter({
-            pos: Utils.getObj(0, 10, 0)
+            pos: new Three.Vector3(0, 10, 0)
         }, Player)
         
         this.createInteractive({
-            pos: Utils.getObj(10, 10, 0)
+            pos: new Three.Vector3(10, 10, 0)
         }, Robot)
 
         for (let ix = -15; ix <= 15; ix++) {
             for (let iz = -15; iz <= 15; iz++) {
-                this.setBlock(Utils.getObj(ix, 0, iz), 1)
+                this.setBlock(new Three.Vector3(ix, 0, iz), 1)
             }
         }
     }
@@ -72,7 +72,7 @@ export class World {
             for (let ix = cx - rx; ix <= cx + rx; ix++)
                 for (let iy = cy - ry; iy <= cy + ry; iy++)
                     for (let iz = cz - rz; iz <= cz + rz; iz++)
-                        needed.add(this.getChunk(Utils.getObj(ix, iy, iz)))
+                        needed.add(this.getChunk(new Three.Vector3(ix, iy, iz)))
         }
     
         for (let i = this.loadedChunks.length - 1; i >= 0; i--) {
@@ -227,7 +227,7 @@ export class World {
     }
 
     getChunk(chunkPosition, forceLoad=true) {
-        let chunk = this.loadedChunks.find(obj => Utils.v3eq(obj.data.pos, chunkPosition))
+        let chunk = this.loadedChunks.find(obj => obj.data.pos.equals(chunkPosition))
         if (forceLoad && chunk == null) {
             chunk = this.loadChunk(chunkPosition)
         }
@@ -285,7 +285,7 @@ export class World {
     }
 
     updateChunkData(chunk) {
-        const chunkData = this.allChunksData.find(obj => Utils.v3eq(obj.pos, chunk.getObjPosition()))
+        const chunkData = this.allChunksData.find(obj => Utils.v3eq(obj.pos, chunk.data.pos))
         const saveData = this.getChunkSaveData(chunk)
         if (chunkData == null) {
             this.allChunksData.push(saveData)

@@ -27,8 +27,8 @@ export class Robot {
         this.data = {
             speed: 3,
 
-            pos: Utils.getNullObj(),
-            targetPos: Utils.getNullObj(),
+            pos: new Three.Vector3(0, 0, 0),
+            targetPos: new Three.Vector3(0, 0, 0),
 
             rot: 0,
             targetRot: 0
@@ -36,12 +36,17 @@ export class Robot {
     }
 
     getSaveData() {
-        return this.data
+        return Object.assign({}, this.data, {
+            pos: Utils.getObjFromVec(this.data.pos),
+            targetPos: Utils.getObjFromVec(this.data.targetPos)
+        })
     }
 
     setSaveData(data) {
-        this.data = data
-        this.data.targetPos = this.data.pos
+        this.data = Object.assign({}, data, {
+            pos: Utils.getVecFromObj(data.pos),
+            targetPos: Utils.getVecFromObj(data.targetPos)
+        })
     }
 
     init() {
@@ -255,7 +260,7 @@ export class Robot {
         
         this.stopped = Math.abs(this.data.targetPos.x - this.data.pos.x) < 0.05 && Math.abs(this.data.targetPos.y - this.data.pos.y) < 0.05 && Math.abs(this.data.targetPos.z - this.data.pos.z) < 0.05
         if (this.stopped) {
-            this.data.pos = Utils.anyClone(this.data.targetPos)
+            this.data.pos = this.data.targetPos.clone()
         }
 
         this.stoppedrot = Math.abs(this.data.targetRot - this.data.rot) < 0.05

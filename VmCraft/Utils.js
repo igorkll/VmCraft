@@ -72,14 +72,6 @@ export function getNullObj() {
     return {x: 0, y: 0, z: 0}
 }
 
-export function getObj(x, y, z) {
-    return {x, y, z}
-}
-
-export function anyClone(obj) {
-    return Object.assign({}, obj)
-}
-
 export function v3eq(a, b) {
     return a.x === b.x && a.y === b.y && a.z === b.z
 }

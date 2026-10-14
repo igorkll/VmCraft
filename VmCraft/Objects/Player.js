@@ -11,7 +11,8 @@ export class Player {
     constructor(gameBasic) {
         this.gameBasic = gameBasic
         this.data = {
-            pos: Utils.getNullObj(),
+            pos: new Three.Vector3(0, 0, 0),
+            velocity: new Three.Vector3(0, 0, 0),
             fly: true,
             speed: 30,
             pointerSpeed: 1.5,
@@ -19,7 +20,6 @@ export class Player {
             flightSpeedMultiplier: 2,
             seatSpeedMultiplier: 0.5,
             onGround: false,
-            velocity: Utils.getNullObj(),
             jumpSpeed: 8,
             height: defaultHeight,
             eyeHeight: defaultHeight - 0.2,
@@ -31,11 +31,17 @@ export class Player {
     }
 
     getSaveData() {
-        return this.data
+        return Object.assign({}, this.data, {
+            pos: Utils.getObjFromVec(this.data.pos),
+            velocity: Utils.getObjFromVec(this.data.velocity)
+        })
     }
 
     setSaveData(data) {
-        this.data = data
+        this.data = Object.assign({}, data, {
+            pos: Utils.getVecFromObj(data.pos),
+            velocity: Utils.getVecFromObj(data.velocity)
+        })
     }
 
     init() {
