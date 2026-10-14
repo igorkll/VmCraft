@@ -132,6 +132,7 @@ export class Player {
             pos.y = blockY + 1;
             this.data.velocity.y = 0;
             this.data.onGround = true;
+            this.data.fly = false;
         } else {
             this.data.onGround = false;
         }
@@ -141,6 +142,10 @@ export class Player {
             pos.y = headY - this.data.height;
             this.data.velocity.y = 0;
         }
+    }
+
+    handleHorizontalCollisions() {
+        
     }
 
     updateControls(delta) {
@@ -212,6 +217,7 @@ export class Player {
         this.data.velocity.z *= speed_mul
         
         this.handleVerticalCollisions()
+        this.handleHorizontalCollisions()
         this.oldKeys = Object.assign({}, this.keys)
     }
 
