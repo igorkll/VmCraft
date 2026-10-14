@@ -260,8 +260,6 @@ export class Robot {
 
         this.object.position.copy(Utils.getVecFromObj(this.data.pos));
         this.object.rotation.y = (Math.PI / 2) * -this.data.rot
-
-        console.log(this.object.rotation.y)
     }
 
     isBusy() {
