@@ -5,7 +5,7 @@ import * as Gui from "../Gui.js";
 import * as Consts from "../Consts.js";
 
 const height = 1.8;
-const width = 0.2;
+const width = 0.6;
 const eyeHeight = height - 0.2;
 const eyeHeightSeat = height - 0.5;
 const deadZone = Math.PI / 180;
@@ -104,28 +104,41 @@ export class Player {
 
     handleVerticalCollisions() {
         const halfWidth = width / 2;
+        const pos = this.data.pos;
+
+        let col1 = false;
+        let col2 = false;
 
         for (let ix = -1; ix <= 1; ix += 2) {
             for (let iy = -1; iy <= 1; iy += 2) {
-                const pos = this.data.pos;
-                const blockX = Math.floor(pos.x);
+                const blockX = Math.floor(pos.x + (ix * halfWidth));
                 const blockY = Math.floor(pos.y);
-                const blockZ = Math.floor(pos.z);
+                const blockZ = Math.floor(pos.z + (iy * halfWidth));
 
                 if (this.isBlockSolid(blockX, blockY, blockZ)) {
-                    pos.y = blockY + 1;
-                    this.data.velocity.y = 0;
-                    this.data.onGround = true;
-                } else {
-                    this.data.onGround = false;
+                    col1 = true;
                 }
 
                 const headY = Math.floor(pos.y + height);
                 if (this.isBlockSolid(blockX, headY, blockZ)) {
-                    pos.y = headY - height;
-                    this.data.velocity.y = 0;
+                    col2 = true;
                 }
             }
+        }
+
+        if (col1) {
+            const blockY = Math.floor(pos.y);
+            pos.y = blockY + 1;
+            this.data.velocity.y = 0;
+            this.data.onGround = true;
+        } else {
+            this.data.onGround = false;
+        }
+
+        const headY = Math.floor(pos.y + height);
+        if (col2) {
+            pos.y = headY - height;
+            this.data.velocity.y = 0;
         }
     }
 
