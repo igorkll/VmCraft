@@ -13,6 +13,8 @@ export class World {
         this.worldId = worldData.id
         this.worldName = worldData.name
 
+        this.chunkLoadingTimerValue = 0
+
         this.loadWorld(worldData)
     }
 
@@ -80,6 +82,14 @@ export class World {
         }
     }
 
+    timerHandle() {
+        const chunkLoadersPositions = [{
+            pos: this.player.data.pos,
+            dist: Consts.chunk_loading_distance
+        }]
+        this.updateLoadedChunks(chunkLoadersPositions)
+    }
+
     update(delta) {
         this.updateInteractive(this.player)
         this.player.update(delta)
@@ -95,11 +105,11 @@ export class World {
             interactive.update(delta)
         }
 
-        const chunkLoadersPositions = [{
-            pos: this.player.data.pos,
-            dist: Consts.chunk_loading_distance
-        }]
-        this.updateLoadedChunks(chunkLoadersPositions)
+        this.chunkLoadingTimerValue += delta
+        if (this.chunkLoadingTimerValue >= Consts.chunk_loading_update_interval) {
+            this.chunkLoadingTimerValue = 0
+            this.timerHandle()
+        }
     }
 
     updateInteractivePrepair(interactive) {

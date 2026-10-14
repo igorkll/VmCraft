@@ -4,3 +4,4 @@ export const terminal_velocity = -50;
 export const velocity_drop = 0.00025;
 export const chunk_loading_distance = 64;
 export const chunk_loading_ver_distance_mul = 0.5;
+export const chunk_loading_update_interval = 1;
