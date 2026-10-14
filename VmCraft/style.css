@@ -156,6 +156,11 @@ body > * {
     color: #000000;
 
     text-align: center;
+
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .menu-button:active {
@@ -199,6 +204,11 @@ body > * {
     width: 80%;
     height: 80%;
     object-fit: contain;
+}
+
+::selection {
+    background: #000000;
+    color: #eeeeee;
 }
 
 .menu-input-text {

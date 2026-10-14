@@ -28,7 +28,7 @@ const gameBasic = new GameBasic(renderer, scene)
 
 document.body.appendChild(renderer.domElement)
 
-export let world
+export let world = null;
 
 (async () => {
     let _world = await WorldManager.getWorldFromId(WorldManager.getCurrentWorldId()) || await WorldManager.worldList()[0] || null

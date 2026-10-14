@@ -163,6 +163,7 @@ function addWorldToList(menu, world) {
         Game.loadWorld(world)
         refreshWorldsList()
     }, null, [btn_export, btn_rename, btn_delete])
+    btn_loadWorld.style.padding = "0px 8px 0px 8px";
 
     if (highlight) {
         highlightButton(btn_loadWorld)
