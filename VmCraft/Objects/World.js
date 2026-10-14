@@ -85,6 +85,7 @@ export class World {
         chunk.data.pos = chunkPosition
         this.loadedChunks.push(chunk)
         this.updateChunkData(chunk)
+        _genChunk(chunk)
         return chunk
     }
 
@@ -112,10 +113,19 @@ export class World {
     }
 
     unloadChunk(chunkPosition) {
-        this.loadedChunks = this.loadedChunks.filter(obj => {
-            if (Utils.v3eq(obj.data.pos, chunkPosition)) {
-                this.updateChunkData(obj)
-                obj.destroy()
+        this.loadedChunks = this.loadedChunks.filter(chunk => {
+            if (Utils.v3eq(chunk.data.pos, chunkPosition)) {
+                this.updateChunkData(chunk)
+
+                for (let i = this.interactives.length - 1; i >= 0; i--) {
+                    const obj = this.interactives[i]
+                    if (obj.chunk == chunk) {
+                        obj.destroy()
+                        this.interactives.splice(i, 1)
+                    }
+                }
+
+                chunk.destroy()
                 return false
             }
             return true
@@ -144,9 +154,6 @@ export class World {
     }
 
     createInteractive(fields, constructor, ...args) {
-        const interactivePosition = fields?.pos || Utils.getNullObj()
-        const chunk = this.getChunk(this.getChunkPositionFromGlobalPosition(interactivePosition), false)
-
         const interactive = new constructor(this.gameBasic, ...args)
         Object.assign(interactive.data, fields)
         this.updateInteractivePrepair(interactive)
