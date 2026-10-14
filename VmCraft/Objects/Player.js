@@ -2,8 +2,7 @@ import * as Three from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import * as Utils from "../Utils.js";
 import * as Gui from "../Gui.js";
-import * as Consts from '../Consts.js';
-import { Const } from "three/src/nodes/core/VarNode.js";
+import * as Consts from "../Consts.js";
 
 const height = 1.8;
 const width = 0.2;
