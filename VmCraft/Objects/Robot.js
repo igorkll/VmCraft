@@ -44,9 +44,10 @@ export class Robot {
 
     setSaveData(data) {
         this.data = Object.assign({}, data, {
-            pos: Utils.getVecFromObj(data.pos),
-            targetPos: Utils.getVecFromObj(data.targetPos)
+            pos: Utils.getVecFromObj(data.pos)
         })
+
+        this.data.targetPos = this.data.pos.clone()
     }
 
     init() {
