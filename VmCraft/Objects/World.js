@@ -23,7 +23,7 @@ export class World {
         })
         
         this.createInteractive({
-            pos: Utils.getObj(10, 10, 0)
+            pos: Utils.getObj(50, 10, 0)
         }, Robot)
 
         for (let ix = -15; ix <= 15; ix++) {
@@ -85,7 +85,7 @@ export class World {
         chunk.data.pos = chunkPosition
         this.loadedChunks.push(chunk)
         this.updateChunkData(chunk)
-        _genChunk(chunk)
+        this._genChunk(chunk)
         return chunk
     }
 
@@ -164,9 +164,6 @@ export class World {
     }
 
     createPlayer(fields) {
-        const playerPosition = fields?.pos || Utils.getNullObj()
-        this.getChunk(this.getChunkPositionFromGlobalPosition(playerPosition))
-
         const player = new Player(this.gameBasic)
         Object.assign(player.data, fields)
         this.updateInteractivePrepair(player)
