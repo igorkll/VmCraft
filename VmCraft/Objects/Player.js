@@ -4,12 +4,8 @@ import * as Utils from "../Utils.js";
 import * as Gui from "../Gui.js";
 import * as Consts from "../Consts.js";
 
-const height = 1.8;
-const width = 0.6;
-const eyeHeight = height - 0.2;
-const eyeHeightSeat = height - 0.5;
+const defaultHeight = 1.8;
 const deadZone = Math.PI / 180;
-const jumpSpeed = 8
 
 export class Player {
     constructor(gameBasic, pos) {
@@ -23,7 +19,12 @@ export class Player {
             flightSpeedMultiplier: 2,
             seatSpeedMultiplier: 0.5,
             onGround: false,
-            velocity: new Three.Vector3(0, 0, 0)
+            velocity: new Three.Vector3(0, 0, 0),
+            jumpSpeed: 8,
+            height: defaultHeight,
+            eyeHeight: defaultHeight - 0.2,
+            eyeHeightSeat: defaultHeight - 0.2,
+            width: 0.6
         }
 
         this.oldControlLocked = false
@@ -34,8 +35,8 @@ export class Player {
 
         // ------------------ camera
         this.camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set(this.data.pos.x, this.data.pos.y + eyeHeight, this.data.pos.z);
-        this.camera.lookAt(this.data.pos.x + 1, this.data.pos.y + eyeHeight, this.data.pos.z);
+        this.camera.position.set(this.data.pos.x, this.data.pos.y + this.data.eyeHeight, this.data.pos.z);
+        this.camera.lookAt(this.data.pos.x + 1, this.data.pos.y + this.data.eyeHeight, this.data.pos.z);
 
         // ------------------ controls
         this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
@@ -103,7 +104,7 @@ export class Player {
 
 
     handleVerticalCollisions() {
-        const halfWidth = width / 2;
+        const halfWidth = this.data.width / 2;
         const pos = this.data.pos;
 
         let col1 = false;
@@ -119,7 +120,7 @@ export class Player {
                     col1 = true;
                 }
 
-                const headY = Math.floor(pos.y + height);
+                const headY = Math.floor(pos.y + this.data.height);
                 if (this.isBlockSolid(blockX, headY, blockZ)) {
                     col2 = true;
                 }
@@ -135,9 +136,9 @@ export class Player {
             this.data.onGround = false;
         }
 
-        const headY = Math.floor(pos.y + height);
+        const headY = Math.floor(pos.y + this.data.height);
         if (col2) {
-            pos.y = headY - height;
+            pos.y = headY - this.data.height;
             this.data.velocity.y = 0;
         }
     }
@@ -171,7 +172,7 @@ export class Player {
         if (this.keys.d) move.add(right)
 
         if (this.keys.up && !this.data.fly && this.data.onGround) {
-            this.data.velocity.y += jumpSpeed;
+            this.data.velocity.y += this.data.jumpSpeed;
             this.data.onGround = false;
         }
 
@@ -215,9 +216,9 @@ export class Player {
     }
 
     updateCamera(delta) {
-        let y = this.data.pos.y + eyeHeight;
+        let y = this.data.pos.y + this.data.eyeHeight;
         if (this.keys.down && !this.data.fly) {
-            y = this.data.pos.y + eyeHeightSeat;
+            y = this.data.pos.y + this.data.eyeHeightSeat;
         }
         this.camera.position.set(this.data.pos.x, y, this.data.pos.z);
     }
