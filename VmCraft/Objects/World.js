@@ -91,6 +91,7 @@ export class World {
     _loadChunk(chunkData) {
         const chunk = new Chunk(this.gameBasic, this)
         chunk.setSaveData(chunkData)
+        this.loadedChunks.push(chunk)
 
         if (chunkData.interactivesData != null) {
             chunkData.interactivesData.forEach(element => {
@@ -98,7 +99,6 @@ export class World {
             })
         }
 
-        this.loadedChunks.push(chunk)
         return chunk
     }
 
