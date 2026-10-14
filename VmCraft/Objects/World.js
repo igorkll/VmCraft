@@ -15,6 +15,8 @@ export class World {
     }
 
     _defWorld() {
+        console.log("loading world: default")
+
         this.createPlayer({
             pos: Utils.getObj(0, 10, 0)
         })
@@ -31,8 +33,9 @@ export class World {
     }
 
     _loadWorld(worldData) {
-        this.createPlayer(worldData.data.playerData.pos)
-        this.player.data = worldData.data.playerData
+        console.log("loading world: ", worldData)
+        
+        this.createPlayer(worldData.data.playerData)
 
 
     }
@@ -173,7 +176,18 @@ export class World {
     serializeData() {
         const worldData = {
             inited: true,
-            playerData: this.player.data
+            playerData: this.player.data,
+            interactivesData: []
+        }
+
+        if (this.interactives != null) {
+            for (let i = 0; i < this.interactives.length; i++) {
+                const obj = this.interactives[i]
+                worldData.interactivesData.push([
+                    obj.constructor.name,
+                    obj.data
+                ])
+            }
         }
 
         return worldData
