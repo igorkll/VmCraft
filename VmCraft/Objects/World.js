@@ -92,9 +92,11 @@ export class World {
         const chunk = new Chunk(this.gameBasic, this)
         chunk.setSaveData(chunkData)
 
-        chunkData.interactivesData.forEach(element => {
-            this.createInteractive(element[1], ObjectAssotiation.getClass(element[0]))
-        })
+        if (chunkData.interactivesData != null) {
+            chunkData.interactivesData.forEach(element => {
+                this.createInteractive(element[1], ObjectAssotiation.getClass(element[0]))
+            })
+        }
 
         this.loadedChunks.push(chunk)
         return chunk
@@ -143,7 +145,7 @@ export class World {
 
     createInteractive(fields, constructor, ...args) {
         const interactivePosition = fields?.pos || Utils.getNullObj()
-        const chunk = this.getChunk(this.getChunkPositionFromGlobalPosition(interactivePosition))
+        const chunk = this.getChunk(this.getChunkPositionFromGlobalPosition(interactivePosition), false)
 
         const interactive = new constructor(this.gameBasic, ...args)
         Object.assign(interactive.data, fields)
@@ -222,7 +224,7 @@ export class World {
 
         for (let i = 0; i < this.interactives.length; i++) {
             const obj = this.interactives[i]
-            if (obj.chunk == this.chunk) {
+            if (obj.chunk == chunk) {
                 additionalChunkData.interactivesData.push([
                     ObjectAssotiation.getName(obj),
                     obj.data
