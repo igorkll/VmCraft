@@ -3,6 +3,7 @@ import * as Utils from "../Utils.js"
 import { Player } from './Player.js'
 import { Robot } from './Robot.js'
 import { Chunk } from './Chunk.js'
+import * as ObjectAssotiation from "../ObjectAssotiation.js"
 import * as WorldManager from '../WorldManager.js';
 
 export class World {
@@ -37,7 +38,9 @@ export class World {
         
         this.createPlayer(worldData.data.playerData)
 
-
+        worldData.data.interactivesData.forEach(element => {
+            this.createInteractive(element[1], ObjectAssotiation.getClass(element[0]))
+        })
     }
 
     loadWorld(worldData) {
@@ -184,7 +187,7 @@ export class World {
             for (let i = 0; i < this.interactives.length; i++) {
                 const obj = this.interactives[i]
                 worldData.interactivesData.push([
-                    obj.constructor.name,
+                    ObjectAssotiation.getName(obj),
                     obj.data
                 ])
             }
