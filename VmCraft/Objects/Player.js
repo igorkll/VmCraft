@@ -2,17 +2,15 @@ import * as Three from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import * as Utils from "../Utils.js";
 import * as Gui from "../Gui.js";
+import * as Consts from '../Consts.js';
+import { Const } from "three/src/nodes/core/VarNode.js";
 
 const height = 1.8;
 const width = 0.2;
 const eyeHeight = height - 0.2;
 const eyeHeightSeat = height - 0.5;
 const deadZone = Math.PI / 180;
-const terminalVelocity = -50
-const gravity = 25
 const jumpSpeed = 8
-const velocity_drop = 0.00025
-const max_delta = 1 / 30
 
 export class Player {
     constructor(gameBasic, pos) {
@@ -106,23 +104,29 @@ export class Player {
 
 
     handleVerticalCollisions() {
-        const pos = this.data.pos;
-        const blockX = Math.floor(pos.x);
-        const blockY = Math.floor(pos.y);
-        const blockZ = Math.floor(pos.z);
+        const halfWidth = width / 2;
 
-        if (this.isBlockSolid(blockX, blockY, blockZ)) {
-            pos.y = blockY + 1;
-            this.data.velocity.y = 0;
-            this.data.onGround = true;
-        } else {
-            this.data.onGround = false;
-        }
+        for (let ix = -1; ix <= 1; ix += 2) {
+            for (let iy = -1; iy <= 1; iy += 2) {
+                const pos = this.data.pos;
+                const blockX = Math.floor(pos.x);
+                const blockY = Math.floor(pos.y);
+                const blockZ = Math.floor(pos.z);
 
-        const headY = Math.floor(pos.y + height);
-        if (this.isBlockSolid(blockX, headY, blockZ)) {
-            pos.y = headY - height;
-            this.data.velocity.y = 0;
+                if (this.isBlockSolid(blockX, blockY, blockZ)) {
+                    pos.y = blockY + 1;
+                    this.data.velocity.y = 0;
+                    this.data.onGround = true;
+                } else {
+                    this.data.onGround = false;
+                }
+
+                const headY = Math.floor(pos.y + height);
+                if (this.isBlockSolid(blockX, headY, blockZ)) {
+                    pos.y = headY - height;
+                    this.data.velocity.y = 0;
+                }
+            }
         }
     }
 
@@ -178,16 +182,16 @@ export class Player {
                 this.data.velocity.y -= current_speed_mul * this.data.speed * delta
             }
         } else {
-            this.data.velocity.y -= gravity * delta;
-            if (this.data.velocity.y < terminalVelocity) {
-                this.data.velocity.y = terminalVelocity;
+            this.data.velocity.y -= Consts.gravity * delta;
+            if (this.data.velocity.y < Consts.terminal_velocity) {
+                this.data.velocity.y = Consts.terminal_velocity;
             }
         }
 
         this.data.pos.add(this.data.velocity.clone().multiplyScalar(delta))
 
         var voxel_velocity_drop_mul = 1
-        var speed_mul = Math.pow(velocity_drop * voxel_velocity_drop_mul, delta);
+        var speed_mul = Math.pow(Consts.velocity_drop * voxel_velocity_drop_mul, delta);
         this.data.velocity.x *= speed_mul
         if (this.data.fly) {
             this.data.velocity.y *= speed_mul
@@ -207,7 +211,7 @@ export class Player {
     }
 
     update(delta) {
-        delta = Math.min(delta, max_delta)
+        delta = Math.min(delta, Consts.max_delta)
 
         this.controls.pointerSpeed = this.data.pointerSpeed;
         this.updateControls(delta);
