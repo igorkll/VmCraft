@@ -74,3 +74,7 @@ export function getObj(x, y, z) {
 export function anyClone(obj) {
     return Object.assign({}, obj)
 }
+
+export function v3eq(a, b) {
+    return a.x === b.x && a.y === b.y && a.z === b.z
+}
