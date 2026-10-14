@@ -3,6 +3,7 @@ import * as Utils from "../Utils.js"
 import { Player } from './Player.js'
 import { Robot } from './Robot.js'
 import { Chunk } from './Chunk.js'
+import * as Consts from '../Consts.js'
 import * as ObjectAssotiation from "../ObjectAssotiation.js"
 import * as WorldManager from '../WorldManager.js';
 
@@ -23,7 +24,7 @@ export class World {
         })
         
         this.createInteractive({
-            pos: Utils.getObj(50, 10, 0)
+            pos: Utils.getObj(10, 10, 0)
         }, Robot)
 
         for (let ix = -15; ix <= 15; ix++) {
@@ -51,6 +52,34 @@ export class World {
         }
     }
 
+    updateLoadedChunks(chunkLoaders) {
+        const needed = new Set()
+        const size = this.gameBasic.chunkSize
+    
+        for (const loader of chunkLoaders) {
+            const dist_h = loader.dist
+            const dist_v = loader.dist * Consts.chunk_loading_ver_distance_mul
+    
+            const cx = Math.floor(loader.pos.x / size.x) //center
+            const cy = Math.floor(loader.pos.y / size.y)
+            const cz = Math.floor(loader.pos.z / size.z)
+    
+            const rx = Math.ceil(dist_h / size.x) //radius
+            const ry = Math.ceil(dist_v / size.y)
+            const rz = Math.ceil(dist_h / size.z)
+    
+            for (let ix = cx - rx; ix <= cx + rx; ix++)
+                for (let iy = cy - ry; iy <= cy + ry; iy++)
+                    for (let iz = cz - rz; iz <= cz + rz; iz++)
+                        needed.add(this.getChunk(Utils.getObj(ix, iy, iz)))
+        }
+    
+        for (let i = this.loadedChunks.length - 1; i >= 0; i--) {
+            const chunk = this.loadedChunks[i]
+            if (!needed.has(chunk)) this.unloadChunk(chunk)
+        }
+    }
+
     update(delta) {
         this.updateInteractive(this.player)
         this.player.update(delta)
@@ -65,6 +94,12 @@ export class World {
             this.updateInteractive(interactive)
             interactive.update(delta)
         }
+
+        const chunkLoadersPositions = [{
+            pos: this.player.data.pos,
+            dist: Consts.chunk_loading_distance
+        }]
+        this.updateLoadedChunks(chunkLoadersPositions)
     }
 
     updateInteractivePrepair(interactive) {
@@ -77,7 +112,7 @@ export class World {
     }
 
     _genChunk(chunk) {
-
+        
     }
 
     _newChunk(chunkPosition) {
@@ -112,9 +147,9 @@ export class World {
         }
     }
 
-    unloadChunk(chunkPosition) {
-        this.loadedChunks = this.loadedChunks.filter(chunk => {
-            if (Utils.v3eq(chunk.data.pos, chunkPosition)) {
+    unloadChunk(chunk) {
+        this.loadedChunks = this.loadedChunks.filter(checkChunk => {
+            if (chunk == checkChunk) {
                 this.updateChunkData(chunk)
 
                 for (let i = this.interactives.length - 1; i >= 0; i--) {
