@@ -180,7 +180,8 @@ export class World {
         const worldData = {
             inited: true,
             playerData: this.player.data,
-            interactivesData: []
+            interactivesData: [],
+            chunks: {}
         }
 
         if (this.interactives != null) {
