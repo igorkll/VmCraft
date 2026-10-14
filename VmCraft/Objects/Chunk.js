@@ -227,7 +227,7 @@ export class Chunk {
                 this._createDebugMesh()
             }
         } else if (this.debugMesh) {
-            _disposeDebugMesh()
+            this._disposeDebugMesh()
         }
 
     }
