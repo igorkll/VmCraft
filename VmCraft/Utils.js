@@ -1,4 +1,5 @@
 import * as Three from "three"
+import * as Consts from "./Consts.js";
 
 export function detectDoubleKey(keyCode, callback, delay = 300) {
     let lastTime = 0
@@ -77,4 +78,15 @@ export function anyClone(obj) {
 
 export function v3eq(a, b) {
     return a.x === b.x && a.y === b.y && a.z === b.z
+}
+
+const TILE_SIZE = 1 / Consts.atlas_tiles
+
+export function tileUV(tileIndex) {
+    const tx = tileIndex % Consts.atlas_tiles
+    const ty = Math.floor(tileIndex / Consts.atlas_tiles)
+    // переворачиваем Y, потому что в three.js UV идут снизу вверх, а текстуры обычно сверху вниз
+    const u0 = tx * TILE_SIZE
+    const v0 = 1 - (ty + 1) * TILE_SIZE
+    return { u0, v0, u1: u0 + TILE_SIZE, v1: v0 + TILE_SIZE }
 }

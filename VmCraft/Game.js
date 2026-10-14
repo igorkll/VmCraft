@@ -1,5 +1,6 @@
 import * as Three from 'three'
 import * as Gui from './Gui.js'
+import * as Consts from './Consts.js'
 import * as WorldManager from './WorldManager.js';
 import { World } from './Objects/World.js'
 import { GameBasic } from './Objects/GameBasic.js'
@@ -73,7 +74,7 @@ function frameHandle() {
     timer.update()
     delta = timer.getDelta()
     if (world) {
-        world.update(delta)
+        world.update(Math.min(delta, Consts.max_delta))
         renderer.render(scene, world.player.camera)
         Gui.updateDebugOverlay(getDebugOverlayText())
     }

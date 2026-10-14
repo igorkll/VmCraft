@@ -232,8 +232,6 @@ export class Player {
     }
 
     update(delta) {
-        delta = Math.min(delta, Consts.max_delta)
-
         this.controls.pointerSpeed = this.data.pointerSpeed;
         this.updateControls(delta);
         this.updateCamera(delta);
