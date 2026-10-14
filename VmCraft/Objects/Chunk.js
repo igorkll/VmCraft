@@ -3,19 +3,34 @@ import * as Utils from "../Utils.js"
 import * as Blocks from "../Blocks.js"
 
 export class Chunk {
-    constructor(gameBasic, world, pos) {
+    constructor(gameBasic, world) {
         this.gameBasic = gameBasic
         this.world = world
 
         this.data = {
-            pos: pos
+            pos: Utils.getNullObj(),
+            interactivesData: []
         }
 
         this.needUpdateMesh = true
-        this.chunkBlockCount = this.gameBasic.chunkSize.x * this.gameBasic.chunkSize.y * this.gameBasic.chunkSize.z
-        this.blocks = new Uint8Array(this.chunkBlockCount)
+        this.blocks = new Uint8Array(this.gameBasic.chunkBlockCount)
 
         this.loadChunk()
+    }
+
+    getSaveData() {
+        return Object.assign({}, this.data, {
+            blocks: Array.from(this.blocks)
+        })
+    }
+
+    setSaveData(data) {
+        this.data = {
+            pos: data.pos
+        }
+
+        this.blocks = new Uint8Array(data.blocks)
+        this.needUpdateMesh = true
     }
 
     updateMesh() {
@@ -86,7 +101,7 @@ export class Chunk {
             );
         }
     
-        const chunkSize = this.chunkBlockCount
+        const chunkSize = this.gameBasic.chunkBlockCount
         for (let i = 0; i < chunkSize; i++) {
             const blockType = this.blocks[i]
             if (blockType === 0) continue
