@@ -1,6 +1,7 @@
 import * as Three from "three"
 import * as Utils from "../Utils.js"
 import * as Blocks from "../Blocks.js"
+import * as Gui from "../Gui.js"
 
 export class Chunk {
     constructor(gameBasic, world) {
@@ -180,14 +181,66 @@ export class Chunk {
         this.destroy()
     }
 
+    _createDebugMesh() {
+        const size = this.gameBasic.chunkSize
+    
+        const geometry = new Three.BoxGeometry(
+            size.x, size.y, size.z,
+            size.x, size.y, size.z      // сегменты по осям = размер чанка → сетка 1×1×1
+        )
+    
+        const color = new Three.Color().setHSL(Math.random(), 1.0, 0.5)
+    
+        const material = new Three.MeshBasicMaterial({
+            color,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.35,
+            depthWrite: false
+        })
+    
+        this.debugMesh = new Three.Mesh(geometry, material)
+    
+        const g = this.getGlobalPosition()
+        this.debugMesh.position.set(
+            g.x + size.x / 2,
+            g.y + size.y / 2,
+            g.z + size.z / 2
+        )
+    
+        this.gameBasic.scene.add(this.debugMesh)
+    }
+
+    _disposeDebugMesh() {
+        if (!this.debugMesh) return
+        this.gameBasic.scene.remove(this.debugMesh)
+        this.debugMesh.geometry.dispose()
+        this.debugMesh.material.dispose()
+        this.debugMesh = null
+    }
+
     update(delta) {
         if (this.needUpdateMesh) this.updateMesh()
+
+        if (Gui.debugOverlayState) {
+            if (!this.debugMesh) {
+                this._createDebugMesh()
+            }
+        } else if (this.debugMesh) {
+            _disposeDebugMesh()
+        }
+
     }
     
     destroy() {
         if (this.object != null) {
             this.gameBasic.scene.remove(this.object)
             this.object = null
+        }
+
+        if (this.debugMesh != null) {
+            this.gameBasic.scene.remove(this.debugMesh)
+            this.debugMesh = null
         }
     }
 

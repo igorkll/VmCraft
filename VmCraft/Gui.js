@@ -5,7 +5,7 @@ const hud = document.getElementById("hud")
 const debugOverlay = document.getElementById("debug-overlay")
 
 let menuState = false
-let debugOverlayState = false
+export let debugOverlayState = false
 
 let modalRoot = null
 let modalOnCloseCallback = null
