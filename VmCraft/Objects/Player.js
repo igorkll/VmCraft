@@ -4,6 +4,7 @@ import * as Utils from "../Utils.js";
 import * as Gui from "../Gui.js";
 
 const height = 1.8;
+const width = 0.2;
 const eyeHeight = height - 0.2;
 const eyeHeightSeat = height - 0.5;
 const deadZone = Math.PI / 180;
@@ -11,6 +12,7 @@ const terminalVelocity = -50
 const gravity = 25
 const jumpSpeed = 8
 const velocity_drop = 0.00025
+const max_delta = 1 / 30
 
 export class Player {
     constructor(gameBasic, pos) {
@@ -205,11 +207,11 @@ export class Player {
     }
 
     update(delta) {
+        delta = Math.min(delta, max_delta)
+
         this.controls.pointerSpeed = this.data.pointerSpeed;
         this.updateControls(delta);
         this.updateCamera(delta);
-
-        console.log(this.data.pos.y + height, this.data.pos.y + eyeHeight)
     }
 
     destroy() {
