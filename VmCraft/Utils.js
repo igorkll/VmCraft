@@ -59,8 +59,8 @@ export function getRandomSuffix() {
     return suffix
 }
 
-export function getVecFromObj(vec) {
-    return new Three.Vector3(vec.x, vec.y, vec.z)
+export function getVecFromObj(obj) {
+    return new Three.Vector3(obj.x, obj.y, obj.z)
 }
 
 export function getNullObj() {

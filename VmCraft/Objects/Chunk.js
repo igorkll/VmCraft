@@ -181,7 +181,7 @@ export class Chunk {
         //return this.data.pos.clone().multiply(this.gameBasic.chunkSize)
         const pos = this.data.pos
         const chunkSize = this.gameBasic.chunkSize
-        return Utils.getObj(pos * chunkSize, pos * chunkSize, pos * chunkSize)
+        return Utils.getObj(pos.x * chunkSize.x, pos.y * chunkSize.y, pos.z * chunkSize.z)
     }
 
     getGlobalPositionFromLocalPosition(pos) {
@@ -201,11 +201,11 @@ export class Chunk {
     }
 
     getLocalPositionFromArrayIndex(index) {
-        return new Three.Vector3(
-            index % this.gameBasic.chunkSize.x,
-            Math.floor(index / this.gameBasic.chunkSize.x) % this.gameBasic.chunkSize.y,
-            Math.floor(index / this.gameBasic.chunkSize.x / this.gameBasic.chunkSize.y) % this.gameBasic.chunkSize.z
-        )
+        return {
+            x: index % this.gameBasic.chunkSize.x,
+            y: Math.floor(index / this.gameBasic.chunkSize.x) % this.gameBasic.chunkSize.y,
+            z: Math.floor(index / this.gameBasic.chunkSize.x / this.gameBasic.chunkSize.y) % this.gameBasic.chunkSize.z
+        }
     }
 
     setBlock(localPosition, blockId) {

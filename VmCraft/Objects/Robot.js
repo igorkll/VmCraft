@@ -254,11 +254,13 @@ export class Robot {
 
         this.stoppedrot = Math.abs(this.data.targetRot - this.data.rot) < 0.05
         if (this.stoppedrot) {
-            this.data.rot = Utils.anyClone(this.data.targetRot)
+            this.data.rot = this.data.targetRot
         }
 
         this.object.position.copy(Utils.getVecFromObj(this.data.pos));
         this.object.rotation.y = (Math.PI / 2) * -this.data.rot
+
+        console.log(this.object.rotation.y)
     }
 
     isBusy() {
