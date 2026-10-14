@@ -8,8 +8,7 @@ export class Chunk {
         this.world = world
 
         this.data = {
-            pos: Utils.getNullObj(),
-            interactivesData: []
+            pos: Utils.getNullObj()
         }
 
         this.needUpdateMesh = true
