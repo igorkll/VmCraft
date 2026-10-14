@@ -43,10 +43,11 @@ export let world = null;
 })()
 
 export function loadWorld(_world) {
-    world.save()
     WorldManager.setCurrentWorldId(_world.id)
-    world.destroy()
-    world = new World(gameBasic, _world)
+    world.save().then(() => {
+        world.destroy()
+        world = new World(gameBasic, _world)
+    })
 }
 
 // ---------------------- frame handle

@@ -79,7 +79,8 @@ addSubMenu("worlds")
 // -------------------------------- worlds menu
 
 function isSelectedWorld(world) {
-    return world.id === Game.world.worldId
+    //return world.id === Game.world.worldId
+    return world.id === WorldManager.getCurrentWorldId()
 }
 
 function smallSecondButton(btn) {
@@ -160,7 +161,9 @@ function addWorldToList(menu, world) {
     smallSecondButton(btn_delete)
 
     const btn_loadWorld = addButton(menu, world.name, () => {
-        Game.loadWorld(world)
+        WorldManager.getWorldFromId(world.id).then(actual_world => {
+            Game.loadWorld(actual_world)
+        })
         refreshWorldsList()
     }, null, [btn_export, btn_rename, btn_delete])
     btn_loadWorld.style.padding = "0px 8px 0px 8px";

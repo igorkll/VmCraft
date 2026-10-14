@@ -32,7 +32,9 @@ export class World {
 
     _loadWorld(worldData) {
         this.createPlayer(worldData.data.playerData.pos)
-        this.player.data = worldData.data.playerData;
+        this.player.data = worldData.data.playerData
+
+
     }
 
     loadWorld(worldData) {
@@ -187,6 +189,6 @@ export class World {
     }
 
     save() {
-        WorldManager.saveWorld(this.serialize())
+        return WorldManager.saveWorld(this.serialize())
     }
 }
