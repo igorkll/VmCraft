@@ -28,18 +28,23 @@ export class Robot {
             speed: 3,
 
             pos: Utils.getNullObj(),
-            targetPos: null,
+            targetPos: Utils.getNullObj(),
 
             rot: 0,
             targetRot: 0
         }
     }
 
-    init() {
-        if (this.data.targetPos == null) {
-            this.data.targetPos = Utils.anyClone(this.data.pos)
-        }
+    getSaveData() {
+        return this.data
+    }
 
+    setSaveData(data) {
+        this.data = data
+        this.data.targetPos = this.data.pos
+    }
+
+    init() {
         this.object = new Three.Mesh(geometry, material)
         this.gameBasic.scene.add(this.object)
 

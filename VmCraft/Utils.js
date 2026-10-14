@@ -64,6 +64,10 @@ export function getVecFromObj(obj) {
     return new Three.Vector3(obj.x, obj.y, obj.z)
 }
 
+export function getObjFromVec(vec) {
+    return {x: vec.x, y: vec.y, z: vec.z}
+}
+
 export function getNullObj() {
     return {x: 0, y: 0, z: 0}
 }

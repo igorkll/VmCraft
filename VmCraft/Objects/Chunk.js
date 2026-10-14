@@ -33,6 +33,10 @@ export class Chunk {
         this.needUpdateMesh = true
     }
 
+    getObjPosition() {
+        return this.data.pos
+    }
+
     updateMesh() {
         if (this.object != null) {
             this.gameBasic.scene.remove(this.object);

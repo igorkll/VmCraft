@@ -30,6 +30,14 @@ export class Player {
         this.oldControlLocked = false
     }
 
+    getSaveData() {
+        return this.data
+    }
+
+    setSaveData(data) {
+        this.data = data
+    }
+
     init() {
         this.abortController = new AbortController();
 

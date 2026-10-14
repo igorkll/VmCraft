@@ -21,9 +21,9 @@ export class World {
     _defWorld() {
         console.log("loading world: default")
 
-        this.createPlayer({
+        this.player = this.createCharacter({
             pos: Utils.getObj(0, 10, 0)
-        })
+        }, Player)
         
         this.createInteractive({
             pos: Utils.getObj(10, 10, 0)
@@ -40,8 +40,7 @@ export class World {
         console.log("loading world: ", worldData)
         
         this.allChunksData = worldData.data.allChunksData || []
-
-        this.createPlayer(worldData.data.playerData)
+        this.player = this.createCharacter(worldData.data.playerData, Player)
     }
 
     loadWorld(worldData) {
@@ -198,9 +197,9 @@ export class World {
         return null
     }
 
-    createInteractive(fields, constructor, ...args) {
+    createInteractive(data, constructor, ...args) {
         const interactive = new constructor(this.gameBasic, ...args)
-        Object.assign(interactive.data, fields)
+        interactive.setSaveData(Object.assign(interactive.getSaveData(), data))
         this.updateInteractivePrepair(interactive)
         interactive.init()
         this.updateInteractive(interactive)
@@ -208,14 +207,14 @@ export class World {
         return interactive
     }
 
-    createPlayer(fields) {
-        const player = new Player(this.gameBasic)
-        Object.assign(player.data, fields)
-        this.updateInteractivePrepair(player)
-        player.init()
-        this.updateInteractive(player)
-        this.player = player
-        return player
+    createCharacter(data, constructor, ...args) {
+        const character = new constructor(this.gameBasic, ...args)
+        character.setSaveData(Object.assign(character.getSaveData(), data))
+        this.updateInteractivePrepair(character)
+        character.init()
+        this.updateInteractive(character)
+
+        return character
     }
 
     getChunkPositionFromGlobalPosition(pos) {
@@ -276,7 +275,7 @@ export class World {
             if (obj.chunk == chunk) {
                 additionalChunkData.interactivesData.push([
                     ObjectAssotiation.getName(obj),
-                    obj.data
+                    obj.getSaveData()
                 ])
             }
         }
@@ -286,7 +285,7 @@ export class World {
     }
 
     updateChunkData(chunk) {
-        const chunkData = this.allChunksData.find(obj => Utils.v3eq(obj.pos, chunk.data.pos))
+        const chunkData = this.allChunksData.find(obj => Utils.v3eq(obj.pos, chunk.getObjPosition()))
         const saveData = this.getChunkSaveData(chunk)
         if (chunkData == null) {
             this.allChunksData.push(saveData)
@@ -302,7 +301,7 @@ export class World {
 
         const worldData = {
             inited: true,
-            playerData: this.player.data,
+            playerData: this.player.getSaveData(),
             allChunksData: this.allChunksData
         }
 
