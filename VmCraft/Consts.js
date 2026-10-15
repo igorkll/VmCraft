@@ -9,3 +9,4 @@ export const atlas_tiles = 16
 export const atlas_size = 512
 export const world_export_extension = "vmc"
 export const EPS = 1e-4
+export const pointer_speed = 1.5
