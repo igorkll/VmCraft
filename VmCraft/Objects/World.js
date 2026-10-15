@@ -258,7 +258,7 @@ export class World {
     }
 
     getChunkData(chunkPosition) {
-        const chunkData = this.allChunksData.find(obj => Utils.v3eq(obj.pos, chunkPosition))
+        const chunkData = this.allChunksData.find(obj => Utils.compareVectorAndArray(chunkPosition, obj.pos))
         if (chunkData == null) return null
         return chunkData
     }
@@ -285,7 +285,7 @@ export class World {
     }
 
     updateChunkData(chunk) {
-        const chunkData = this.allChunksData.find(obj => Utils.v3eq(obj.pos, chunk.data.pos))
+        const chunkData = this.allChunksData.find(obj => Utils.compareVectorAndArray(chunk.data.pos, obj.pos))
         const saveData = this.getChunkSaveData(chunk)
         if (chunkData == null) {
             this.allChunksData.push(saveData)

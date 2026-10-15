@@ -37,14 +37,14 @@ export class Robot {
 
     getSaveData() {
         return Object.assign({}, this.data, {
-            pos: Utils.getObjFromVec(this.data.pos),
-            targetPos: Utils.getObjFromVec(this.data.targetPos)
+            pos: Utils.getArrFromVec(this.data.pos),
+            targetPos: Utils.getArrFromVec(this.data.targetPos)
         })
     }
 
     setSaveData(data) {
         this.data = Object.assign({}, data, {
-            pos: Utils.getVecFromObj(data.pos)
+            pos: Utils.getVecFromArrCheck(data.pos)
         })
 
         this.data.targetPos = this.data.pos.clone()
@@ -269,7 +269,7 @@ export class Robot {
             this.data.rot = this.data.targetRot
         }
 
-        this.object.position.copy(Utils.getVecFromObj(this.data.pos));
+        this.object.position.copy(this.data.pos);
         this.object.rotation.y = (Math.PI / 2) * -this.data.rot
     }
 

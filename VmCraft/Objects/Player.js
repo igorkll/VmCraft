@@ -32,15 +32,15 @@ export class Player {
 
     getSaveData() {
         return Object.assign({}, this.data, {
-            pos: Utils.getObjFromVec(this.data.pos),
-            velocity: Utils.getObjFromVec(this.data.velocity)
+            pos: Utils.getArrFromVec(this.data.pos),
+            velocity: Utils.getArrFromVec(this.data.velocity)
         })
     }
 
     setSaveData(data) {
         this.data = Object.assign({}, data, {
-            pos: Utils.getVecFromObj(data.pos),
-            velocity: Utils.getVecFromObj(data.velocity)
+            pos: Utils.getVecFromArrCheck(data.pos),
+            velocity: Utils.getVecFromArrCheck(data.velocity)
         })
     }
 

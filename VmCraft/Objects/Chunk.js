@@ -20,14 +20,14 @@ export class Chunk {
 
     getSaveData() {
         return Object.assign({}, this.data, {
-            pos: Utils.getObjFromVec(this.data.pos),
+            pos: Utils.getArrFromVec(this.data.pos),
             blocks: Array.from(this.blocks)
         })
     }
 
     setSaveData(data) {
         this.data = {
-            pos: Utils.getVecFromObj(data.pos)
+            pos: Utils.getVecFromArrCheck(data.pos)
         }
 
         this.blocks = new Uint8Array(data.blocks)
@@ -168,7 +168,7 @@ export class Chunk {
         geometry.computeBoundingSphere();
     
         this.object = new Three.Mesh(geometry, this.gameBasic.blockMaterial)
-        this.object.position.copy(Utils.getVecFromObj(this.getGlobalPosition()))
+        this.object.position.copy(this.getGlobalPosition())
         this.gameBasic.scene.add(this.object)
         this.needUpdateMesh = false;
     }

@@ -60,20 +60,21 @@ export function getRandomSuffix() {
     return suffix
 }
 
-export function getVecFromObj(obj) {
-    return new Three.Vector3(obj.x, obj.y, obj.z)
+export function getVecFromArr(arr) {
+    return new Three.Vector3(arr[0], arr[1], arr[2])
 }
 
-export function getObjFromVec(vec) {
-    return {x: vec.x, y: vec.y, z: vec.z}
+export function getVecFromArrCheck(arrOrVec) {
+    if (arrOrVec?.isVector3) return arrOrVec
+    return new Three.Vector3(arrOrVec[0], arrOrVec[1], arrOrVec[2])
 }
 
-export function getNullObj() {
-    return {x: 0, y: 0, z: 0}
+export function getArrFromVec(vec) {
+    return [vec.x, vec.y, vec.z]
 }
 
-export function v3eq(a, b) {
-    return a.x === b.x && a.y === b.y && a.z === b.z
+export function compareVectorAndArray(vec, arr) {
+    return vec.x === arr[0] && vec.y === arr[1] && vec.z === arr[2]
 }
 
 const TILE_SIZE = 1 / Consts.atlas_tiles
