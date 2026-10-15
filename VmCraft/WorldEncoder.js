@@ -34,8 +34,8 @@ export function encodeWorld(decodedWorldObj) {
 
     if (decodedWorldObj?.data != null) {
         encodedWorldObj.data = {
-            playerData: encodePart(decodedWorldObj.playerData),
-            allChunksData: encodeParts(decodedWorldObj.allChunksData)
+            playerData: encodePart(decodedWorldObj.data.playerData),
+            allChunksData: encodeParts(decodedWorldObj.data.allChunksData)
         }
     }
 
@@ -51,8 +51,8 @@ export function decodeWorld(encodedWorldStr) {
 
     if (encodedWorldObj?.data != null) {
         decodedWorldObj.data = {
-            playerData: decodePart(encodedWorldObj.playerData),
-            allChunksData: decodeParts(encodedWorldObj.allChunksData)
+            playerData: decodePart(encodedWorldObj.data.playerData),
+            allChunksData: decodeParts(encodedWorldObj.data.allChunksData)
         }
     }
 
