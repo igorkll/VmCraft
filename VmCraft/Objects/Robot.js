@@ -66,16 +66,16 @@ export class Robot {
 
         Utils.loadAndCombineImages(imageParts).then((hda_buffer) => {
             this.emulator = new window.V86({
-                wasm_path: "v86/v86.wasm",
+                wasm_path: "libs/v86/v86.wasm",
             
                 screen_container: this.v86Container,
             
                 bios: {
-                    url: "v86/bios/seabios.bin",
+                    url: "libs/v86/bios/seabios.bin",
                 },
             
                 vga_bios: {
-                    url: "v86/bios/vgabios.bin",
+                    url: "libs/v86/bios/vgabios.bin",
                 },
     
                 hda: {
