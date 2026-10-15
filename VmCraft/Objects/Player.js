@@ -188,25 +188,27 @@ export class Player {
         let col1 = false;
         let col2 = false;
 
+        const blockY = Math.floor(pos.y);
+        
+        const blockY_EPS = Math.floor(pos.y - Consts.EPS);
+        const headY_EPS = Math.floor(pos.y + this.data.height + Consts.EPS);
+
         for (let ix = -1; ix <= 1; ix += 2) {
             for (let iy = -1; iy <= 1; iy += 2) {
                 const blockX = Math.floor(pos.x + (ix * halfWidth));
-                const blockY = Math.floor(pos.y);
                 const blockZ = Math.floor(pos.z + (iy * halfWidth));
 
-                if (this.isBlockSolid(blockX, blockY, blockZ)) {
+                if (this.isBlockSolid(blockX, blockY_EPS, blockZ)) {
                     col1 = true;
                 }
 
-                const headY = Math.floor(pos.y + this.data.height);
-                if (this.isBlockSolid(blockX, headY, blockZ)) {
+                if (this.isBlockSolid(blockX, headY_EPS, blockZ)) {
                     col2 = true;
                 }
             }
         }
 
-        if (col1) {
-            const blockY = Math.floor(pos.y);
+        if (col1 && this.data.velocity.y <= 0) {
             pos.y = blockY + 1;
             this.data.velocity.y = 0;
             this.data.onGround = true;
@@ -215,9 +217,8 @@ export class Player {
             this.data.onGround = false;
         }
 
-        const headY = Math.floor(pos.y + this.data.height);
-        if (col2) {
-            pos.y = headY - this.data.height;
+        if (col2 && this.data.velocity.y > 0) {
+            pos.y = headY_EPS - this.data.height;
             this.data.velocity.y = 0;
         }
     }
@@ -290,7 +291,7 @@ export class Player {
         this.data.pos.y += this.data.velocity.y * delta
         if (this.data.fly) this.data.velocity.y *= speed_mul
         this.handleVerticalCollisions(delta)
-        
+
         this.oldKeys = Object.assign({}, this.keys)
     }
 
