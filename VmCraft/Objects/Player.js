@@ -188,8 +188,6 @@ export class Player {
         let col1 = false;
         let col2 = false;
 
-        const blockY = Math.floor(pos.y);
-        
         const blockY_EPS = Math.floor(pos.y - Consts.EPS);
         const headY_EPS = Math.floor(pos.y + this.data.height + Consts.EPS);
 
@@ -209,7 +207,7 @@ export class Player {
         }
 
         if (col1 && this.data.velocity.y <= 0) {
-            pos.y = blockY + 1;
+            pos.y = blockY_EPS + 1;
             this.data.velocity.y = 0;
             this.data.onGround = true;
             this.data.fly = false;
