@@ -46,7 +46,7 @@ export class World {
     loadWorld(worldData) {
         this.destroy()
 
-        if (worldData?.data?.inited) {
+        if (worldData?.data != null) {
             this._loadWorld(worldData)
         } else {
             this._defWorld()
@@ -300,7 +300,6 @@ export class World {
         }
 
         const worldData = {
-            inited: true,
             playerData: this.player.getSaveData(),
             allChunksData: this.allChunksData
         }
