@@ -246,6 +246,16 @@ export class Character {
         this.oldKeys = Object.assign({}, this.keys)
     }
 
+    getLookRay() {
+        const origin = new Three.Vector3()
+        const direction = new Three.Vector3()
+    
+        this.camera.getWorldPosition(origin)
+        this.camera.getWorldDirection(direction)
+    
+        return { origin, direction }
+    }
+
     destroy() {
     }
 }

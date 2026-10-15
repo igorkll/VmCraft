@@ -73,6 +73,10 @@ export function getArrFromVec(vec) {
     return [vec.x, vec.y, vec.z]
 }
 
+export function getVecFromObj(obj) {
+    return new Three.Vector3(obj.x, obj.y, obj.z)
+}
+
 export function compareVectorAndArray(vec, arr) {
     return vec.x === arr[0] && vec.y === arr[1] && vec.z === arr[2]
 }

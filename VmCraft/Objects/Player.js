@@ -62,6 +62,16 @@ export class Player extends Character {
 
             onDoubleSpace_keyup(e)
         }, { signal: this.abortController.signal });
+
+        document.addEventListener("mousedown", (e) => {
+            if (!this.controls.isLocked) return
+
+            if (e.button == 0) {
+                this.removeBlock()
+            } else if (e.button == 1) {
+                this.placeBlock(1)
+            }
+        })
     }
 
     _updateInputs() {
@@ -83,6 +93,22 @@ export class Player extends Character {
         this.controls.pointerSpeed = Consts.pointer_speed;
         this._updateInputs();
         super.update(delta);
+    }
+
+    placeBlock(blockId) {
+        const { origin, direction } = this.getLookRay()
+        const hit = this.world.raycastBlock(origin, direction, Consts.interact_distance)
+        if (!hit) return false
+
+        return this.world.setBlock(hit.block.clone().add(hit.normal), blockId)
+    }
+
+    removeBlock() {
+        const { origin, direction } = this.getLookRay()
+        const hit = this.world.raycastBlock(origin, direction, Consts.interact_distance)
+        if (!hit) return false
+
+        return this.world.setBlock(hit.block, 0)
     }
 
     destroy() {

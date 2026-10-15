@@ -284,6 +284,7 @@ export class Chunk {
 
     setBlock(localPosition, blockId) {
         this.blocks[this.getBlockArrayIndex(localPosition)] = blockId
+        this.needUpdateMesh = true
     }
 
     getBlock(localPosition) {

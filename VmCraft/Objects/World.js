@@ -319,4 +319,63 @@ export class World {
     save() {
         return WorldManager.saveWorld(this.serialize())
     }
+
+    raycastBlock(origin, direction, maxDistance) {
+        let x = Math.floor(origin.x)
+        let y = Math.floor(origin.y)
+        let z = Math.floor(origin.z)
+
+        const stepX = Math.sign(direction.x)
+        const stepY = Math.sign(direction.y)
+        const stepZ = Math.sign(direction.z)
+
+        // расстояние, которое надо пройти по каждой оси, чтобы пересечь следующую границу
+        const tDeltaX = stepX !== 0 ? Math.abs(1 / direction.x) : Infinity
+        const tDeltaY = stepY !== 0 ? Math.abs(1 / direction.y) : Infinity
+        const tDeltaZ = stepZ !== 0 ? Math.abs(1 / direction.z) : Infinity
+
+        // расстояние до первой границы по каждой оси
+        let tMaxX = stepX > 0
+            ? (Math.floor(origin.x) + 1 - origin.x) / direction.x
+            : (stepX < 0 ? (Math.floor(origin.x) - origin.x) / direction.x : Infinity)
+        let tMaxY = stepY > 0
+            ? (Math.floor(origin.y) + 1 - origin.y) / direction.y
+            : (stepY < 0 ? (Math.floor(origin.y) - origin.y) / direction.y : Infinity)
+        let tMaxZ = stepZ > 0
+            ? (Math.floor(origin.z) + 1 - origin.z) / direction.z
+            : (stepZ < 0 ? (Math.floor(origin.z) - origin.z) / direction.z : Infinity)
+
+        // нормаль грани, через которую вошли в текущий блок
+        let normal = { x: 0, y: 0, z: 0 }
+
+        for (let i = 0; i < 256; i++) {
+            const block = this.getBlock(new Three.Vector3(x, y, z))
+            if (block != null && block !== 0) {
+                return {
+                    block: Utils.getVecFromObj({ x, y, z }),
+                    normal: Utils.getVecFromObj(normal)       // ← откуда прилетел луч: тут ставить новый блок
+                }
+            }
+
+            // шагаем в ту ось, где ближайшая граница
+            if (tMaxX < tMaxY && tMaxX < tMaxZ) {
+                if (tMaxX > maxDistance) return null
+                x += stepX
+                tMaxX += tDeltaX
+                normal = { x: -stepX, y: 0, z: 0 }
+            } else if (tMaxY < tMaxZ) {
+                if (tMaxY > maxDistance) return null
+                y += stepY
+                tMaxY += tDeltaY
+                normal = { x: 0, y: -stepY, z: 0 }
+            } else {
+                if (tMaxZ > maxDistance) return null
+                z += stepZ
+                tMaxZ += tDeltaZ
+                normal = { x: 0, y: 0, z: -stepZ }
+            }
+        }
+
+        return null
+    }
 }
