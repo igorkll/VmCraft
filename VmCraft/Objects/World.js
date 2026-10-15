@@ -13,7 +13,7 @@ export class World {
         this.worldId = worldData.id
         this.worldName = worldData.name
 
-        this.chunkLoadingTimerValue = 0
+        this.chunkLoadingTimerValue = Consts.chunk_loading_update_interval
 
         this.loadWorld(worldData)
     }

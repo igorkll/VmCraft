@@ -10,31 +10,14 @@ const deadZone = Math.PI / 180;
 export class Player extends Character {
     constructor(gameBasic) {
         super(gameBasic)
-
-
-
-        this.data = {
-            pos: new Three.Vector3(0, 0, 0),
-            velocity: new Three.Vector3(0, 0, 0),
-            fly: true,
-            speed: 30,
-            pointerSpeed: 1.5,
-            runningSpeedMultiplier: 2,
-            flightSpeedMultiplier: 2,
-            seatSpeedMultiplier: 0.5,
-            onGround: false,
-            jumpSpeed: 8,
-            height: defaultHeight,
-            eyeHeight: defaultHeight - 0.2,
-            eyeHeightSeat: defaultHeight - 0.2,
-            width: 0.6
-        }
-
-        this.oldControlLocked = false
+        Object.assign(this.data, {})
     }
-
+    
     init() {
+        super.init()
+
         this.abortController = new AbortController();
+        this.oldControlLocked = false
 
         // ------------------ controls
         this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
@@ -81,12 +64,29 @@ export class Player extends Character {
         }, { signal: this.abortController.signal });
     }
 
+    _updateInputs() {
+        const controlLocked = Gui.isControlLocked()
+        if (controlLocked && !this.oldControlLocked) {
+            this.controls.unlock()
+        }
+        if (!controlLocked && this.oldControlLocked) {
+            this.controls.lock()
+        }
+        this.oldControlLocked = controlLocked
+
+        if (controlLocked) {
+            this.keys = Object.assign({}, this.defaultKeys)
+        }
+    }
+
     update(delta) {
-        this.controls.pointerSpeed = Consts.pointerSpeed;
+        this.controls.pointerSpeed = Consts.pointer_speed;
+        this._updateInputs();
         super.update(delta);
     }
 
     destroy() {
         this.abortController.abort();
+        super.destroy()
     }
 }

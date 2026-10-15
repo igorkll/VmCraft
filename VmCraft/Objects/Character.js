@@ -83,6 +83,7 @@ export class Character {
         }
 
         this.keys = Object.assign({}, this.defaultKeys)
+        this.oldKeys = Object.assign({}, this.defaultKeys)
     }
 
     _isBlockSolid(x, y, z) {
@@ -149,11 +150,11 @@ export class Character {
                 const blockX = Math.floor(pos.x + (ix * halfWidth));
                 const blockZ = Math.floor(pos.z + (iy * halfWidth));
 
-                if (this.isBlockSolid(blockX, blockY_EPS, blockZ)) {
+                if (this._isBlockSolid(blockX, blockY_EPS, blockZ)) {
                     col1 = true;
                 }
 
-                if (this.isBlockSolid(blockX, headY_EPS, blockZ)) {
+                if (this._isBlockSolid(blockX, headY_EPS, blockZ)) {
                     col2 = true;
                 }
             }
@@ -242,6 +243,7 @@ export class Character {
     update(delta) {
         this._updateMovement(delta);
         this._updateCamera(delta);
+        this.oldKeys = Object.assign({}, this.keys)
     }
 
     destroy() {
