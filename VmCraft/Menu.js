@@ -145,7 +145,7 @@ function addWorldToList(menu, world) {
     const highlight = isSelectedWorld(world)
 
     const btn_export = addButton(menu, '<img class="button-img" src="textures/export.png"></img>', () => {
-        Modals.windowExportFileAdvanced(world, world.name)
+        Modals.windowExportFile(world, world.name)
     }, null, true)
 
     const btn_rename = addButton(menu, '<img class="button-img" src="textures/rename.png"></img>', () => {

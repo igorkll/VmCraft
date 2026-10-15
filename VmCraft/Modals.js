@@ -113,7 +113,7 @@ export function modalShow(title, description=null) {
     });
 }
 
-export async function windowSelectJsonFile() {
+export async function windowSelectFile() {
     return new Promise((resolve, reject) => {
         const input = document.createElement('input')
         input.type = 'file'
@@ -139,25 +139,43 @@ export async function windowSelectJsonFile() {
     })
 }
 
-export async function windowExportFileAdvanced(data, suggestedName='export', ext="json") {
+export async function windowExportFile(data, suggestedName='export', ext=undefined) {
     try {
-        const acceptKey = `application/${ext}`
-        const handle = await window.showSaveFilePicker({
-            suggestedName: suggestedName + "." + ext,
-            types: [{
-                description: `${ext}-file`,
-                accept: {[acceptKey]: [`.${ext}`] }
+        const saveString = typeof data == "string"
+
+        if (ext === undefined) {
+            if (saveString) {
+                ext = "txt"
+            } else {
+                ext = "json"
+            }
+        }
+
+        const exportSettings = {
+            suggestedName: ext != null ? (suggestedName + "." + ext) : suggestedName
+        }
+
+        if (ext != null) {
+            exportSettings.types = [{
+                description: `${ext}`,
+                accept: {[`application/octet-stream`]: [`.${ext}`] }
             }]
-        })
+        }
+
+        const handle = await window.showSaveFilePicker(exportSettings)
         const writable = await handle.createWritable()
-        const json = JSON.stringify(data, null, 2)
-        await writable.write(json)
+        const writeData = saveString ? data : JSON.stringify(data, null, 2)
+        await writable.write(writeData)
         await writable.close()
         console.log('File saved')
+
+        return true
     } catch (err) {
         if (err.name !== 'AbortError') {
             console.error('Save failed:', err)
-            modalShow("FAILED TO SAVE FILE", err)
+            void modalShow("FAILED TO SAVE FILE", err.message ?? String(err))
         }
     }
+
+    return false
 }
