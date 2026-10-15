@@ -132,7 +132,7 @@ function newWorldModal() {
 }
 
 function importWorldModal() {
-    Modals.windowSelectFile(Consts.world_export_extension, true).then(world => {
+    Modals.windowSelectFile(Consts.world_export_extension, false).then(world => {
         world = WorldEncoder.decodeWorld(world)
         world.id = undefined
         WorldManager.saveWorld(world, true)

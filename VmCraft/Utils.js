@@ -87,3 +87,16 @@ export function tileUV(tileIndex) {
     const v0 = 1 - (ty + 1) * TILE_SIZE
     return { u0, v0, u1: u0 + TILE_SIZE, v1: v0 + TILE_SIZE }
 }
+
+export function u8ToBase64(u8) {
+    let s = ""
+    for (let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i])
+    return btoa(s)
+}
+
+export function base64ToU8(b64) {
+    const s = atob(b64)
+    const u8 = new Uint8Array(s.length)
+    for (let i = 0; i < s.length; i++) u8[i] = s.charCodeAt(i)
+    return u8
+}
