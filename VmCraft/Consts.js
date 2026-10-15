@@ -7,3 +7,4 @@ export const chunk_loading_ver_distance_mul = 0.5;
 export const chunk_loading_update_interval = 1;
 export const atlas_tiles = 16
 export const atlas_size = 512
+export const world_export_extension = "vmc"

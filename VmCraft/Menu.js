@@ -4,6 +4,7 @@ import * as Game from './Game.js';
 import * as Modals from './Modals.js';
 import * as Kastili from './Kastili.js';
 import * as Utils from './Utils.js';
+import * as Consts from './Consts.js';
 
 // -------------------------------- create menu
 
@@ -130,7 +131,8 @@ function newWorldModal() {
 }
 
 function importWorldModal() {
-    Modals.windowSelectJsonFile().then(world => {
+    Modals.windowSelectFile(Consts.world_export_extension, true).then(world => {
+        world = window.BSON.deserialize(world)
         world.id = undefined
         WorldManager.saveWorld(world, true)
         refreshWorldsList()
@@ -145,7 +147,7 @@ function addWorldToList(menu, world) {
     const highlight = isSelectedWorld(world)
 
     const btn_export = addButton(menu, '<img class="button-img" src="textures/export.png"></img>', () => {
-        Modals.windowExportFile(world, world.name)
+        Modals.windowExportFile(window.BSON.serialize(world), world.name, Consts.world_export_extension)
     }, null, true)
 
     const btn_rename = addButton(menu, '<img class="button-img" src="textures/rename.png"></img>', () => {

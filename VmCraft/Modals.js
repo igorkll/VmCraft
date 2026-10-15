@@ -133,6 +133,9 @@ export function windowSelectFile(ext=null, binary=false) {
                     resolve(text)
                 }
             } catch (err) {
+                console.error('Select failed:', err)
+                void modalShow("FAILED TO SELECT FILE", err.message ?? String(err))
+
                 reject(err)
             }
         }
