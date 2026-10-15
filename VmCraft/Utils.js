@@ -90,7 +90,15 @@ export function tileUV(tileIndex) {
 
 export function u8ToBase64(u8) {
     let s = ""
-    for (let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i])
+    const chunkSize = 8192
+
+    for (let i = 0; i < u8.length; i += chunkSize) {
+        s += String.fromCharCode.apply(
+            null,
+            u8.subarray(i, i + chunkSize)
+        )
+    }
+
     return btoa(s)
 }
 

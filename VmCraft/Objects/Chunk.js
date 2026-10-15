@@ -21,7 +21,8 @@ export class Chunk {
     getSaveData() {
         return Object.assign({}, this.data, {
             pos: Utils.getArrFromVec(this.data.pos),
-            blocks: Array.from(this.blocks)
+            //blocks: Array.from(this.blocks)
+            blocks: this.blocks
         })
     }
 
@@ -30,7 +31,8 @@ export class Chunk {
             pos: Utils.getVecFromArrCheck(data.pos)
         }
 
-        this.blocks = new Uint8Array(data.blocks)
+        //this.blocks = new Uint8Array(data.blocks)
+        this.blocks = data.blocks
         this.needUpdateMesh = true
     }
 
