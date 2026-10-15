@@ -1,5 +1,6 @@
 import * as Gui from './Gui.js';
 import * as WorldManager from './WorldManager.js';
+import * as WorldEncoder from './WorldEncoder.js';
 import * as Game from './Game.js';
 import * as Modals from './Modals.js';
 import * as Kastili from './Kastili.js';
@@ -132,7 +133,7 @@ function newWorldModal() {
 
 function importWorldModal() {
     Modals.windowSelectFile(Consts.world_export_extension, true).then(world => {
-        world = window.BSON.deserialize(world)
+        world = WorldEncoder.decodeWorld(world)
         world.id = undefined
         WorldManager.saveWorld(world, true)
         refreshWorldsList()
@@ -147,7 +148,7 @@ function addWorldToList(menu, world) {
     const highlight = isSelectedWorld(world)
 
     const btn_export = addButton(menu, '<img class="button-img" src="textures/export.png"></img>', () => {
-        Modals.windowExportFile(window.BSON.serialize(world), world.name, Consts.world_export_extension)
+        Modals.windowExportFile(WorldEncoder.encodeWorld(world), world.name, Consts.world_export_extension)
     }, null, true)
 
     const btn_rename = addButton(menu, '<img class="button-img" src="textures/rename.png"></img>', () => {
