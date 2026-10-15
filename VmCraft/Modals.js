@@ -113,44 +113,36 @@ export function modalShow(title, description=null) {
     });
 }
 
-export async function windowSelectFile() {
+export function windowSelectFile(ext=null, binary=false) {
     return new Promise((resolve, reject) => {
-        const input = document.createElement('input')
-        input.type = 'file'
-        input.accept = '.json, application/json'
-        input.onchange = (event) => {
+        const input = document.createElement("input")
+        input.type = "file"
+        if (ext != null) input.accept = `.${ext}`
+
+        input.onchange = async (event) => {
             const file = event.target.files[0]
-            if (!file) {
-                reject(new Error('File not select'))
-                return
-            }
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                try {
-                    resolve(JSON.parse(e.target.result))
-                } catch (err) {
-                    reject(new Error('incorent json JSON'))
+            if (!file) return resolve(null)
+
+            try {
+                if (binary) {
+                    const buffer = await file.arrayBuffer()
+                    const bytes = new Uint8Array(buffer)
+                    resolve(bytes)
+                } else {
+                    const text = await file.text()
+                    resolve(text)
                 }
+            } catch (err) {
+                reject(err)
             }
-            reader.onerror = () => reject(new Error('Error reading file'))
-            reader.readAsText(file)
         }
+
         input.click()
     })
 }
 
-export async function windowExportFile(data, suggestedName='export', ext=undefined) {
+export async function windowExportFile(data, suggestedName='export', ext=null) {
     try {
-        const saveString = typeof data == "string"
-
-        if (ext === undefined) {
-            if (saveString) {
-                ext = "txt"
-            } else {
-                ext = "json"
-            }
-        }
-
         const exportSettings = {
             suggestedName: ext != null ? (suggestedName + "." + ext) : suggestedName
         }
@@ -164,8 +156,7 @@ export async function windowExportFile(data, suggestedName='export', ext=undefin
 
         const handle = await window.showSaveFilePicker(exportSettings)
         const writable = await handle.createWritable()
-        const writeData = saveString ? data : JSON.stringify(data, null, 2)
-        await writable.write(writeData)
+        await writable.write(data)
         await writable.close()
         console.log('File saved')
 
