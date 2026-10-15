@@ -31,10 +31,17 @@ export class Player {
     }
 
     getSaveData() {
-        return Object.assign({}, this.data, {
+        const outData = Object.assign({}, this.data, {
             pos: Utils.getArrFromVec(this.data.pos),
             velocity: Utils.getArrFromVec(this.data.velocity)
         })
+
+        if (this.camera) {
+            const cameraRotation = this.camera.quaternion
+            outData.cameraRotation = [cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w]
+        }
+
+        return outData
     }
 
     setSaveData(data) {
@@ -42,6 +49,14 @@ export class Player {
             pos: Utils.getVecFromArrCheck(data.pos),
             velocity: Utils.getVecFromArrCheck(data.velocity)
         })
+
+        if (this.camera) {
+            const cameraRotation = data.cameraRotation
+            this.camera.quaternion.set(cameraRotation[0], cameraRotation[1], cameraRotation[2], cameraRotation[3])
+        } else {
+            this.cameraRotation = data.cameraRotation
+        }
+        delete this.data.cameraRotation
     }
 
     init() {
@@ -50,7 +65,13 @@ export class Player {
         // ------------------ camera
         this.camera = new Three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.set(this.data.pos.x, this.data.pos.y + this.data.eyeHeight, this.data.pos.z);
-        this.camera.lookAt(this.data.pos.x + 1, this.data.pos.y + this.data.eyeHeight, this.data.pos.z);
+
+        if (this.cameraRotation) {
+            const cameraRotation = this.cameraRotation
+            this.camera.quaternion.set(cameraRotation[0], cameraRotation[1], cameraRotation[2], cameraRotation[3])
+        } else {
+            this.camera.lookAt(this.data.pos.x + 1, this.data.pos.y + this.data.eyeHeight, this.data.pos.z);
+        }
 
         // ------------------ controls
         this.controls = new PointerLockControls(this.camera, this.gameBasic.renderer.domElement);
