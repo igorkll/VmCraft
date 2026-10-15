@@ -8,3 +8,4 @@ export const chunk_loading_update_interval = 1;
 export const atlas_tiles = 16
 export const atlas_size = 512
 export const world_export_extension = "vmc"
+export const EPS = 1e-4

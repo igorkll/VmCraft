@@ -137,8 +137,51 @@ export class Player {
         return block != null && block !== 0;
     }
 
+    collides() {
+        const pos = this.data.pos
+        const half = this.data.width / 2
+        
+    
+        const minX = Math.floor(pos.x - half + Consts.EPS)
+        const maxX = Math.floor(pos.x + half - Consts.EPS)
+        const minY = Math.floor(pos.y + Consts.EPS)
+        const maxY = Math.floor(pos.y + this.data.height - Consts.EPS)
+        const minZ = Math.floor(pos.z - half + Consts.EPS)
+        const maxZ = Math.floor(pos.z + half - Consts.EPS)
+    
+        for (let x = minX; x <= maxX; x++)
+            for (let y = minY; y <= maxY; y++)
+                for (let z = minZ; z <= maxZ; z++)
+                    if (this.isBlockSolid(x, y, z)) return true
+        return false
+    }
 
-    handleVerticalCollisions() {
+    moveAxis(axis, amount) {
+        if (amount === 0) return
+        const pos = this.data.pos
+        const half = this.data.width / 2
+    
+        pos[axis] += amount
+    
+        if (!this.collides()) return
+    
+        if (axis === 'x') {
+            if (amount > 0) pos.x = Math.floor(pos.x + half) - half - Consts.EPS
+            else            pos.x = Math.floor(pos.x - half) + 1 + half + Consts.EPS
+            this.data.velocity.x = 0
+        } else {
+            if (amount > 0) pos.z = Math.floor(pos.z + half) - half - Consts.EPS
+            else            pos.z = Math.floor(pos.z - half) + 1 + half + Consts.EPS
+            this.data.velocity.z = 0
+        }
+    }
+
+    handleHorizontalCollisions(delta) {
+        this.moveAxis('x', this.data.velocity.x * delta)
+        this.moveAxis('z', this.data.velocity.z * delta)
+    }
+
+    handleVerticalCollisions(delta) {
         const halfWidth = this.data.width / 2;
         const pos = this.data.pos;
 
@@ -177,10 +220,6 @@ export class Player {
             pos.y = headY - this.data.height;
             this.data.velocity.y = 0;
         }
-    }
-
-    handleHorizontalCollisions() {
-        
     }
 
     updateControls(delta) {
@@ -240,11 +279,13 @@ export class Player {
                 this.data.velocity.y = Consts.terminal_velocity;
             }
         }
-
-        this.data.pos.x += this.data.velocity.x * delta
-        this.data.pos.y += this.data.velocity.y * delta
+        
         this.data.pos.z += this.data.velocity.z * delta
+        this.data.pos.x += this.data.velocity.x * delta
+        this.handleHorizontalCollisions(delta)
 
+        this.data.pos.y += this.data.velocity.y * delta
+        
         let voxel_velocity_drop_mul = 1
         let speed_mul = Math.pow(Consts.velocity_drop * voxel_velocity_drop_mul, delta);
         this.data.velocity.x *= speed_mul
@@ -253,8 +294,7 @@ export class Player {
         }
         this.data.velocity.z *= speed_mul
         
-        this.handleVerticalCollisions()
-        this.handleHorizontalCollisions()
+        this.handleVerticalCollisions(delta)
         this.oldKeys = Object.assign({}, this.keys)
     }
 
