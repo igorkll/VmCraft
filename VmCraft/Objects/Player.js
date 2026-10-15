@@ -280,21 +280,17 @@ export class Player {
             }
         }
         
-        this.data.pos.z += this.data.velocity.z * delta
-        this.data.pos.x += this.data.velocity.x * delta
-        this.handleHorizontalCollisions(delta)
-
-        this.data.pos.y += this.data.velocity.y * delta
-        
-        let voxel_velocity_drop_mul = 1
+        let voxel_velocity_drop_mul = 1 //для имитации льда в будущем
         let speed_mul = Math.pow(Consts.velocity_drop * voxel_velocity_drop_mul, delta);
+
         this.data.velocity.x *= speed_mul
-        if (this.data.fly) {
-            this.data.velocity.y *= speed_mul
-        }
         this.data.velocity.z *= speed_mul
+        this.handleHorizontalCollisions(delta)
         
+        this.data.pos.y += this.data.velocity.y * delta
+        if (this.data.fly) this.data.velocity.y *= speed_mul
         this.handleVerticalCollisions(delta)
+        
         this.oldKeys = Object.assign({}, this.keys)
     }
 
