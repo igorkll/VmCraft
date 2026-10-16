@@ -4,6 +4,7 @@
 import PIL.Image
 import os
 import sys
+import re
 
 atlas_source = "atlas"
 atlas_output = "atlas.png"
@@ -19,18 +20,13 @@ color_mode = "RGBA"
 atlas = PIL.Image.new(color_mode, (atlas_size_res_x, atlas_size_res_y), color=(0, 0, 0, 0))
 
 def add_image_to_atlas(atlas_slot_x, atlas_slot_y, path):
-    image = PIL.Image.open(path)
-    image = image.resize((image_res_x, image_res_y), PIL.Image.LANCZOS)
-
     offset_x = atlas_slot_x * image_res_x
     offset_y = atlas_slot_y * image_res_y
 
-    for ix in range(image_res_x):
-        for iy in range(image_res_y):
-            pixel = image.getpixel((ix, iy))
-            atlas.putpixel((ix + offset_x, iy + offset_y), pixel)
-
-    image.close()
+    with PIL.Image.open(path) as image:
+        image = image.convert(color_mode)
+        image = image.resize((image_res_x, image_res_y), PIL.Image.LANCZOS)
+        atlas.paste(image, (offset_x, offset_y))
 
 current_x = 0
 current_y = 0
@@ -45,23 +41,33 @@ def iterate_atlas():
 
     current_x += 1
     if current_x >= atlas_size_x:
+        current_x = 0
         current_y += 1
         if current_y >= atlas_size_y:
-            fail(f"atlas overflows. max images count: {image_res_x * image_res_y}")
+            return True
+
+    return False
 
 def sort_number(name):
-    arr = name.split("_")
+    arr = re.split(r"[_.]", name)
 
     try:
         return int(arr[0])
     except ValueError:
         fail(f"the texture \"{name}\" is not numbered")
 
+not_first = False
 for name in sorted(os.listdir(atlas_source), key=sort_number):
     path = os.path.join(atlas_source, name)
     if os.path.isfile(path):
+        if not_first:
+            if iterate_atlas():
+                fail(f"atlas overflows by \"{name}\". max images count: {atlas_size_x * atlas_size_y}")
+        print(f"adding image ({current_x}, {current_y}): {path}")
         add_image_to_atlas(current_x, current_y, path)
-        iterate_atlas()
+        not_first = True
 
+print(f"saving atlas to \"{atlas_output}\"...")
 atlas.save(atlas_output)
 atlas.close()
+print("done!")
