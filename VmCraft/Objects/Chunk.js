@@ -125,14 +125,17 @@ export class Chunk {
             //console.log(x, y, z, blockType)
 
             const neighbors = [
-                { dx: 1, dy: 0, dz: 0, nx: 1, ny: 0, nz: 0 },
-                { dx: -1, dy: 0, dz: 0, nx: -1, ny: 0, nz: 0 },
                 { dx: 0, dy: 1, dz: 0, nx: 0, ny: 1, nz: 0 },
                 { dx: 0, dy: -1, dz: 0, nx: 0, ny: -1, nz: 0 },
+                
+                { dx: 1, dy: 0, dz: 0, nx: 1, ny: 0, nz: 0 },
+                { dx: -1, dy: 0, dz: 0, nx: -1, ny: 0, nz: 0 },
                 { dx: 0, dy: 0, dz: 1, nx: 0, ny: 0, nz: 1 },
                 { dx: 0, dy: 0, dz: -1, nx: 0, ny: 0, nz: -1 }
             ];
 
+            let neighbors_index = 0
+            const blockInfo = Blocks.blocksInfo[blockType] 
             for (const n of neighbors) {
                 const nx = x + n.dx;
                 const ny = y + n.dy;
@@ -151,9 +154,11 @@ export class Chunk {
                 }
 
                 if (isVisible) {
-                    // Добавляем грань со смещением (x,y,z) и нормалью (nx,ny,nz)
-                    addFace(x + 0.5, y + 0.5, z + 0.5, n.dx, n.dy, n.dz, n.nx, n.ny, n.nz, Utils.tileUV(3));
+                    const textures = blockInfo?.textures ?? []
+                    addFace(x + 0.5, y + 0.5, z + 0.5, n.dx, n.dy, n.dz, n.nx, n.ny, n.nz, Utils.tileUV(textures[neighbors_index] ?? 0));
                 }
+
+                neighbors_index++
             }
         }
     
