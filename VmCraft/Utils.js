@@ -47,6 +47,10 @@ export async function loadAndCombineImages(urls) {
     return combinedBuffer.buffer;
 }
 
+export function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export function getRandomHexNum() {
     const randomInt = Math.floor(Math.random() * 16);
     return randomInt.toString(16).toUpperCase()

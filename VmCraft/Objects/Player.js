@@ -69,7 +69,7 @@ export class Player extends Character {
             if (e.button == 0) {
                 this.removeBlock()
             } else if (e.button == 2) {
-                this.placeBlock(1)
+                this.placeBlock(Utils.randomInt(1, 2))
             }
         })
     }

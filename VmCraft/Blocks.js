@@ -10,6 +10,7 @@ export const blocksInfo = [
     {
     },
     {
+        name: "grass",
         textures: [
             texturesNames.grass,
             texturesNames.dirt,
@@ -18,6 +19,17 @@ export const blocksInfo = [
             texturesNames.grassdirt,
             texturesNames.grassdirt,
             texturesNames.grassdirt,
+        ]
+    },
+    {
+        name: "dirt",
+        textures: [
+            texturesNames.dirt,
+            texturesNames.dirt,
+            texturesNames.dirt,
+            texturesNames.dirt,
+            texturesNames.dirt,
+            texturesNames.dirt
         ]
     }
 ]
