@@ -2,8 +2,8 @@ import * as Three from 'three'
 import * as Gui from './Gui.js'
 import * as Consts from './Consts.js'
 import * as WorldManager from './WorldManager.js';
-import { World } from './Objects/World.js'
-import { GameBasic } from './Objects/GameBasic.js'
+import { World } from './objects/World.js'
+import { GameBasic } from './objects/GameBasic.js'
 
 // ---------------------- main
 

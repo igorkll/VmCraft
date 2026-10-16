@@ -1,7 +1,7 @@
 import * as Three from "three"
 import * as Utils from "../Utils.js"
-import { Player } from './Player.js'
-import { Robot } from './Robot.js'
+import { Player } from './interactives/Player.js'
+import { Robot } from './interactives/Robot.js'
 import { Chunk } from './Chunk.js'
 import * as Consts from '../Consts.js'
 import * as ObjectAssotiation from "../ObjectAssotiation.js"
@@ -21,7 +21,7 @@ export class World {
     _defWorld() {
         console.log("loading world: default")
 
-        this.player = this.createCharacter({
+        this.player = this.createInteractive({
             pos: new Three.Vector3(0, 10, 0)
         }, Player)
         
@@ -40,7 +40,7 @@ export class World {
         console.log("loading world: ", worldData)
         
         this.allChunksData = worldData.data.allChunksData || []
-        this.player = this.createCharacter(worldData.data.playerData, Player)
+        this.player = this.createInteractive(worldData.data.playerData, Player)
     }
 
     loadWorld(worldData) {
@@ -90,9 +90,6 @@ export class World {
     }
 
     update(delta) {
-        this.updateInteractive(this.player)
-        this.player.update(delta)
-
         for (let i = 0; i < this.loadedChunks.length; i++) {
             const chunk = this.loadedChunks[i]
             chunk.update(delta)
@@ -140,7 +137,10 @@ export class World {
 
         if (chunkData.interactivesData != null) {
             chunkData.interactivesData.forEach(element => {
-                this.createInteractive(element[1], ObjectAssotiation.getClass(element[0]))
+                const constructor = ObjectAssotiation.getClass(element[0])
+                if (constructor != null) {
+                    this.createInteractive(element[1], constructor)
+                }
             })
         }
 
@@ -163,7 +163,7 @@ export class World {
 
                 for (let i = this.interactives.length - 1; i >= 0; i--) {
                     const obj = this.interactives[i]
-                    if (obj.chunk == chunk) {
+                    if (!obj?.data.no_chunk_dependent && obj.chunk == chunk) {
                         obj.destroy()
                         this.interactives.splice(i, 1)
                     }
@@ -207,16 +207,6 @@ export class World {
         return interactive
     }
 
-    createCharacter(data, constructor, ...args) {
-        const character = new constructor(this.gameBasic, ...args)
-        character.setSaveData(Object.assign(character.getSaveData(), data))
-        this.updateInteractivePrepair(character)
-        character.init()
-        this.updateInteractive(character)
-
-        return character
-    }
-
     getChunkPositionFromGlobalPosition(pos) {
         const chunkSize = this.gameBasic.chunkSize
         return new Three.Vector3(
@@ -236,11 +226,6 @@ export class World {
     
     destroy() {
         this.allChunksData = []
-
-        if (this.player != null) {
-            this.player.destroy()
-            this.player = null
-        }
     
         if (this.loadedChunks != null) {
             for (let i = 0; i < this.loadedChunks.length; i++) {
@@ -272,11 +257,14 @@ export class World {
 
         for (let i = 0; i < this.interactives.length; i++) {
             const obj = this.interactives[i]
-            if (obj.chunk == chunk) {
-                additionalChunkData.interactivesData.push([
-                    ObjectAssotiation.getName(obj),
-                    obj.getSaveData()
-                ])
+            if (!obj?.data.no_chunk_dependent && obj.chunk == chunk) {
+                const name = ObjectAssotiation.getName(obj)
+                if (name != null) {
+                    additionalChunkData.interactivesData.push([
+                        name,
+                        obj.getSaveData()
+                    ])
+                }
             }
         }
 

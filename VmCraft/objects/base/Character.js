@@ -1,8 +1,8 @@
 import * as Three from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
-import * as Utils from "../Utils.js";
-import * as Gui from "../Gui.js";
-import * as Consts from "../Consts.js";
+import * as Utils from "../../Utils.js";
+import * as Gui from "../../Gui.js";
+import * as Consts from "../../Consts.js";
 
 export class Character {
     constructor(gameBasic) {

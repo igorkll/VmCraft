@@ -1,16 +1,19 @@
 import * as Three from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
-import * as Utils from "../Utils.js";
-import * as Gui from "../Gui.js";
-import * as Consts from "../Consts.js";
-import { Character } from "./Character.js";
+import * as Utils from "../../Utils.js";
+import * as Gui from "../../Gui.js";
+import * as Consts from "../../Consts.js";
+import { Character } from "../base/Character.js";
+import * as ObjectAssotiation from "../../ObjectAssotiation.js";
 
 const deadZone = Math.PI / 180;
 
 export class Player extends Character {
     constructor(gameBasic) {
         super(gameBasic)
-        Object.assign(this.data, {})
+        Object.assign(this.data, {
+            no_chunk_dependent: true
+        })
     }
     
     init() {
@@ -116,3 +119,5 @@ export class Player extends Character {
         super.destroy()
     }
 }
+
+ObjectAssotiation.registerType("Player", Player)
