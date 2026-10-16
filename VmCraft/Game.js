@@ -65,7 +65,9 @@ updateFps()
 
 function getDebugOverlayText() {
     return `FPS: ${fps}
-Position: ${world.player.data.pos.x.toFixed(3)} ${world.player.data.pos.y.toFixed(3)} ${world.player.data.pos.z.toFixed(3)}`
+Position: ${world.player.data.pos.x.toFixed(3)} ${world.player.data.pos.y.toFixed(3)} ${world.player.data.pos.z.toFixed(3)}
+Velocity: ${world.player.data.velocity.x.toFixed(3)} ${world.player.data.velocity.y.toFixed(3)} ${world.player.data.velocity.z.toFixed(3)}
+Fly: ${world.player.data.fly}`
 }
 
 function frameHandle() {
